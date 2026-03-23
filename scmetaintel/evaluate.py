@@ -141,12 +141,10 @@ def field_f1(predicted: List[str], gold: List[str]) -> Dict[str, float]:
     # contains the other or they share a synonym normalization.
     tp_pred = 0  # how many predicted match some gold
     for p in pred_set:
-        pn = _normalize_field(p)
         if any(_fuzzy_match(p, g) for g in gold_set):
             tp_pred += 1
     tp_gold = 0  # how many gold match some predicted
     for g in gold_set:
-        gn = _normalize_field(g)
         if any(_fuzzy_match(p, g) for p in pred_set):
             tp_gold += 1
     precision = tp_pred / len(pred_set) if pred_set else 0.0
