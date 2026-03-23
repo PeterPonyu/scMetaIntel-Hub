@@ -1,0 +1,3326 @@
+{
+  "generated_at": "2026-02-13",
+  "roots": [
+    "/home/zeyufu/Desktop/datasets",
+    "/home/zeyufu/Desktop/iAODE-LAB",
+    "/home/zeyufu/Desktop/.archive/GEO-DataHub/downloads"
+  ],
+  "stats": {
+    "unique_gse": 169,
+    "gse_with_folders": 125,
+    "unique_gsm_in_filenames": 603
+  },
+  "gse_folder_index": {
+    "GSE284492": [
+      {
+        "path": "/home/zeyufu/Desktop/datasets/ATAC_data/GSE284492_RAW",
+        "bytes": 230456507
+      }
+    ],
+    "GSE292195": [
+      {
+        "path": "/home/zeyufu/Desktop/datasets/ATAC_data/GSE292195_RAW",
+        "bytes": 48177519
+      }
+    ],
+    "GSE199556": [
+      {
+        "path": "/home/zeyufu/Desktop/datasets/ATAC_data/GSE199556_RAW",
+        "bytes": 155821516
+      },
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/66-GSE199556",
+        "bytes": 155821516
+      }
+    ],
+    "GSE275786": [
+      {
+        "path": "/home/zeyufu/Desktop/datasets/ATAC_data/GSE275786_RAW.",
+        "bytes": 55452065
+      }
+    ],
+    "GSE225803": [
+      {
+        "path": "/home/zeyufu/Desktop/datasets/ATAC_data/GSE225803_RAW",
+        "bytes": 50673551
+      }
+    ],
+    "GSE206767": [
+      {
+        "path": "/home/zeyufu/Desktop/datasets/ATAC_data/GSE206767_filtered_peak_bc_matrix",
+        "bytes": 135260846
+      },
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/31-GSE206767",
+        "bytes": 135260846
+      }
+    ],
+    "GSE190162": [
+      {
+        "path": "/home/zeyufu/Desktop/datasets/ATAC_data/GSE190162_RAW",
+        "bytes": 57446791
+      }
+    ],
+    "GSE211155": [
+      {
+        "path": "/home/zeyufu/Desktop/datasets/ATAC_data/GSE211155_RAW",
+        "bytes": 285445743
+      }
+    ],
+    "GSE266511": [
+      {
+        "path": "/home/zeyufu/Desktop/datasets/ATAC_data/GSE266511_RAW",
+        "bytes": 382838768
+      }
+    ],
+    "GSE192947": [
+      {
+        "path": "/home/zeyufu/Desktop/datasets/ATAC_data/GSE192947_RAW",
+        "bytes": 110620838
+      },
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/95-GSE192947-dr",
+        "bytes": 110620838
+      }
+    ],
+    "GSE280847": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/14-GSE280847",
+        "bytes": 170778389
+      }
+    ],
+    "GSE289611": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/2-GSE289611",
+        "bytes": 62267454
+      }
+    ],
+    "GSE306567": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/20-GSE306567",
+        "bytes": 392301134
+      }
+    ],
+    "GSE277740": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/15-GSE277740",
+        "bytes": 261667590
+      }
+    ],
+    "GSE236565": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/12-GSE236565",
+        "bytes": 730455277
+      }
+    ],
+    "GSE307261": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/10-GSE307261",
+        "bytes": 459201036
+      }
+    ],
+    "GSE227719": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/17-GSE227719",
+        "bytes": 185854185
+      }
+    ],
+    "GSE278924": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/5-GSE278924",
+        "bytes": 85070626
+      }
+    ],
+    "GSE306676": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/18-GSE306676",
+        "bytes": 493856524
+      }
+    ],
+    "GSE288211": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/8-GSE288211",
+        "bytes": 444749110
+      }
+    ],
+    "GSE302433": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/6-GSE302433",
+        "bytes": 143778009
+      }
+    ],
+    "GSE291166": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/3-GSE291166",
+        "bytes": 149750710
+      }
+    ],
+    "GSE309368": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368",
+        "bytes": 374684632
+      }
+    ],
+    "GSE303309": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/11-GSE303309",
+        "bytes": 161106296
+      }
+    ],
+    "GSE220913": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/13-GSE220913",
+        "bytes": 103232477
+      }
+    ],
+    "GSE308428": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/7-GSE308428",
+        "bytes": 81277845
+      }
+    ],
+    "GSE212502": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/16-GSE212502",
+        "bytes": 97441734
+      }
+    ],
+    "GSE307774": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/9-GSE307774",
+        "bytes": 358987144
+      }
+    ],
+    "GSE283397": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/19-GSE283397",
+        "bytes": 138243174
+      }
+    ],
+    "GSE300862": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/1-GSE300862",
+        "bytes": 72789885
+      }
+    ],
+    "GSE248713": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/45-GSE248713",
+        "bytes": 295195206
+      }
+    ],
+    "GSE166174": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/81-GSE166174",
+        "bytes": 1047893765
+      }
+    ],
+    "GSE164422": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/84-GSE164422",
+        "bytes": 62710988
+      }
+    ],
+    "GSE171599": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/61-GSE171599",
+        "bytes": 53868955
+      }
+    ],
+    "GSE210569": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/57-GSE210569",
+        "bytes": 1867289189
+      }
+    ],
+    "GSE214705": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/98-GSE214705-dm",
+        "bytes": 70972798
+      }
+    ],
+    "GSE216506": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/51-GSE216506",
+        "bytes": 121232599
+      }
+    ],
+    "GSE289708": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/26-GSE289708",
+        "bytes": 436922940
+      }
+    ],
+    "GSE190977": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/60-GSE190977",
+        "bytes": 128778941
+      }
+    ],
+    "GSE305723": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/97-GSE305723-dj",
+        "bytes": 57529727
+      }
+    ],
+    "GSE142358": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/94-GSE142358",
+        "bytes": 469258565
+      }
+    ],
+    "GSE220026": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/10-GSE220026",
+        "bytes": 137094375
+      }
+    ],
+    "GSE158196": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/89-GSE158196",
+        "bytes": 86311310
+      }
+    ],
+    "GSE288654": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/21-GSE288654",
+        "bytes": 72269097
+      }
+    ],
+    "GSE225932": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/43-GSE225932",
+        "bytes": 464063242
+      }
+    ],
+    "GSE305163": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/22-GSE305163",
+        "bytes": 148885322
+      }
+    ],
+    "GSE137069": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/92-GSE137069",
+        "bytes": 136367785
+      }
+    ],
+    "GSE201793": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/67-GSE201793",
+        "bytes": 107603005
+      }
+    ],
+    "GSE299558": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/30-GSE299558",
+        "bytes": 501791137
+      }
+    ],
+    "GSE168026": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/1-GSE168026",
+        "bytes": 61967178
+      }
+    ],
+    "GSE153479": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/91-GSE153479",
+        "bytes": 303629992
+      }
+    ],
+    "GSE216175": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/59-GSE216175",
+        "bytes": 511579851
+      }
+    ],
+    "GSE193304": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/63-GSE193304",
+        "bytes": 33252640
+      }
+    ],
+    "GSE235116": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/52-GSE235116",
+        "bytes": 113396277
+      }
+    ],
+    "GSE286575": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/32-GSE286575",
+        "bytes": 72799577
+      }
+    ],
+    "GSE200813": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/6-GSE200813",
+        "bytes": 233507529
+      }
+    ],
+    "GSE157378": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/82-GSE157378",
+        "bytes": 142548447
+      }
+    ],
+    "GSE241745": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/16-GSE241745",
+        "bytes": 310417579
+      }
+    ],
+    "GSE174367": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/2-GSE174367",
+        "bytes": 360317403
+      }
+    ],
+    "GSE252843": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/40-GSE252843",
+        "bytes": 88439378
+      }
+    ],
+    "GSE181188": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/71-GSE181188",
+        "bytes": 145125268
+      }
+    ],
+    "GSE178422": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/69-GSE178422",
+        "bytes": 179425504
+      }
+    ],
+    "GSE211617": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/70-GSE211617",
+        "bytes": 695636024
+      }
+    ],
+    "GSE241714": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/15-GSE241714",
+        "bytes": 244487484
+      }
+    ],
+    "GSE215758": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/47-GSE215758",
+        "bytes": 85186116
+      }
+    ],
+    "GSE203567": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/72-GSE203567",
+        "bytes": 158785234
+      }
+    ],
+    "GSE151425": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/88-GSE151425",
+        "bytes": 196732304
+      }
+    ],
+    "GSE161132": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/90-GSE161132",
+        "bytes": 120385199
+      }
+    ],
+    "GSE198730": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/5-GSE198730",
+        "bytes": 89752184
+      }
+    ],
+    "GSE184846": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/80-GSE184846",
+        "bytes": 726597456
+      }
+    ],
+    "GSE207698": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/58-GSE207698",
+        "bytes": 399433229
+      }
+    ],
+    "GSE274934": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/39-GSE274934",
+        "bytes": 288222629
+      }
+    ],
+    "GSE214082": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/62-GSE214082",
+        "bytes": 205854783
+      }
+    ],
+    "GSE213469": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/64-GSE213469",
+        "bytes": 67373233
+      }
+    ],
+    "GSE199557": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/65-GSE199557",
+        "bytes": 1300124645
+      }
+    ],
+    "GSE294221": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/37-GSE294221",
+        "bytes": 208246793
+      }
+    ],
+    "GSE180898": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/75-GSE180898",
+        "bytes": 287521602
+      }
+    ],
+    "GSE297712": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/33-GSE297712",
+        "bytes": 264810216
+      }
+    ],
+    "GSE184386": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/78-GSE184386",
+        "bytes": 5606971394
+      }
+    ],
+    "GSE201213": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/7-GSE201213",
+        "bytes": 408468324
+      }
+    ],
+    "GSE234574": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/53-GSE234574",
+        "bytes": 245796859
+      }
+    ],
+    "GSE151408": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/93-GSE151408",
+        "bytes": 19614880
+      }
+    ],
+    "GSE231384": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/55-GSE231384",
+        "bytes": 94779697
+      }
+    ],
+    "GSE141825": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/54-GSE141825",
+        "bytes": 412633170
+      }
+    ],
+    "GSE277242": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/35-GSE277242",
+        "bytes": 366553881
+      }
+    ],
+    "GSE237304": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/42-GSE237304",
+        "bytes": 130485275
+      }
+    ],
+    "GSE211077": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/68-GSE211077",
+        "bytes": 788778526
+      }
+    ],
+    "GSE199268": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/46-GSE199268",
+        "bytes": 1048078205
+      }
+    ],
+    "GSE190795": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/77-GSE190795",
+        "bytes": 301920439
+      }
+    ],
+    "GSE205549": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/8-GSE205549",
+        "bytes": 209423033
+      }
+    ],
+    "GSE226067": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/12-GSE226067",
+        "bytes": 343239270
+      }
+    ],
+    "GSE292194": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/34-GSE292194",
+        "bytes": 48177519
+      }
+    ],
+    "GSE229065": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/49-GSE229065",
+        "bytes": 477151272
+      }
+    ],
+    "GSE211087": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/9-GSE211087",
+        "bytes": 285445743
+      }
+    ],
+    "GSE192856": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/4-GSE192856",
+        "bytes": 148459851
+      }
+    ],
+    "GSE252523": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/44-GSE252523",
+        "bytes": 534518905
+      }
+    ],
+    "GSE243004": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/17-GSE243004",
+        "bytes": 580080917
+      }
+    ],
+    "GSE174456": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/85-GSE174456",
+        "bytes": 35744473
+      }
+    ],
+    "GSE191029": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/96-GSE191029-dr",
+        "bytes": 10911139
+      }
+    ],
+    "GSE168372": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/73-GSE168372",
+        "bytes": 105114688
+      }
+    ],
+    "GSE272181": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/36-GSE272181",
+        "bytes": 417278871
+      }
+    ],
+    "GSE278419": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/41-GSE278419",
+        "bytes": 278551379
+      }
+    ],
+    "GSE247157": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/18-GSE247157",
+        "bytes": 896054762
+      }
+    ],
+    "GSE153163": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/86-GSE153163",
+        "bytes": 430737382
+      }
+    ],
+    "GSE217119": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/50-GSE217119",
+        "bytes": 2541130541
+      }
+    ],
+    "GSE299741": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/23-GSE299741",
+        "bytes": 299494075
+      }
+    ],
+    "GSE272265": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/19-GSE272265",
+        "bytes": 343651046
+      }
+    ],
+    "GSE299466": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/25-GSE299466",
+        "bytes": 253339255
+      }
+    ],
+    "GSE296197": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/24-GSE296197",
+        "bytes": 477532446
+      }
+    ],
+    "GSE178988": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/3-GSE178988",
+        "bytes": 242807081
+      }
+    ],
+    "GSE154175": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/83-GSE154175",
+        "bytes": 120438188
+      }
+    ],
+    "GSE164747": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/87-GSE164747",
+        "bytes": 137814884
+      }
+    ],
+    "GSE288015": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/20-GSE288015",
+        "bytes": 153575244
+      }
+    ],
+    "GSE270148": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/27-GSE270148",
+        "bytes": 2078432714
+      }
+    ],
+    "GSE226108": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/13-GSE226108",
+        "bytes": 1614057050
+      }
+    ],
+    "GSE175621": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621",
+        "bytes": 840489331
+      }
+    ],
+    "GSE148223": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/74-GSE148223",
+        "bytes": 157042314
+      }
+    ],
+    "GSE295436": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/29-GSE295436",
+        "bytes": 283926227
+      }
+    ],
+    "GSE186291": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/76-GSE186291",
+        "bytes": 209372353
+      }
+    ],
+    "GSE213404": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/56-GSE213404",
+        "bytes": 68239416
+      }
+    ],
+    "GSE232002": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/14-GSE232002",
+        "bytes": 398461505
+      }
+    ],
+    "GSE301287": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/28-GSE301287",
+        "bytes": 205664941
+      }
+    ],
+    "GSE225801": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/11-GSE225801",
+        "bytes": 186255204
+      }
+    ],
+    "GSE195882": [
+      {
+        "path": "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/48-GSE195882",
+        "bytes": 444668226
+      }
+    ],
+    "GSE185224": [
+      {
+        "path": "/home/zeyufu/Desktop/.archive/GEO-DataHub/downloads/GSE185224",
+        "bytes": 3874776037
+      }
+    ]
+  },
+  "gse_file_hits": {
+    "GSE120505": 1,
+    "GSE120446": 1,
+    "GSE165844": 1,
+    "GSE226131": 1,
+    "GSE148215": 1,
+    "GSE253355": 1,
+    "GSE192857": 1,
+    "GSE144024": 1,
+    "GSE226824": 1,
+    "GSE167597": 1,
+    "GSE123813": 2,
+    "GSE262288": 1,
+    "GSE132509": 1,
+    "GSE123902": 1,
+    "GSE222369": 1,
+    "GSE183904": 1,
+    "GSE155109": 2,
+    "GSE222002": 1,
+    "GSE143423": 2,
+    "GSE225600": 1,
+    "GSE148218": 1,
+    "GSE98638": 1,
+    "GSE235787": 1,
+    "GSE198730": 17,
+    "GSE174367": 9,
+    "GSE206767": 9,
+    "GSE117988": 2,
+    "GSE228499": 1,
+    "GSE120575": 1,
+    "GSE189357": 1,
+    "GSE283205": 1,
+    "GSE138709": 1,
+    "GSE163558": 1,
+    "GSE225857": 1,
+    "GSE168181": 1,
+    "GSE149655": 1,
+    "GSE124310": 1,
+    "GSE247719": 2,
+    "GSE225948": 1,
+    "GSE115571": 1,
+    "GSE189070": 1,
+    "GSE145929": 2,
+    "GSE142653": 1,
+    "GSE130148": 1,
+    "GSE165784": 1,
+    "GSE275119": 1,
+    "GSE213740": 1,
+    "GSE306567": 6,
+    "GSE302433": 2,
+    "GSE220913": 2,
+    "GSE283397": 10,
+    "GSE166174": 13,
+    "GSE225932": 5,
+    "GSE137069": 13,
+    "GSE153479": 8,
+    "GSE216175": 7,
+    "GSE235116": 7,
+    "GSE213469": 1,
+    "GSE151408": 1,
+    "GSE174456": 1,
+    "GSE296197": 8,
+    "GSE154175": 5,
+    "GSE148223": 7,
+    "GSE185224": 6
+  },
+  "gsm_file_examples": {
+    "GSM8462146": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8462146_AL11_ATAC_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/39-GSE274934/GSM8462146_AL11_ATAC_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5769456": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM5769456_DTR_S_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE192947_RAW/GSM5769456_DTR_S_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/95-GSE192947-dr/GSM5769456_DTR_S_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342788": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM5342788_scB_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342788_scB_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8997246": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8997246_Sample1_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/33-GSE297712/GSM8997246_Sample1_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8997246_Sample1_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7734716": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7734716_MGH236_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/16-GSE241745/GSM7734716_MGH236_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7734716_MGH236_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6449885": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM6449885_HD6_PBMC_CD4CD25posT_scATAC_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE211155_RAW/GSM6449885_HD6_PBMC_CD4CD25posT_scATAC_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/9-GSE211087/GSM6449885_HD6_PBMC_CD4CD25posT_scATAC_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7734714": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7734714_MGH232_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/16-GSE241745/GSM7734714_MGH232_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM6449881": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM6449881_HD4_CD4CD25posT_scATAC_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE211155_RAW/GSM6449881_HD4_CD4CD25posT_scATAC_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/9-GSE211087/GSM6449881_HD4_CD4CD25posT_scATAC_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342789": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM5342789_scC_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342789_scC_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM6449883": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM6449883_HD5_PBMC_nTreg_scATAC_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE211155_RAW/GSM6449883_HD5_PBMC_nTreg_scATAC_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/9-GSE211087/GSM6449883_HD5_PBMC_nTreg_scATAC_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8900553": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8900553_sample6_ATAC_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/37-GSE294221/GSM8900553_sample6_ATAC_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM8900553_sample6_ATAC_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8462147": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8462147_AL12_ATAC_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/39-GSE274934/GSM8462147_AL12_ATAC_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8462147_AL12_ATAC_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6449878": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM6449878_NSCLC8_TIL_eTreg_scATAC_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE211155_RAW/GSM6449878_NSCLC8_TIL_eTreg_scATAC_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/9-GSE211087/GSM6449878_NSCLC8_TIL_eTreg_scATAC_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8685155": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8685155_TKX_filtered_feature_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE284492_RAW/GSM8685155_TKX_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM8852348": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8852348_MH_13-084-D12_filtered_feature_bc_matrix.h5ad"
+    ],
+    "GSM7308367": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7308367_Exp157DukeaBMTB_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/14-GSE232002/GSM7308367_Exp157DukeaBMTB_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM7308367_Exp157DukeaBMTB_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8248669": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8248669_8WKs_NegBCG_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE266511_RAW/GSM8248669_8WKs_NegBCG_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5769461": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM5769461_Day5_DTR_U_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE192947_RAW/GSM5769461_Day5_DTR_U_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/95-GSE192947-dr/GSM5769461_Day5_DTR_U_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5769463": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM5769463_Day7_DTR_U_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE192947_RAW/GSM5769463_Day7_DTR_U_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/95-GSE192947-dr/GSM5769463_Day7_DTR_U_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8852349": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8852349_MH_13_084_D13_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE292195_RAW/GSM8852349_MH_13_084_D13_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/34-GSE292194/GSM8852349_MH_13_084_D13_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM6449879": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM6449879_NSCLC14_NormalLung_TregandCD8posT_scATAC_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE211155_RAW/GSM6449879_NSCLC14_NormalLung_TregandCD8posT_scATAC_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/9-GSE211087/GSM6449879_NSCLC14_NormalLung_TregandCD8posT_scATAC_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8546125": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8546125_BLM_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/41-GSE278419/GSM8546125_BLM_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM8546125_BLM_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5769453": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM5769453_WT_S_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE192947_RAW/GSM5769453_WT_S_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/95-GSE192947-dr/GSM5769453_WT_S_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM6044072": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM6044072_1P_human_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/6-GSE200813/GSM6044072_1P_human_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8248671": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8248671_KKH95_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE266511_RAW/GSM8248671_KKH95_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7884540": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7884540_D013_13_lobe_atac_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/18-GSE247157/GSM7884540_D013_13_lobe_atac_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7884540_D013_13_lobe_atac_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7064216": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7064216_19_D006_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/13-GSE226108/GSM7064216_19_D006_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7064216_19_D006_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6044076": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM6044076_2LM_human_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/6-GSE200813/GSM6044076_2LM_human_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM6783752": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM6783752_d20-p200_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/10-GSE220026/GSM6783752_d20-p200_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5769454": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM5769454_WT_U_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE192947_RAW/GSM5769454_WT_U_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/95-GSE192947-dr/GSM5769454_WT_U_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8248673": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8248673_374_AS01_8wk_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE266511_RAW/GSM8248673_374_AS01_8wk_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8462143": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8462143_AL05_ATAC_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/39-GSE274934/GSM8462143_AL05_ATAC_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8462143_AL05_ATAC_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7884541": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7884541_D027_13_lobe_atac_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/18-GSE247157/GSM7884541_D027_13_lobe_atac_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7884541_D027_13_lobe_atac_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5124061": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM5124061_PDX_390_vehicle_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM5124061_PDX_390_vehicle_peak_bc_matrix/GSM5124061_PDX_390_vehicle_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/1-GSE168026/GSM5124061_PDX_390_vehicle_peak_bc_matrix.h5"
+    ],
+    "GSM6449882": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM6449882_HD4_PBMC_nTreg_scATAC_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE211155_RAW/GSM6449882_HD4_PBMC_nTreg_scATAC_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/9-GSE211087/GSM6449882_HD4_PBMC_nTreg_scATAC_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8685177": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8685177_TKC7_filtered_feature_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE284492_RAW/GSM8685177_TKC7_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM5769462": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM5769462_Day7_DTR_S_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE192947_RAW/GSM5769462_Day7_DTR_S_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/95-GSE192947-dr/GSM5769462_Day7_DTR_S_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7734713": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7734713_MGH231_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/16-GSE241745/GSM7734713_MGH231_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8248670": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8248670_8WKs_PosBCG_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE266511_RAW/GSM8248670_8WKs_PosBCG_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7308369": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7308369_Exp157DukeaBMTC_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/14-GSE232002/GSM7308369_Exp157DukeaBMTC_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7308369_Exp157DukeaBMTC_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5766892": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM5766892_d0-ctrl_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/4-GSE192856/GSM5766892_d0-ctrl_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7064217": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7064217_19_D007_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/13-GSE226108/GSM7064217_19_D007_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7064217_19_D007_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7884545": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7884545_D021_13_lobe_atac_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/18-GSE247157/GSM7884545_D021_13_lobe_atac_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7884545_D021_13_lobe_atac_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7777061": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7777061_2DG_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/17-GSE243004/GSM7777061_2DG_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7062450": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7062450_D180_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/12-GSE226067/GSM7062450_D180_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7064215": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7064215_19_D005_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/13-GSE226108/GSM7064215_19_D005_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM7064215_19_D005_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7884550": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7884550_D005_13_lobe_atac_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/18-GSE247157/GSM7884550_D005_13_lobe_atac_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7884550_D005_13_lobe_atac_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7734717": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7734717_MGH239_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/16-GSE241745/GSM7734717_MGH239_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7777063": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7777063_AOA_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/17-GSE243004/GSM7777063_AOA_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7777063_AOA_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6052781": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM6052781_E13.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/7-GSE201213/GSM6052781_E13.5_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM6052781_E13.csv"
+    ],
+    "GSM6052783": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM6052783_P0_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/7-GSE201213/GSM6052783_P0_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM6052783_P0_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7734290": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7734290_Naive_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/15-GSE241714/GSM7734290_Naive_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM7734290_Naive_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5402772": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM5402772_MPNST_2-084_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/3-GSE178988/GSM5402772_MPNST_2-084_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8852347": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8852347_MH_07_042_M2_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE292195_RAW/GSM8852347_MH_07_042_M2_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/34-GSE292194/GSM8852347_MH_07_042_M2_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7884549": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7884549_D009_13_lobe_atac_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/18-GSE247157/GSM7884549_D009_13_lobe_atac_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7884549_D009_13_lobe_atac_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5402771": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM5402771_NF_2-004_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/3-GSE178988/GSM5402771_NF_2-004_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM6044075": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM6044075_1LM_human_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/6-GSE200813/GSM6044075_1LM_human_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM6044075_1LM_human_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7062446": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7062446_Naive_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/12-GSE226067/GSM7062446_Naive_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7062446_Naive_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5402770": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM5402770_P115L1mutP_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/3-GSE178988/GSM5402770_P115L1mutP_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM5402770_P115L1mutP_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6638254": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM6638254_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/47-GSE215758/GSM6638254_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM6638254_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8008841": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8008841_vcap_d_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/40-GSE252843/GSM8008841_vcap_d_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM6044073": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM6044073_2P_human_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/6-GSE200813/GSM6044073_2P_human_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8248668": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8248668_4WKs_LN_neg_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE266511_RAW/GSM8248668_4WKs_LN_neg_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8729707": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8729707_filtered_peak_bc_matrix_cellrangerGenome.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/32-GSE286575/GSM8729707_filtered_peak_bc_matrix_cellrangerGenome.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8729707_filtered_peak_bc_matrix_cellrangerGenome.csv"
+    ],
+    "GSM5975166": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM5975166_Arm_d200_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE199556_RAW/GSM5975166_Arm_d200_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/66-GSE199556/GSM5975166_Arm_d200_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8900549": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8900549_sample2_ATAC_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/37-GSE294221/GSM8900549_sample2_ATAC_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM8900549_sample2_ATAC_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5769460": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM5769460_Day5_DTR_S_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE192947_RAW/GSM5769460_Day5_DTR_S_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/95-GSE192947-dr/GSM5769460_Day5_DTR_S_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7734715": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7734715_MGH234_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/16-GSE241745/GSM7734715_MGH234_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7734715_MGH234_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6214533": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM6214533_1_CIEL_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/8-GSE205549/GSM6214533_1_CIEL_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8248674": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8248674_373_pos_BCG_8wk_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE266511_RAW/GSM8248674_373_pos_BCG_8wk_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8546124": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8546124_Control_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/41-GSE278419/GSM8546124_Control_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8546124_Control_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7062447": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7062447_D2_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/12-GSE226067/GSM7062447_D2_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7062447_D2_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8008842": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8008842_vcap_enz_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/40-GSE252843/GSM8008842_vcap_enz_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8900552": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8900552_sample5_ATAC_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/37-GSE294221/GSM8900552_sample5_ATAC_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8900552_sample5_ATAC_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8462144": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8462144_AL08_ATAC_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/39-GSE274934/GSM8462144_AL08_ATAC_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM6449884": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM6449884_HD6_PBMC_eTreg_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE211155_RAW/GSM6449884_HD6_PBMC_eTreg_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/9-GSE211087/GSM6449884_HD6_PBMC_eTreg_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8397467": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8397467_WT2_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/19-GSE272265/GSM8397467_WT2_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8397466": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8397466_WT1_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/19-GSE272265/GSM8397466_WT1_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM8397466_WT1_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6052782": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM6052782_E16.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/7-GSE201213/GSM6052782_E16.5_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM6052782_E16.csv"
+    ],
+    "GSM7777062": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7777062_DON_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/17-GSE243004/GSM7777062_DON_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7777062_DON_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8900548": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8900548_sample1_ATAC_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/37-GSE294221/GSM8900548_sample1_ATAC_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/large/large_GSM8900548_sample1_ATAC_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7056609": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7056609_HP_20210331_MONOS_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE225803_RAW/GSM7056609_HP_20210331_MONOS_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/11-GSE225801/GSM7056609_HP_20210331_MONOS_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM6044077": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM6044077_4LM_human_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/6-GSE200813/GSM6044077_4LM_human_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM6044077_4LM_human_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8685152": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8685152_TK64_filtered_feature_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE284492_RAW/GSM8685152_TK64_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM7734712": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7734712_MGH230_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/16-GSE241745/GSM7734712_MGH230_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7734712_MGH230_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7734711": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7734711_MGH227_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/16-GSE241745/GSM7734711_MGH227_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5766893": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM5766893_d20-ctrl_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/4-GSE192856/GSM5766893_d20-ctrl_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7734292": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7734292_D8_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/15-GSE241714/GSM7734292_D8_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM7734292_D8_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7884543": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7884543_D030_13_macular_atac_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/18-GSE247157/GSM7884543_D030_13_macular_atac_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7884543_D030_13_macular_atac_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7777060": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7777060_CTRL_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/17-GSE243004/GSM7777060_CTRL_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7777060_CTRL_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6044074": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM6044074_4P_human_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/6-GSE200813/GSM6044074_4P_human_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8517035": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8517035_scATAC_P28_Dlx_ALM_rep1_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/35-GSE277242/GSM8517035_scATAC_P28_Dlx_ALM_rep1_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7064214": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7064214_19_D003_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/13-GSE226108/GSM7064214_19_D003_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5975165": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM5975165_Arm_d60_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE199556_RAW/GSM5975165_Arm_d60_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/66-GSE199556/GSM5975165_Arm_d60_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7062449": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7062449_D8-2_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/12-GSE226067/GSM7062449_D8-2_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8900551": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8900551_sample4_ATAC_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/37-GSE294221/GSM8900551_sample4_ATAC_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/large/large_GSM8900551_sample4_ATAC_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5342787": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM5342787_scA_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342787_scA_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM6449880": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM6449880_HD4_PBMC_eTreg_scATAC_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE211155_RAW/GSM6449880_HD4_PBMC_eTreg_scATAC_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/9-GSE211087/GSM6449880_HD4_PBMC_eTreg_scATAC_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8900550": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8900550_sample3_ATAC_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/37-GSE294221/GSM8900550_sample3_ATAC_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM8900550_sample3_ATAC_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6214536": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM6214536_6_SI_LPL_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/8-GSE205549/GSM6214536_6_SI_LPL_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8008843": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8008843_vcap16_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/40-GSE252843/GSM8008843_vcap16_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7062448": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7062448_D8-1_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/12-GSE226067/GSM7062448_D8-1_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8462145": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8462145_AL10_ATAC_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/39-GSE274934/GSM8462145_AL10_ATAC_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8462145_AL10_ATAC_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7734291": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM7734291_D2_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/15-GSE241714/GSM7734291_D2_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM7734291_D2_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6783751": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM6783751_d20-p100_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/10-GSE220026/GSM6783751_d20-p100_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8248675": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8248675_372_neg_BCG_16wk_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE266511_RAW/GSM8248675_372_neg_BCG_16wk_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8248676": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8248676_376_AS01_16wk_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE266511_RAW/GSM8248676_376_AS01_16wk_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342790": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM5342790_scD_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342790_scD_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8248672": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM8248672_370_neg_BCG_8wk_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE266511_RAW/GSM8248672_370_neg_BCG_8wk_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM6214534": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM6214534_2_CLPL_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/8-GSE205549/GSM6214534_2_CLPL_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM6214535": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSM6214535_4_SI_IEL_filtered_peak_bc_matrix.h5ad",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/8-GSE205549/GSM6214535_4_SI_IEL_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM6214535_4_SI_IEL_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8484535": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE275786_RAW./GSM8484535_OLD.expression.txt.gz"
+    ],
+    "GSM8484536": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE275786_RAW./GSM8484536_Y.expression.txt.gz"
+    ],
+    "GSM5717478": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE190162_RAW/GSM5717478_MCF7_50nM_CPI1612_filtered_peak_bc_peaks.bed.gz",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE190162_RAW/GSM5717478_MCF7_50nM_CPI1612_filtered_peak_bc_matrix.mtx.gz",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE190162_RAW/GSM5717478_MCF7_50nM_CPI1612_filtered_peak_bc_barcodes.tsv.gz"
+    ],
+    "GSM5717477": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE190162_RAW/GSM5717477_MCF7_DMSO_filtered_peak_bc_matrix.mtx.gz",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE190162_RAW/GSM5717477_MCF7_DMSO_filtered_peak_bc_peaks.bed.gz",
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE190162_RAW/GSM5717477_MCF7_DMSO_filtered_peak_bc_barcodes.tsv.gz"
+    ],
+    "GSM5769459": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE192947_RAW/GSM5769459_Day4_DTR_U_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/95-GSE192947-dr/GSM5769459_Day4_DTR_U_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5769457": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE192947_RAW/GSM5769457_DTR_U_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/95-GSE192947-dr/GSM5769457_DTR_U_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5769458": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE192947_RAW/GSM5769458_Day4_DTR_S_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/95-GSE192947-dr/GSM5769458_Day4_DTR_S_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5769455": [
+      "/home/zeyufu/Desktop/datasets/ATAC_data/GSE192947_RAW/GSM5769455_Day4_WT_S_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/95-GSE192947-dr/GSM5769455_Day4_WT_S_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8606551": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/14-GSE280847/GSM8606551_7KQ2_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM8606551_7KQ2_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM8606548": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/14-GSE280847/GSM8606548_WT1_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM8606548_WT1_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM8606549": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/14-GSE280847/GSM8606549_WT2_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM8606549_WT2_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM8606550": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/14-GSE280847/GSM8606550_7KQ1_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM8606550_7KQ1_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM8795024": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/2-GSE289611/GSM8795024_OPL14T_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/2-GSE289611/GSM8795024_OPL7T_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/2-GSE289611/GSM8795024_OPL10T_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM8528664": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/15-GSE277740/GSM8528664_filtered_feature_bc_matrix_D5.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM8528664_filtered_feature_bc_matrix_D5.csv"
+    ],
+    "GSM8528661": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/15-GSE277740/GSM8528661_filtered_feature_bc_matrix_D2.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM8528661_filtered_feature_bc_matrix_D2.csv"
+    ],
+    "GSM8528663": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/15-GSE277740/GSM8528663_filtered_feature_bc_matrix_D4.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM8528663_filtered_feature_bc_matrix_D4.csv"
+    ],
+    "GSM8528662": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/15-GSE277740/GSM8528662_filtered_feature_bc_matrix_D3.h5"
+    ],
+    "GSM8528660": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/15-GSE277740/GSM8528660_filtered_feature_bc_matrix_D1.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM8528660_filtered_feature_bc_matrix_D1.csv"
+    ],
+    "GSM8528667": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/15-GSE277740/GSM8528667_filtered_feature_bc_matrix_D8.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM8528667_filtered_feature_bc_matrix_D8.csv"
+    ],
+    "GSM8528666": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/15-GSE277740/GSM8528666_filtered_feature_bc_matrix_D7.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM8528666_filtered_feature_bc_matrix_D7.csv"
+    ],
+    "GSM8528665": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/15-GSE277740/GSM8528665_filtered_feature_bc_matrix_D6.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM8528665_filtered_feature_bc_matrix_D6.csv"
+    ],
+    "GSM7553365": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/12-GSE236565/GSM7553365_NRIP1_KO_woRA_3_rna_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM7553371": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/12-GSE236565/GSM7553371_NRIP1_KO_wRA_1_rna_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM7553359": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/12-GSE236565/GSM7553359_NRIP1_WT_woRA_2_rna_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM7553361": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/12-GSE236565/GSM7553361_NRIP1_WT_woRA_3_rna_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM7553366": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/12-GSE236565/GSM7553366_NRIP1_WT_wRA_1_rna_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM7553368": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/12-GSE236565/GSM7553368_NRIP1_WT_wRA_2_rna_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM7553364": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/12-GSE236565/GSM7553364_NRIP1_KO_woRA_2_rna_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM7553358": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/12-GSE236565/GSM7553358_NRIP1_WT_woRA_1_rna_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM7553374": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/12-GSE236565/GSM7553374_NRIP1_KO_wRA_3_rna_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM7553362": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/12-GSE236565/GSM7553362_NRIP1_KO_woRA_1_rna_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM7553372": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/12-GSE236565/GSM7553372_NRIP1_KO_wRA_2_rna_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM7553369": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/12-GSE236565/GSM7553369_NRIP1_WT_wRA_3_rna_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9220095": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/10-GSE307261/GSM9220095_p196_B_7m_RNA_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9220095_p196_B_7m_RNA_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9220083": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/10-GSE307261/GSM9220083_p145_B_7m_RNA_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9220099": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/10-GSE307261/GSM9220099_p196_T_7m_RNA_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9220099_p196_T_7m_RNA_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9220071": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/10-GSE307261/GSM9220071_p134_B_7m_RNA_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9220071_p134_B_7m_RNA_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9220121": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/10-GSE307261/GSM9220121_p381_T_6w_RNA_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9220121_p381_T_6w_RNA_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9220081": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/10-GSE307261/GSM9220081_p145_B_6w_RNA_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9220085": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/10-GSE307261/GSM9220085_p145_B_d0_RNA_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9220111": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/10-GSE307261/GSM9220111_p326_T_7m_RNA_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9220111_p326_T_7m_RNA_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9220103": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/10-GSE307261/GSM9220103_p326_B_6w_RNA_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9220103_p326_B_6w_RNA_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9220097": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/10-GSE307261/GSM9220097_p196_T_6w_RNA_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9220097_p196_T_6w_RNA_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9220073": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/10-GSE307261/GSM9220073_p134_B_d0_RNA_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9220073_p134_B_d0_RNA_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9220117": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/10-GSE307261/GSM9220117_p381_B_7m_RNA_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9220117_p381_B_7m_RNA_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9220115": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/10-GSE307261/GSM9220115_p381_B_6w_RNA_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9220115_p381_B_6w_RNA_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9220087": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/10-GSE307261/GSM9220087_p145_T_6w_RNA_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9220087_p145_T_6w_RNA_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9220109": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/10-GSE307261/GSM9220109_p326_T_6w_RNA_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9220109_p326_T_6w_RNA_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9220125": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/10-GSE307261/GSM9220125_p381_T_d0_RNA_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9220125_p381_T_d0_RNA_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9220077": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/10-GSE307261/GSM9220077_p134_T_7m_RNA_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9220077_p134_T_7m_RNA_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9220089": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/10-GSE307261/GSM9220089_p145_T_7m_RNA_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9220089_p145_T_7m_RNA_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9220069": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/10-GSE307261/GSM9220069_p134_B_6w_RNA_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9220069_p134_B_6w_RNA_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9220105": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/10-GSE307261/GSM9220105_p326_B_7m_RNA_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9220105_p326_B_7m_RNA_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9220079": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/10-GSE307261/GSM9220079_p134_T_d0_RNA_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9220079_p134_T_d0_RNA_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9220123": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/10-GSE307261/GSM9220123_p381_T_7m_RNA_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9220123_p381_T_7m_RNA_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9220107": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/10-GSE307261/GSM9220107_p326_B_d0_RNA_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9220107_p326_B_d0_RNA_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9220113": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/10-GSE307261/GSM9220113_p326_T_d0_RNA_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9220113_p326_T_d0_RNA_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9220075": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/10-GSE307261/GSM9220075_p134_T_6w_RNA_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9220075_p134_T_6w_RNA_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9220119": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/10-GSE307261/GSM9220119_p381_B_d0_RNA_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9220119_p381_B_d0_RNA_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9220101": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/10-GSE307261/GSM9220101_p196_T_d0_RNA_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9220101_p196_T_d0_RNA_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9220093": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/10-GSE307261/GSM9220093_p196_B_6w_RNA_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9220091": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/10-GSE307261/GSM9220091_p145_T_d0_RNA_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9220091_p145_T_d0_RNA_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM7106053": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/17-GSE227719/GSM7106053_YFP_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM7106053_YFP_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM7106051": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/17-GSE227719/GSM7106051_KPY_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM7106051_KPY_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM8557692": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/5-GSE278924/GSM8557692_sc_E5_R_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/large/large_GSM8557692_sc_E5_R_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM8557691": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/5-GSE278924/GSM8557691_sc_E5_L_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/large/large_GSM8557691_sc_E5_L_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9205825": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/18-GSE306676/GSM9205825_sod1_mn_nuclei_1_15_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9205816": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/18-GSE306676/GSM9205816_3nextseq_run_11_11_endpoint_female_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9205816_3nextseq_run_11_11_endpoint_female_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9205828": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/18-GSE306676/GSM9205828_sod1_mn_nuclei_2_9_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9205828_sod1_mn_nuclei_2_9_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9205827": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/18-GSE306676/GSM9205827_sod1_mn_nuclei_2_1_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9205827_sod1_mn_nuclei_2_1_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9205814": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/18-GSE306676/GSM9205814_3nextseq_run_11_4_endpoint_male_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9205814_3nextseq_run_11_4_endpoint_male_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9205819": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/18-GSE306676/GSM9205819_3nextseq_run_10_30_midpoint_male_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9205826": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/18-GSE306676/GSM9205826_sod1_mn_nuclei_1_16b_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9205826_sod1_mn_nuclei_1_16b_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9205820": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/18-GSE306676/GSM9205820_3nextseq_run_11_1_midpoint_female_sample1_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9205817": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/18-GSE306676/GSM9205817_SI-GA-H7_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9205821": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/18-GSE306676/GSM9205821_3nextseq_run_11_1_midpoint_female_sample2_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9205822": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/18-GSE306676/GSM9205822_3nextseq_run_11_1_midpoint_female_sample3_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9205815": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/18-GSE306676/GSM9205815_3nextseq_run_11_8_endpoint_female_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9205815_3nextseq_run_11_8_endpoint_female_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9205813": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/18-GSE306676/GSM9205813_3nextseq_run_10_17_endpoint_mixed_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9205823": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/18-GSE306676/GSM9205823_sod1_mn_nuclei_2_20_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9205823_sod1_mn_nuclei_2_20_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9205824": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/18-GSE306676/GSM9205824_sod1_mn_nuclei_3_5_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9205824_sod1_mn_nuclei_3_5_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9205812": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/18-GSE306676/GSM9205812_SI-GA-F7_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9205812_SI-GA-F7_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9205811": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/18-GSE306676/GSM9205811_SI-GA-G7_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9205818": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/18-GSE306676/GSM9205818_SI-GA-G8_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM8761313": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/8-GSE288211/GSM8761313_HFD_RIP-Cre_rep1_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM8761313_HFD_RIP-Cre_rep1_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM8761311": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/8-GSE288211/GSM8761311_HFD_bZKO_Rip_rep1_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM8761311_HFD_bZKO_Rip_rep1_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM8761317": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/8-GSE288211/GSM8761317_HFD_MIP-Cre_rep1_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM8761317_HFD_MIP-Cre_rep1_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM8761315": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/8-GSE288211/GSM8761315_HFD_bZKO_Mip_rep1_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM8761315_HFD_bZKO_Mip_rep1_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM8761318": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/8-GSE288211/GSM8761318_HFD_MIP-Cre_rep2_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM8761318_HFD_MIP-Cre_rep2_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM8761316": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/8-GSE288211/GSM8761316_HFD_bZKO_Mip_rep2_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM8761316_HFD_bZKO_Mip_rep2_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM8761314": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/8-GSE288211/GSM8761314_HFD_RIP-Cre_rep2_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM8761314_HFD_RIP-Cre_rep2_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM8761312": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/8-GSE288211/GSM8761312_HFD_bZKO_Rip_rep2_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM8761312_HFD_bZKO_Rip_rep2_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM8830298": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/3-GSE291166/GSM8830298_MatAb8_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM8830298_MatAb8_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM8830297": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/3-GSE291166/GSM8830297_MatAb5_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM8830297_MatAb5_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM8830300": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/3-GSE291166/GSM8830300_naive4_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM8830300_naive4_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM8830299": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/3-GSE291166/GSM8830299_naive3_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM8830299_naive3_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266318": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266318_HD1_LD_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266318_HD1_LD_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266344": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266344_HNSCC1_T_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266344_HNSCC1_T_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266338": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266338_HNSCC3_HD_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266338_HNSCC3_HD_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266331": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266331_HNSCC4_LD_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266331_HNSCC4_LD_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266321": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266321_HD4_LD_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266321_HD4_LD_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266339": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266339_HNSCC4_HD_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266339_HNSCC4_HD_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266341": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266341_HNSCC6_HD_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266341_HNSCC6_HD_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266329": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266329_HNSCC2_LD_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266329_HNSCC2_LD_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266322": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266322_HD5_LD_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266322_HD5_LD_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266319": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266319_HD2_LD_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266319_HD2_LD_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266335": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266335_HNSCC8_LD_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266335_HNSCC8_LD_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266334": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266334_HNSCC7_LD_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266334_HNSCC7_LD_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266323": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266323_HD1_HD_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266323_HD1_HD_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266336": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266336_HNSCC1_HD_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266336_HNSCC1_HD_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266332": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266332_HNSCC5_LD_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266332_HNSCC5_LD_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266337": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266337_HNSCC2_HD_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266337_HNSCC2_HD_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266345": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266345_HNSCC2_T_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266345_HNSCC2_T_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266348": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266348_HNSCC5_T_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266348_HNSCC5_T_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266342": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266342_HNSCC7_HD_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266342_HNSCC7_HD_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266350": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266350_HNSCC7_T_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266350_HNSCC7_T_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266346": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266346_HNSCC3_T_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266346_HNSCC3_T_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266351": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266351_HNSCC8_T_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266351_HNSCC8_T_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266326": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266326_HD4_HD_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266326_HD4_HD_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266327": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266327_HD5_HD_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266327_HD5_HD_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266343": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266343_HNSCC8_HD_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266343_HNSCC8_HD_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266333": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266333_HNSCC6_LD_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266333_HNSCC6_LD_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266349": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266349_HNSCC6_T_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266349_HNSCC6_T_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266330": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266330_HNSCC3_LD_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266330_HNSCC3_LD_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266347": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266347_HNSCC4_T_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266347_HNSCC4_T_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266320": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266320_HD3_LD_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266320_HD3_LD_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266328": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266328_HNSCC1_LD_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266328_HNSCC1_LD_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266325": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266325_HD3_HD_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266325_HD3_HD_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266324": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266324_HD2_HD_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266324_HD2_HD_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9266340": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/4-GSE309368/GSM9266340_HNSCC5_HD_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9266340_HNSCC5_HD_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9123180": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/11-GSE303309/GSM9123180_cre_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9123180_cre_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9123179": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/11-GSE303309/GSM9123179_wt_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9123179_wt_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9245280": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/7-GSE308428/GSM9245280_3_1_S7_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9245278": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/7-GSE308428/GSM9245278_2_5_S5_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9245274": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/7-GSE308428/GSM9245274_2_1_S1_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9245279": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/7-GSE308428/GSM9245279_2_6_S6_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9245276": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/7-GSE308428/GSM9245276_2_3_S3_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9245275": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/7-GSE308428/GSM9245275_2_2_S2_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9245285": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/7-GSE308428/GSM9245285_3_6_S12_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9245283": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/7-GSE308428/GSM9245283_3_4_S10_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9245282": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/7-GSE308428/GSM9245282_3_3_S9_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9245284": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/7-GSE308428/GSM9245284_3_5_S11_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9245281": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/7-GSE308428/GSM9245281_3_2_S8_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9245277": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/7-GSE308428/GSM9245277_2_4_S4_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM6533785": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/16-GSE212502/GSM6533785_WS1.filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM6533785_WS1.csv"
+    ],
+    "GSM6533784": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/16-GSE212502/GSM6533784_CTRL1.filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM6533784_CTRL1.csv"
+    ],
+    "GSM9231175": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/9-GSE307774/GSM9231175_BVAR_RZF122_3d.filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9231188": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/9-GSE307774/GSM9231188_VANP_RKF94_3e.filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9231194": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/9-GSE307774/GSM9231194_VANP_RKF90_6c.filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9231193": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/9-GSE307774/GSM9231193_VANP_RKF89_4b_S32.filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9231187": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/9-GSE307774/GSM9231187_VANP_RKF94_2e.filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9231189": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/9-GSE307774/GSM9231189_VANP_RKF89_4c_S33.filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9231184": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/9-GSE307774/GSM9231184_19_66.filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9231184_19_66.csv"
+    ],
+    "GSM9231176": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/9-GSE307774/GSM9231176_BVAR_RZF118_6c.filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9231176_BVAR_RZF118_6c.csv"
+    ],
+    "GSM9231192": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/9-GSE307774/GSM9231192_VANP_RKF93_1e.filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9231172": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/9-GSE307774/GSM9231172_BVAR_RZF124_2a.filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9231172_BVAR_RZF124_2a.csv"
+    ],
+    "GSM9231182": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/9-GSE307774/GSM9231182_VBPNOT_RKV72_1e.filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/large/large_GSM9231182_VBPNOT_RKV72_1e.csv"
+    ],
+    "GSM9231174": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/9-GSE307774/GSM9231174_BVAR_RZF122_1c.filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9231174_BVAR_RZF122_1c.csv"
+    ],
+    "GSM9231195": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/9-GSE307774/GSM9231195_VANP_RKF90_6e.filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9231199": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/9-GSE307774/GSM9231199_VBPRNF_RKBG37_1e.filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9231190": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/9-GSE307774/GSM9231190_VANP_RKF89_5c_S34.filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9231190_VANP_RKF89_5c_S34.csv"
+    ],
+    "GSM9231179": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/9-GSE307774/GSM9231179_RZF131_2b.filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9231179_RZF131_2b.csv"
+    ],
+    "GSM9231177": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/9-GSE307774/GSM9231177_BVAR_RZF122_2a.filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9231185": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/9-GSE307774/GSM9231185_VANP_RKF100_1b.filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9231183": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/9-GSE307774/GSM9231183_19_65.filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9231183_19_65.csv"
+    ],
+    "GSM9231178": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/9-GSE307774/GSM9231178_BVAR_RZF125_1c.filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9231178_BVAR_RZF125_1c.csv"
+    ],
+    "GSM9231196": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/9-GSE307774/GSM9231196_RKF106_1b.filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9231181": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/9-GSE307774/GSM9231181_19_52.filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9231181_19_52.csv"
+    ],
+    "GSM9231173": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/9-GSE307774/GSM9231173_BVAR_RZF124_1a.filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9231173_BVAR_RZF124_1a.csv"
+    ],
+    "GSM9231171": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/9-GSE307774/GSM9231171_BVAR_RZF119_5b_S14.filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9231171_BVAR_RZF119_5b_S14.csv"
+    ],
+    "GSM9231197": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/9-GSE307774/GSM9231197_VBPRNF_RKBG_28_1g_S25.filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/medium/medium_GSM9231197_VBPRNF_RKBG_28_1g_S25.csv"
+    ],
+    "GSM9231191": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/9-GSE307774/GSM9231191_VANP_RKF93_1a.filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9231191_VANP_RKF93_1a.csv"
+    ],
+    "GSM9231180": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/9-GSE307774/GSM9231180_RZF133_2a.filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9231180_RZF133_2a.csv"
+    ],
+    "GSM9231186": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/9-GSE307774/GSM9231186_VANP_RKF100_1c.filtered_feature_bc_matrix.h5"
+    ],
+    "GSM9231198": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/9-GSE307774/GSM9231198_VBPRNF_RKBG32_3a.filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9231198_VBPRNF_RKBG32_3a.csv"
+    ],
+    "GSM9069798": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/1-GSE300862/GSM9069798_SPC_KPI_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9069798_SPC_KPI_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM9069797": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scRNA-25100/1-GSE300862/GSM9069797_SPC_KP_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/RNA_architectures/small/small_GSM9069797_SPC_KP_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM7919028": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/45-GSE248713/GSM7919028_1B_BMDM_LA_0h_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7919028_1B_BMDM_LA_0h_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/.ipynb_checkpoints/small_GSM7919028_1B_BMDM_LA_0h_filtered_peak_bc_matrix-checkpoint.csv"
+    ],
+    "GSM7919029": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/45-GSE248713/GSM7919029_2B_BMDM_LA_2h_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7919029_2B_BMDM_LA_2h_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/visualizations/small_GSM7919029_2B_BMDM_LA_2h_filtered_peak_bc_matrix_PeakVI.png"
+    ],
+    "GSM5009426": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/84-GSE164422/GSM5009426_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM5009426_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/.ipynb_checkpoints/small_GSM5009426_filtered_peak_bc_matrix-checkpoint.csv"
+    ],
+    "GSM8196957": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/61-GSE171599/GSM8196957_0_5_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8196957_0_5_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM8196957_0_5_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8196958": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/61-GSE171599/GSM8196958_MCF7_2_1_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8196958_MCF7_2_1_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM8196958_MCF7_2_1_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8196956": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/61-GSE171599/GSM8196956_MCF7_0_5_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8196956_MCF7_0_5_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM8196956_MCF7_0_5_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8196959": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/61-GSE171599/GSM8196959_2_1_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8196959_2_1_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM8196959_2_1_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6432741": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/57-GSE210569/GSM6432741_E14.5_Fev_High_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM6432741_E14.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM6432741_E14.csv"
+    ],
+    "GSM7244762": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/57-GSE210569/GSM7244762_E17.5_Whole_Pancreas_2_lane_1_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/large/large_GSM7244762_E17.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics_woode/large/large_GSM7244762_E17.csv"
+    ],
+    "GSM7244764": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/57-GSE210569/GSM7244764_E14.5_Whole_Pancreas_2_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/large/large_GSM7244764_E14.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics_woode/large/large_GSM7244764_E14.csv"
+    ],
+    "GSM7244763": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/57-GSE210569/GSM7244763_E17.5_Whole_Pancreas_2_lane_2_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/large/large_GSM7244763_E17.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics_woode/large/large_GSM7244763_E17.csv"
+    ],
+    "GSM6432740": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/57-GSE210569/GSM6432740_E14.5_Whole_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/visualizations/medium_GSM6432740_E14_iAODE.png",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/visualizations/medium_GSM6432740_E14_PoissonVI.png"
+    ],
+    "GSM6614577": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/98-GSE214705-dm/GSM6614577_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/visualizations/medium_GSM6614577_filtered_peak_bc_matrix_iAODE.png",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/visualizations/medium_GSM6614577_filtered_peak_bc_matrix_scVI.png"
+    ],
+    "GSM6675428": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/51-GSE216506/GSM6675428_d5_3_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM6675426": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/51-GSE216506/GSM6675426_d5_1_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM6675425": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/51-GSE216506/GSM6675425_d2_5_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM6675425_d2_5_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM6675425_d2_5_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6675429": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/51-GSE216506/GSM6675429_d5_4_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM6675427": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/51-GSE216506/GSM6675427_d5_2_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8797342": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/26-GSE289708/GSM8797342_mm_scATAC_BM_KP_Nfe2l2_KO_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8797342_mm_scATAC_BM_KP_Nfe2l2_KO_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM8797342_mm_scATAC_BM_KP_Nfe2l2_KO_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8797341": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/26-GSE289708/GSM8797341_mm_scATAC_BM_KP_Nfe2l2_WT_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8797341_mm_scATAC_BM_KP_Nfe2l2_WT_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM8797341_mm_scATAC_BM_KP_Nfe2l2_WT_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5736798": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/60-GSE190977/GSM5736798_scATAC_WT_1_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5736799": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/60-GSE190977/GSM5736799_scATAC_WT_2_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5736797": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/60-GSE190977/GSM5736797_scATAC_KI_1_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM9183494": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/97-GSE305723-dj/GSM9183494_scATAC_intact_rep2_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM9183494_scATAC_intact_rep2_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM9183494_scATAC_intact_rep2_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM9183496": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/97-GSE305723-dj/GSM9183496_scATAC_5dpa_rep2_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM9183496_scATAC_5dpa_rep2_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM9183496_scATAC_5dpa_rep2_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM9183495": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/97-GSE305723-dj/GSM9183495_scATAC_5dpa_rep1_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM9183495_scATAC_5dpa_rep1_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM9183495_scATAC_5dpa_rep1_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM9183493": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/97-GSE305723-dj/GSM9183493_scATAC_intact_rep1_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM9183493_scATAC_intact_rep1_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM9183493_scATAC_intact_rep1_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM4226310": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/94-GSE142358/GSM4226310_Gfi1-R412X-R412X-filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/visualizations/GSM4226310_Gfi1-R412X-R412X-filtered_peak_bc_matrix_arrays",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/visualizations/medium_GSM4226310_Gfi1-R412X-R412X-filtered_peak_bc_matrix_scVI.png"
+    ],
+    "GSM4226309": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/94-GSE142358/GSM4226309_Gfi1-WT-rep-3534-filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/visualizations/medium_GSM4226309_Gfi1-WT-rep-3534-filtered_peak_bc_matrix_iAODE.png",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/visualizations/GSM4226309_Gfi1-WT-rep-3534-filtered_peak_bc_matrix_arrays"
+    ],
+    "GSM4226308": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/94-GSE142358/GSM4226308_Gfi1-WT-rep-3531-filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM4226308_Gfi1-WT-rep-3531-filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM4226308_Gfi1-WT-rep-3531-filtered_peak_bc_matrix.csv"
+    ],
+    "GSM4795059": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/89-GSE158196/GSM4795059_7wk-scATAC_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/visualizations/.ipynb_checkpoints/medium_GSM4795059_7wk-scATAC_filtered_peak_bc_matrix_iAODE-checkpoint.png",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/visualizations/.ipynb_checkpoints/medium_GSM4795059_7wk-scATAC_filtered_peak_bc_matrix_PeakVI-checkpoint.png"
+    ],
+    "GSM8772512": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/21-GSE288654/GSM8772512_WT_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8772513": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/21-GSE288654/GSM8772513_cKO_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7060655": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/43-GSE225932/GSM7060655_acute_rep2_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7060657": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/43-GSE225932/GSM7060657_chronic_rep2_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7060656": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/43-GSE225932/GSM7060656_chronic_rep1_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7060654": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/43-GSE225932/GSM7060654_acute_rep1_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM9163267": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/22-GSE305163/GSM9163267_sc-0077_coch_atac_5min_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM9163267_sc-0077_coch_atac_5min_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM9163267_sc-0077_coch_atac_5min_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM9163268": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/22-GSE305163/GSM9163268_sc-0077_coch_atac_10min_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM9163268_sc-0077_coch_atac_10min_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM9163268_sc-0077_coch_atac_10min_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6071619": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/67-GSE201793/GSM6071619_filtered_peak_bc_matrix_fl22.h5"
+    ],
+    "GSM6071618": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/67-GSE201793/GSM6071618_filtered_peak_bc_matrix_fl09.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM6071618_filtered_peak_bc_matrix_fl09.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM6071618_filtered_peak_bc_matrix_fl09.csv"
+    ],
+    "GSM9040799": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/30-GSE299558/GSM9040799_HDM-only_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM9040799_HDM-only_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM9040799_HDM-only_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM9040800": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/30-GSE299558/GSM9040800_Pam2ODN-HDM_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM9040800_Pam2ODN-HDM_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM9040800_Pam2ODN-HDM_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5124060": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/1-GSE168026/GSM5124060_PDX_360_Infigratinib_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM5124060_PDX_360_Infigratinib_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM5124060_PDX_360_Infigratinib_peak_bc_matrix.csv"
+    ],
+    "GSM5788504": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/63-GSE193304/GSM5788504_S10_ATAC_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM5788504_S10_ATAC_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM5788504_S10_ATAC_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM4763868": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/82-GSE157378/GSM4763868_E17-5-9_scATAC-seq_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM4763867": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/82-GSE157378/GSM4763867_E17-5-8_scATAC-seq_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM4763866": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/82-GSE157378/GSM4763866_E17-5-7_scATAC-seq_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7734720": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/16-GSE241745/GSM7734720_BWH14_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7734719": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/16-GSE241745/GSM7734719_BWH3_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7734719_BWH3_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7734719_BWH3_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7734718": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/16-GSE241745/GSM7734718_MGH240_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7734718_MGH240_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7734718_MGH240_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5492243": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/71-GSE181188/GSM5492243_ATAC_PLZF_RARA_CT_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5492244": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/71-GSE181188/GSM5492244_ATAC_PLZF_RARA_RA_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM5492244_ATAC_PLZF_RARA_RA_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM5492244_ATAC_PLZF_RARA_RA_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5390874": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/69-GSE178422/GSM5390874_A04_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM5390874_A04_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM5390874_A04_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5390873": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/69-GSE178422/GSM5390873_A03_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM5390873_A03_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM5390873_A03_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5390872": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/69-GSE178422/GSM5390872_A02_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM6176366": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/72-GSE203567/GSM6176366_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM6176366_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM6176366_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM4795689": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/88-GSE151425/GSM4795689_NMYC_RB_3490_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM4795688": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/88-GSE151425/GSM4795688_NMYC_RB_3489_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM4577930": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/88-GSE151425/GSM4577930_NMYC_RB_3056_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM4577930_NMYC_RB_3056_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM4577930_NMYC_RB_3056_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM4890020": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/90-GSE161132/GSM4890020_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM4890020_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM4890020_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5598163": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/80-GSE184846/GSM5598163_filtered_peak_bc_matrix_WT_E4.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM5598163_filtered_peak_bc_matrix_WT_E4.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM5598163_filtered_peak_bc_matrix_WT_E4.csv"
+    ],
+    "GSM5598165": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/80-GSE184846/GSM5598165_filtered_peak_bc_matrix_WT_E5.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM5598165_filtered_peak_bc_matrix_WT_E5.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM5598165_filtered_peak_bc_matrix_WT_E5.csv"
+    ],
+    "GSM5598169": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/80-GSE184846/GSM5598169_filtered_peak_bc_matrix_WT_E7.h5"
+    ],
+    "GSM5598167": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/80-GSE184846/GSM5598167_filtered_peak_bc_matrix_WT_E6.h5"
+    ],
+    "GSM5598166": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/80-GSE184846/GSM5598166_filtered_peak_bc_matrix_dKO_E5.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM5598166_filtered_peak_bc_matrix_dKO_E5.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM5598166_filtered_peak_bc_matrix_dKO_E5.csv"
+    ],
+    "GSM5598168": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/80-GSE184846/GSM5598168_filtered_peak_bc_matrix_dKO_E6.h5"
+    ],
+    "GSM5598170": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/80-GSE184846/GSM5598170_filtered_peak_bc_matrix_dKO_E7.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM5598170_filtered_peak_bc_matrix_dKO_E7.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM5598170_filtered_peak_bc_matrix_dKO_E7.csv"
+    ],
+    "GSM5598164": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/80-GSE184846/GSM5598164_filtered_peak_bc_matrix_dKO_E4.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM5598164_filtered_peak_bc_matrix_dKO_E4.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM5598164_filtered_peak_bc_matrix_dKO_E4.csv"
+    ],
+    "GSM6310595": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/58-GSE207698/GSM6310595_DACC963_PT_B_mKate_plus_ATAC_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM6310593": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/58-GSE207698/GSM6310593_DACE270_Epi_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM6310596": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/58-GSE207698/GSM6310596_DAC_D020_p5_Epi_ATAC_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM6310594": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/58-GSE207698/GSM6310594_DACE271_Epi_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM6598797": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/62-GSE214082/GSM6598797_CD_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM6598797_CD_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM6598797_CD_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6598798": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/62-GSE214082/GSM6598798_HFD_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM6598798_HFD_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM6598798_HFD_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5975172": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/65-GSE199557/GSM5975172_scA_106_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM5975172_scA_106_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM5975172_scA_106_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5975174": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/65-GSE199557/GSM5975174_scA_108_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM5975174_scA_108_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM5975174_scA_108_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5975168": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/65-GSE199557/GSM5975168_scA_102_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM5975168_scA_102_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM5975168_scA_102_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5975169": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/65-GSE199557/GSM5975169_scA_103_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM5975169_scA_103_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM5975169_scA_103_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5975167": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/65-GSE199557/GSM5975167_scA_101_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM5975167_scA_101_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM5975167_scA_101_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5975173": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/65-GSE199557/GSM5975173_scA_107_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM5975173_scA_107_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM5975173_scA_107_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5975170": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/65-GSE199557/GSM5975170_scA_104_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM5975170_scA_104_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM5975170_scA_104_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5975171": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/65-GSE199557/GSM5975171_scA_105_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM5975171_scA_105_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM5975171_scA_105_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5474436": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/75-GSE180898/GSM5474436_SH2_E165_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM5474436_SH2_E165_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM5474436_SH2_E165_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5474438": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/75-GSE180898/GSM5474438_SH7_P2_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5474437": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/75-GSE180898/GSM5474437_SH3_P2_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5474439": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/75-GSE180898/GSM5474439_SH9_E165_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM5474439_SH9_E165_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM5474439_SH9_E165_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8997247": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/33-GSE297712/GSM8997247_Sample2_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM8997247_Sample2_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM8997247_Sample2_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8997248": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/33-GSE297712/GSM8997248_Sample3_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM8997248_Sample3_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM8997248_Sample3_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7471119": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/53-GSE234574/GSM7471119_Day10-Zbtb20-KO-OT-I_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7471119_Day10-Zbtb20-KO-OT-I_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7471119_Day10-Zbtb20-KO-OT-I_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7471121": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/53-GSE234574/GSM7471121_Day30-Zbtb20-KO-OT-I_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7471121_Day30-Zbtb20-KO-OT-I_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7471121_Day30-Zbtb20-KO-OT-I_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7471122": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/53-GSE234574/GSM7471122_Day30-WT-OT-I_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7471122_Day30-WT-OT-I_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7471122_Day30-WT-OT-I_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7471120": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/53-GSE234574/GSM7471120_Day10-WT-OT-I_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7471120_Day10-WT-OT-I_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7471120_Day10-WT-OT-I_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7267135": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/55-GSE231384/GSM7267135_noness.filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM7267135_noness.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM7267135_noness.csv"
+    ],
+    "GSM7267133": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/55-GSE231384/GSM7267133_ess.filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7267133_ess.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7267133_ess.csv"
+    ],
+    "GSM4213752": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/54-GSE141825/GSM4213752_Thy-St2-NKT_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM4213752_Thy-St2-NKT_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM4213752_Thy-St2-NKT_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM4213753": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/54-GSE141825/GSM4213753_Thy-St3-NKT_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM4213753_Thy-St3-NKT_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM4213753_Thy-St3-NKT_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM4213751": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/54-GSE141825/GSM4213751_Thy-St1-NKT_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM4213751_Thy-St1-NKT_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM4213751_Thy-St1-NKT_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM4213749": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/54-GSE141825/GSM4213749_Thy-St0-NKT-Va14_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM4213749_Thy-St0-NKT-Va14_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM4213749_Thy-St0-NKT-Va14_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM4213750": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/54-GSE141825/GSM4213750_Thy-St0-NKT-B6_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8517036": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/35-GSE277242/GSM8517036_scATAC_P28_Dlx_ALM_rep2_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8517036_scATAC_P28_Dlx_ALM_rep2_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM8517036_scATAC_P28_Dlx_ALM_rep2_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7605339": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/42-GSE237304/GSM7605339_Ctrl_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7605339_Ctrl_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7605339_Ctrl_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7605340": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/42-GSE237304/GSM7605340_GBM_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM7605340_GBM_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM7605340_GBM_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5968482": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/46-GSE199268/GSM5968482_P1438_Post_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7040829": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/46-GSE199268/GSM7040829_P1675_Post_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7040829_P1675_Post_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7040829_P1675_Post_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5968485": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/46-GSE199268/GSM5968485_P1217_Pre_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7040839": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/46-GSE199268/GSM7040839_P1461_Post_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7040841": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/46-GSE199268/GSM7040841_P1606_Post_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7040841_P1606_Post_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7040841_P1606_Post_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5968479": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/46-GSE199268/GSM5968479_P1555_Post_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM5968479_P1555_Post_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM5968479_P1555_Post_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7040828": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/46-GSE199268/GSM7040828_P1608_Pre_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5968483": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/46-GSE199268/GSM5968483_P1393_Pre_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7040836": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/46-GSE199268/GSM7040836_P1751_Pre_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7040830": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/46-GSE199268/GSM7040830_P1299_Pre_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5968481": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/46-GSE199268/GSM5968481_P1479_Post_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM5968481_P1479_Post_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM5968481_P1479_Post_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5968478": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/46-GSE199268/GSM5968478_P1698_Post_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7040838": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/46-GSE199268/GSM7040838_P1396_Pre_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7040842": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/46-GSE199268/GSM7040842_P1722_Pre_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7040840": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/46-GSE199268/GSM7040840_P1395_Pre_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7040840_P1395_Pre_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7040840_P1395_Pre_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7040833": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/46-GSE199268/GSM7040833_P1752_Pre_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7040833_P1752_Pre_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7040833_P1752_Pre_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7040835": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/46-GSE199268/GSM7040835_P1388_Pre_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5968484": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/46-GSE199268/GSM5968484_P1389_Pre_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM5968484_P1389_Pre_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM5968484_P1389_Pre_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7040832": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/46-GSE199268/GSM7040832_P1643_Pre_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7040837": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/46-GSE199268/GSM7040837_P1809_Post_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7040827": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/46-GSE199268/GSM7040827_P1723_Pre_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5968480": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/46-GSE199268/GSM5968480_P1498_Pre_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7040834": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/46-GSE199268/GSM7040834_P1680_Pre_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7040831": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/46-GSE199268/GSM7040831_P1345_Post_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5732090": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/77-GSE190795/GSM5732090_ST2_neg_2_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM5732090_ST2_neg_2_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM5732090_ST2_neg_2_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5732087": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/77-GSE190795/GSM5732087_ST2_pos_1_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM5732087_ST2_pos_1_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM5732087_ST2_pos_1_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5732089": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/77-GSE190795/GSM5732089_ST2_neg_1_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM5732089_ST2_neg_1_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM5732089_ST2_neg_1_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5732088": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/77-GSE190795/GSM5732088_ST2_pos_2_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM5732088_ST2_pos_2_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM5732088_ST2_pos_2_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7151562": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/49-GSE229065/GSM7151562_04_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7151562_04_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7151562_04_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7151559": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/49-GSE229065/GSM7151559_01_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM7151559_01_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM7151559_01_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7151560": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/49-GSE229065/GSM7151560_02_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7151560_02_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7151560_02_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7151561": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/49-GSE229065/GSM7151561_03_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM7151561_03_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM7151561_03_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8002547": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/44-GSE252523/GSM8002547_Chr-Veh_R1_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8002549": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/44-GSE252523/GSM8002549_Veh-Veh_R1_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8002548": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/44-GSE252523/GSM8002548_Chr-Veh_R2_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8002548_Chr-Veh_R2_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM8002548_Chr-Veh_R2_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8002550": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/44-GSE252523/GSM8002550_Veh-Veh_R2_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8002550_Veh-Veh_R2_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM8002550_Veh-Veh_R2_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5737722": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/96-GSE191029-dr/GSM5737722_sele_mcs_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5737723": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/96-GSE191029-dr/GSM5737723_sele_prkcda_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5266835": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/73-GSE168372/GSM5266835_day6_ATAC_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM5266835_day6_ATAC_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM5266835_day6_ATAC_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8395369": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/36-GSE272181/GSM8395369_scATAC_P30_BG_Dlx_rep2_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8395369_scATAC_P30_BG_Dlx_rep2_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM8395369_scATAC_P30_BG_Dlx_rep2_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8395368": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/36-GSE272181/GSM8395368_scATAC_P30_BG_Dlx_rep1_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8395368_scATAC_P30_BG_Dlx_rep1_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM8395368_scATAC_P30_BG_Dlx_rep1_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7884574": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/18-GSE247157/GSM7884574_19_D006_lobe_atac_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7884574_19_D006_lobe_atac_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7884574_19_D006_lobe_atac_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7884558": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/18-GSE247157/GSM7884558_D017_13_lobe_atac_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7884558_D017_13_lobe_atac_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7884558_D017_13_lobe_atac_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7884576": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/18-GSE247157/GSM7884576_D030_13_lobe_atac_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM7884576_D030_13_lobe_atac_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM7884576_D030_13_lobe_atac_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7884554": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/18-GSE247157/GSM7884554_19_D009_lobe_atac_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM7884554_19_D009_lobe_atac_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM7884554_19_D009_lobe_atac_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7884578": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/18-GSE247157/GSM7884578_D018_13_lobe_atac_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7884578_D018_13_lobe_atac_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7884578_D018_13_lobe_atac_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7884571": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/18-GSE247157/GSM7884571_D028_13_lobe_atac_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7884571_D028_13_lobe_atac_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7884571_D028_13_lobe_atac_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7884572": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/18-GSE247157/GSM7884572_D026_13_lobe_atac_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7884572_D026_13_lobe_atac_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7884572_D026_13_lobe_atac_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7884548": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/18-GSE247157/GSM7884548_19_D007_lobe_atac_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7884548_19_D007_lobe_atac_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7884548_19_D007_lobe_atac_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7884567": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/18-GSE247157/GSM7884567_19_D019_lobe_atac_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7884567_19_D019_lobe_atac_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7884567_19_D019_lobe_atac_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7884566": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/18-GSE247157/GSM7884566_19_D011_lobe_atac_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7884566_19_D011_lobe_atac_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7884566_19_D011_lobe_atac_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7884560": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/18-GSE247157/GSM7884560_19_D003_lobe_atac_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7884560_19_D003_lobe_atac_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7884560_19_D003_lobe_atac_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7884563": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/18-GSE247157/GSM7884563_19_D005_lobe_atac_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7884563_19_D005_lobe_atac_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7884563_19_D005_lobe_atac_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7884552": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/18-GSE247157/GSM7884552_19_D010_lobe_atac_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7884552_19_D010_lobe_atac_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7884552_19_D010_lobe_atac_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7884570": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/18-GSE247157/GSM7884570_D019_13_lobe_atac_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7884570_D019_13_lobe_atac_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7884570_D019_13_lobe_atac_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7884547": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/18-GSE247157/GSM7884547_19_D008_lobe_atac_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7884547_19_D008_lobe_atac_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7884547_19_D008_lobe_atac_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM4635089": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/86-GSE153163/GSM4635089_E13_5_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM4635089_E13_5_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM4635089_E13_5_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM4635091": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/86-GSE153163/GSM4635091_E18_5_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM4635091_E18_5_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM4635091_E18_5_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM4635090": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/86-GSE153163/GSM4635090_E15_5_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM4635090_E15_5_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM4635090_E15_5_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6705346": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/50-GSE217119/GSM6705346_B4D3-ATAC-r2-3_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM6705346_B4D3-ATAC-r2-3_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM6705346_B4D3-ATAC-r2-3_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6705333": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/50-GSE217119/GSM6705333_B4D21-ATAC-r2-2_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM6705333_B4D21-ATAC-r2-2_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM6705333_B4D21-ATAC-r2-2_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6705348": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/50-GSE217119/GSM6705348_B4D3-ATAC-r2-5_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM6705348_B4D3-ATAC-r2-5_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM6705348_B4D3-ATAC-r2-5_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6705332": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/50-GSE217119/GSM6705332_B4D21-ATAC-r2-1_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM6705332_B4D21-ATAC-r2-1_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM6705332_B4D21-ATAC-r2-1_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6705341": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/50-GSE217119/GSM6705341_B4D3-ATAC-r1-4_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM6705342": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/50-GSE217119/GSM6705342_B4D3-ATAC-r1-5_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM6705329": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/50-GSE217119/GSM6705329_B4D21-ATAC-r1-4_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM6705329_B4D21-ATAC-r1-4_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM6705329_B4D21-ATAC-r1-4_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6705325": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/50-GSE217119/GSM6705325_B4D12-ATAC-r2-2_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM6705325_B4D12-ATAC-r2-2_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM6705325_B4D12-ATAC-r2-2_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6705345": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/50-GSE217119/GSM6705345_B4D3-ATAC-r2-2_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM6705345_B4D3-ATAC-r2-2_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM6705345_B4D3-ATAC-r2-2_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6705335": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/50-GSE217119/GSM6705335_B4D21-ATAC-r2-4_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM6705335_B4D21-ATAC-r2-4_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM6705335_B4D21-ATAC-r2-4_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6705340": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/50-GSE217119/GSM6705340_B4D3-ATAC-r1-3_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM6705336": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/50-GSE217119/GSM6705336_B4D21-ATAC-r2-5_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM6705336_B4D21-ATAC-r2-5_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM6705336_B4D21-ATAC-r2-5_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6705339": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/50-GSE217119/GSM6705339_B4D3-ATAC-r1-2_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM6705347": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/50-GSE217119/GSM6705347_B4D3-ATAC-r2-4_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM6705347_B4D3-ATAC-r2-4_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM6705347_B4D3-ATAC-r2-4_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6705328": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/50-GSE217119/GSM6705328_B4D21-ATAC-r1-3_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM6705328_B4D21-ATAC-r1-3_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM6705328_B4D21-ATAC-r1-3_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6705343": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/50-GSE217119/GSM6705343_B4D3-ATAC-r1-6_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM6705338": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/50-GSE217119/GSM6705338_B4D3-ATAC-r1-1_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM6705330": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/50-GSE217119/GSM6705330_B4D21-ATAC-r1-5_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM6705330_B4D21-ATAC-r1-5_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM6705330_B4D21-ATAC-r1-5_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6705326": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/50-GSE217119/GSM6705326_B4D21-ATAC-r1-1_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM6705326_B4D21-ATAC-r1-1_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM6705326_B4D21-ATAC-r1-1_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6705349": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/50-GSE217119/GSM6705349_B4D3-ATAC-r2-6_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM6705349_B4D3-ATAC-r2-6_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM6705349_B4D3-ATAC-r2-6_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6705350": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/50-GSE217119/GSM6705350_B4D3-ATAC-r2-7_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM6705350_B4D3-ATAC-r2-7_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM6705350_B4D3-ATAC-r2-7_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6705324": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/50-GSE217119/GSM6705324_B4D12-ATAC-r2-1_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM6705324_B4D12-ATAC-r2-1_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM6705324_B4D12-ATAC-r2-1_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6705334": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/50-GSE217119/GSM6705334_B4D21-ATAC-r2-3_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM6705334_B4D21-ATAC-r2-3_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM6705334_B4D21-ATAC-r2-3_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6705323": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/50-GSE217119/GSM6705323_B4D12-ATAC-r1-2_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM6705323_B4D12-ATAC-r1-2_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM6705323_B4D12-ATAC-r1-2_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6705322": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/50-GSE217119/GSM6705322_B4D12-ATAC-r1-1_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM6705322_B4D12-ATAC-r1-1_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM6705322_B4D12-ATAC-r1-1_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6705344": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/50-GSE217119/GSM6705344_B4D3-ATAC-r2-1_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM6705344_B4D3-ATAC-r2-1_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM6705344_B4D3-ATAC-r2-1_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6705331": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/50-GSE217119/GSM6705331_B4D21-ATAC-r1-6_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM6705331_B4D21-ATAC-r1-6_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM6705331_B4D21-ATAC-r1-6_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6705327": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/50-GSE217119/GSM6705327_B4D21-ATAC-r1-2_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM6705327_B4D21-ATAC-r1-2_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM6705327_B4D21-ATAC-r1-2_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM6705337": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/50-GSE217119/GSM6705337_B4D21-ATAC-r2-6_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM6705337_B4D21-ATAC-r2-6_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM6705337_B4D21-ATAC-r2-6_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM9045358": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/23-GSE299741/GSM9045358_dCas9_NT_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM9045359": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/23-GSE299741/GSM9045359_dCas9_Arc_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8397469": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/19-GSE272265/GSM8397469_Dnmt3a2_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM8397469_Dnmt3a2_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM8397469_Dnmt3a2_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8397468": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/19-GSE272265/GSM8397468_Dnmt3a1_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8397468_Dnmt3a1_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM8397468_Dnmt3a1_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM9039552": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/25-GSE299466/GSM9039552_k11_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM9039552_k11_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM9039552_k11_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM9039551": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/25-GSE299466/GSM9039551_wt_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM9039551_wt_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM9039551_wt_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5018058": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/87-GSE164747/GSM5018058_atac_iBATneg_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5018059": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/87-GSE164747/GSM5018059_atac_iBATpos_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5018061": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/87-GSE164747/GSM5018061_atac_iWATpos_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5018060": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/87-GSE164747/GSM5018060_atac_iWATneg_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8757499": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/20-GSE288015/GSM8757499_KO_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8757498": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/20-GSE288015/GSM8757498_WT_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8069370": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/27-GSE270148/GSM8069370_hs_scATACseq_PBMC_Lu898_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8069370_hs_scATACseq_PBMC_Lu898_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM8069370_hs_scATACseq_PBMC_Lu898_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8069373": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/27-GSE270148/GSM8069373_hs_scATACseq_PBMC_Lu931_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8069373_hs_scATACseq_PBMC_Lu931_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM8069373_hs_scATACseq_PBMC_Lu931_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8069381": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/27-GSE270148/GSM8069381_hs_scATACseq_Tumor_Lu929_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8069369": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/27-GSE270148/GSM8069369_hs_scATACseq_PBMC_Lu885_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM8069369_hs_scATACseq_PBMC_Lu885_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM8069369_hs_scATACseq_PBMC_Lu885_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8069368": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/27-GSE270148/GSM8069368_hs_scATACseq_PBMC_Lu883_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8069379": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/27-GSE270148/GSM8069379_hs_scATACseq_Tumor_Lu898_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8069379_hs_scATACseq_Tumor_Lu898_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM8069379_hs_scATACseq_Tumor_Lu898_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8069382": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/27-GSE270148/GSM8069382_hs_scATACseq_Tumor_Lu931_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8069363": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/27-GSE270148/GSM8069363_mm_scATACseq_BM_KP_Rep2_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8069378": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/27-GSE270148/GSM8069378_hs_scATACseq_Tumor_Lu885_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM8069378_hs_scATACseq_Tumor_Lu885_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM8069378_hs_scATACseq_Tumor_Lu885_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8069375": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/27-GSE270148/GSM8069375_hs_scATACseq_PBMC_Lu936_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8069375_hs_scATACseq_PBMC_Lu936_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM8069375_hs_scATACseq_PBMC_Lu936_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8069380": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/27-GSE270148/GSM8069380_hs_scATACseq_Tumor_Lu912_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8069380_hs_scATACseq_Tumor_Lu912_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM8069380_hs_scATACseq_Tumor_Lu912_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8069372": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/27-GSE270148/GSM8069372_hs_scATACseq_PBMC_Lu929_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8069372_hs_scATACseq_PBMC_Lu929_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM8069372_hs_scATACseq_PBMC_Lu929_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8069371": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/27-GSE270148/GSM8069371_hs_scATACseq_PBMC_Lu912_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8069377": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/27-GSE270148/GSM8069377_hs_scATACseq_Tumor_Lu883_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8069377_hs_scATACseq_Tumor_Lu883_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM8069377_hs_scATACseq_Tumor_Lu883_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8069366": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/27-GSE270148/GSM8069366_mm_scATACseq_Blood_KP_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8069364": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/27-GSE270148/GSM8069364_mm_scATACseq_Lung_naive_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/large/large_GSM8069364_mm_scATACseq_Lung_naive_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics_woode/large/large_GSM8069364_mm_scATACseq_Lung_naive_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8069361": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/27-GSE270148/GSM8069361_mm_scATACseq_BM_naive_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8069361_mm_scATACseq_BM_naive_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM8069361_mm_scATACseq_BM_naive_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8069374": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/27-GSE270148/GSM8069374_hs_scATACseq_PBMC_Lu934_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8069374_hs_scATACseq_PBMC_Lu934_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM8069374_hs_scATACseq_PBMC_Lu934_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8069362": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/27-GSE270148/GSM8069362_mm_scATACseq_BM_KP_Rep1_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM8069362_mm_scATACseq_BM_KP_Rep1_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM8069362_mm_scATACseq_BM_KP_Rep1_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8069376": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/27-GSE270148/GSM8069376_hs_scATACseq_Tumor_Lu881_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM8069376_hs_scATACseq_Tumor_Lu881_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM8069376_hs_scATACseq_Tumor_Lu881_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8069365": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/27-GSE270148/GSM8069365_mm_scATACseq_Lung_KP_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8069365_mm_scATACseq_Lung_KP_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM8069365_mm_scATACseq_Lung_KP_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8069383": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/27-GSE270148/GSM8069383_hs_scATACseq_Tumor_Lu934_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8069384": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/27-GSE270148/GSM8069384_hs_scATACseq_Tumor_Lu936_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8069384_hs_scATACseq_Tumor_Lu936_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM8069384_hs_scATACseq_Tumor_Lu936_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8069367": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/27-GSE270148/GSM8069367_hs_scATACseq_PBMC_Lu881_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/large/large_GSM8069367_hs_scATACseq_PBMC_Lu881_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics_woode/large/large_GSM8069367_hs_scATACseq_PBMC_Lu881_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7064244": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/13-GSE226108/GSM7064244_D009_13_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7064244_D009_13_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7064244_D009_13_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7064229": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/13-GSE226108/GSM7064229_19D014_19_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7064229_19D014_19_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7064229_19D014_19_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7064227": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/13-GSE226108/GSM7064227_19D013_macular_19_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/large/large_GSM7064227_19D013_macular_19_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics_woode/large/large_GSM7064227_19D013_macular_19_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7064223": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/13-GSE226108/GSM7064223_19D013_fovea_19_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7064249": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/13-GSE226108/GSM7064249_D021_13_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7064239": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/13-GSE226108/GSM7064239_19D016_19_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/large/large_GSM7064239_19D016_19_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics_woode/large/large_GSM7064239_19D016_19_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7064219": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/13-GSE226108/GSM7064219_19_D009_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7064219_19_D009_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7064219_19_D009_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7064250": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/13-GSE226108/GSM7064250_D026_13_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7064250_D026_13_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7064250_D026_13_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7064251": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/13-GSE226108/GSM7064251_D027_13_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7064251_D027_13_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7064251_D027_13_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7064245": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/13-GSE226108/GSM7064245_D013_13_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7064245_D013_13_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7064245_D013_13_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7064218": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/13-GSE226108/GSM7064218_19_D008_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7064218_19_D008_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7064218_19_D008_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7064221": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/13-GSE226108/GSM7064221_19_D011_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM7064221_19_D011_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM7064221_19_D011_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7064246": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/13-GSE226108/GSM7064246_D017_13_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7064246_D017_13_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7064246_D017_13_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7064248": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/13-GSE226108/GSM7064248_D019_13_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7064248_D019_13_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7064248_D019_13_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7064252": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/13-GSE226108/GSM7064252_D028_13_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7064252_D028_13_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7064252_D028_13_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7064222": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/13-GSE226108/GSM7064222_19_D019_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7064222_19_D019_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7064222_19_D019_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7064243": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/13-GSE226108/GSM7064243_D005_13_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7064243_D005_13_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7064243_D005_13_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7064220": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/13-GSE226108/GSM7064220_19_D010_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7064220_19_D010_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7064220_19_D010_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7064247": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/13-GSE226108/GSM7064247_D018_13_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM7064247_D018_13_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM7064247_D018_13_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5342821": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342821_scAI_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342819": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342819_scAG_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342824": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342824_scAL_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342801": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342801_scO_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342830": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342830_scAR_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342807": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342807_scU_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342797": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342797_scK_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342794": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342794_scH_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342791": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342791_scE_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342802": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342802_scP_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342812": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342812_scZ_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342822": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342822_scAJ_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342805": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342805_scS_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342808": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342808_scV_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342800": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342800_scN_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/large/large_GSM5342800_scN_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics_woode/large/large_GSM5342800_scN_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5342815": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342815_scAC_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342809": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342809_scW_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342814": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342814_scAB_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342796": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342796_scJ_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342826": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342826_scAN_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342803": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342803_scQ_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342818": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342818_scAF_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342811": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342811_scY_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342817": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342817_scAE_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342825": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342825_scAM_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342792": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342792_scF_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342804": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342804_scR_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342828": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342828_scAP_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342806": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342806_scT_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342813": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342813_scAA_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342823": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342823_scAK_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342820": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342820_scAH_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342810": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342810_scX_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342816": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342816_scAD_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342795": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342795_scI_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342798": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342798_scL_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342799": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342799_scM_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342827": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342827_scAO_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342793": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342793_scG_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM5342829": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/79-GSE175621/GSM5342829_scAQ_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8948080": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/29-GSE295436/GSM8948080_Asp-Ag_iv_posi_14w_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8948081": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/29-GSE295436/GSM8948081_Control_iv_nega_14w_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM8948079": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/29-GSE295436/GSM8948079_Asp-Ag_iv_nega_14w_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8948079_Asp-Ag_iv_nega_14w_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM8948079_Asp-Ag_iv_nega_14w_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM8948082": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/29-GSE295436/GSM8948082_Control_iv_posi_14w_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM8948082_Control_iv_posi_14w_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM8948082_Control_iv_posi_14w_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM5643206": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/76-GSE186291/GSM5643206_filtered_peak_bc_matrix_Ctrl_2.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM5643206_filtered_peak_bc_matrix_Ctrl_2.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM5643206_filtered_peak_bc_matrix_Ctrl_2.csv"
+    ],
+    "GSM5643204": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/76-GSE186291/GSM5643204_filtered_peak_bc_matrix_Ctrl_1.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM5643204_filtered_peak_bc_matrix_Ctrl_1.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM5643204_filtered_peak_bc_matrix_Ctrl_1.csv"
+    ],
+    "GSM6585736": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/56-GSE213404/GSM6585736_91963_LPS_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM6585735": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/56-GSE213404/GSM6585735_91962_PBS_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7308370": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/14-GSE232002/GSM7308370_Exp157DukeaBMTD_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM7308370_Exp157DukeaBMTD_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM7308370_Exp157DukeaBMTD_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7308373": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/14-GSE232002/GSM7308373_Exp157DukeaBMTG_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7308373_Exp157DukeaBMTG_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7308373_Exp157DukeaBMTG_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7308374": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/14-GSE232002/GSM7308374_Exp157DukeaBMTH_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7308374_Exp157DukeaBMTH_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7308374_Exp157DukeaBMTH_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7308366": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/14-GSE232002/GSM7308366_Exp157DukeaBMTI_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7308375": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/14-GSE232002/GSM7308375_Exp157DukeaBMTK_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7308376": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/14-GSE232002/GSM7308376_Exp157DukeaBMTL_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7308381": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/14-GSE232002/GSM7308381_Exp157DukeaBMTP_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7308368": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/14-GSE232002/GSM7308368_Exp157DukeaBMTJ_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7308372": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/14-GSE232002/GSM7308372_Exp157DukeaBMTF_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM7308372_Exp157DukeaBMTF_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM7308372_Exp157DukeaBMTF_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7308377": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/14-GSE232002/GSM7308377_Exp157DukeaBMTM_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7308371": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/14-GSE232002/GSM7308371_Exp157DukeaBMTE_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM7308371_Exp157DukeaBMTE_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM7308371_Exp157DukeaBMTE_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM7308378": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/14-GSE232002/GSM7308378_Exp157DukeaBMTN_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7308380": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/14-GSE232002/GSM7308380_Exp157DukeaBMTO_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM9080088": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/28-GSE301287/GSM9080088_P4520_ATAC_MM_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM9080088_P4520_ATAC_MM_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM9080088_P4520_ATAC_MM_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM9080089": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/28-GSE301287/GSM9080089_P1858_ATAC_MM_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM9080087": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/28-GSE301287/GSM9080087_P1695_ATAC_MM_filtered_peak_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM9080087_P1695_ATAC_MM_filtered_peak_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM9080087_P1695_ATAC_MM_filtered_peak_bc_matrix.csv"
+    ],
+    "GSM9080090": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/28-GSE301287/GSM9080090_P4585_ATAC_MM_filtered_peak_bc_matrix.h5"
+    ],
+    "GSM7056601": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/11-GSE225801/GSM7056601_B6_joint_NCMs_filtered_feature_bc_matrix.h5"
+    ],
+    "GSM7056607": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/11-GSE225801/GSM7056607_b6_STIA_D7_monos_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/architectures/medium/medium_GSM7056607_b6_STIA_D7_monos_filtered_feature_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/medium/medium_GSM7056607_b6_STIA_D7_monos_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM7056605": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/11-GSE225801/GSM7056605_B6_joint_macs_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7056605_B6_joint_macs_filtered_feature_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7056605_B6_joint_macs_filtered_feature_bc_matrix.csv"
+    ],
+    "GSM7056603": [
+      "/home/zeyufu/Desktop/iAODE-LAB/scATAC-25100/11-GSE225801/GSM7056603_B6_joint_DCs_filtered_feature_bc_matrix.h5",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/machine/small/small_GSM7056603_B6_joint_DCs_filtered_feature_bc_matrix.csv",
+      "/home/zeyufu/Desktop/iAODE-LAB/iAODE_results/metrics/small/small_GSM7056603_B6_joint_DCs_filtered_feature_bc_matrix.csv"
+    ]
+  }
+}

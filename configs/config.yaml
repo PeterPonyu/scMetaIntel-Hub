@@ -1,0 +1,48 @@
+search:
+  query: "single cell RNA-seq human"
+  organism: "Homo sapiens"
+  dataset_type: "Expression profiling by high throughput sequencing"
+  max_results: 20
+  min_samples: 1
+
+download:
+  output_dir: "./data/downloads"
+  selected_gse: []
+  max_file_size_gb: 5.0
+  download_metadata: true
+  max_retries: 3
+  timeout: 600
+
+convert:
+  input_dir: "./data/downloads"
+  output_dir: "./data/h5ad_output"
+  apply_qc: false
+  min_genes: 200
+  min_cells: 3
+  max_mito_pct: 20
+  merge_samples: false
+
+intelligence:
+  enriched_dir: "./enriched_metadata"
+  ontology_dir: "./ontologies"
+  qdrant_dir: "./qdrant_data"
+  benchmark_dir: "./benchmarks"
+
+models:
+  llm_model: "qwen2.5-1.5b"
+  llm_fallback: "qwen2.5-0.5b"
+  embed_model: "bge-m3"
+  bio_embed_model: "biolord-2023"
+  reranker_model: "bge-reranker-v2-m3"
+
+retrieval:
+  collection_name: "scmetaintel_studies"
+  top_k_retrieve: 50
+  top_k_rerank: 10
+  top_k_context: 10
+  use_sparse: true
+  use_payload_filter: true
+
+logging:
+  log_dir: "./logs"
+  level: "INFO"

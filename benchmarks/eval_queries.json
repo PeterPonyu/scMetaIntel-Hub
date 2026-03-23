@@ -1,0 +1,965 @@
+[
+  {
+    "id": "q01",
+    "query": "human brain scRNA-seq",
+    "expected_constraints": {
+      "organism": "Homo sapiens",
+      "tissue": "brain"
+    },
+    "expected_gse": [
+      "GSE296731",
+      "GSE292438",
+      "GSE232448"
+    ],
+    "category": "basic",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q02",
+    "query": "human lung single-cell RNA-seq",
+    "expected_constraints": {
+      "organism": "Homo sapiens",
+      "tissue": "lung"
+    },
+    "expected_gse": [
+      "GSE307746",
+      "GSE275264",
+      "GSE260778"
+    ],
+    "category": "basic",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q03",
+    "query": "human liver single-cell transcriptomics",
+    "expected_constraints": {
+      "organism": "Homo sapiens",
+      "tissue": "liver"
+    },
+    "expected_gse": [
+      "GSE278074",
+      "GSE280852",
+      "GSE147903"
+    ],
+    "category": "basic",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q04",
+    "query": "human kidney scRNA-seq",
+    "expected_constraints": {
+      "organism": "Homo sapiens",
+      "tissue": "kidney"
+    },
+    "expected_gse": [
+      "GSE316742",
+      "GSE117211",
+      "GSE109488"
+    ],
+    "category": "basic",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q05",
+    "query": "human heart single-cell sequencing",
+    "expected_constraints": {
+      "organism": "Homo sapiens",
+      "tissue": "heart"
+    },
+    "expected_gse": [
+      "GSE166462",
+      "GSE196632",
+      "GSE266307"
+    ],
+    "category": "basic",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q06",
+    "query": "human pancreas single-cell RNA-seq",
+    "expected_constraints": {
+      "organism": "Homo sapiens",
+      "tissue": "pancreas"
+    },
+    "expected_gse": [
+      "GSE158035",
+      "GSE307295",
+      "GSE147903"
+    ],
+    "category": "basic",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q07",
+    "query": "human retina single-cell sequencing",
+    "expected_constraints": {
+      "organism": "Homo sapiens",
+      "tissue": "retina"
+    },
+    "expected_gse": [
+      "GSE235582",
+      "GSE293983",
+      "GSE262151"
+    ],
+    "category": "basic",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q08",
+    "query": "human skin single-cell RNA-seq",
+    "expected_constraints": {
+      "organism": "Homo sapiens",
+      "tissue": "skin"
+    },
+    "expected_gse": [
+      "GSE312591",
+      "GSE310962",
+      "GSE138693"
+    ],
+    "category": "basic",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q09",
+    "query": "human colon single-cell transcriptomics",
+    "expected_constraints": {
+      "organism": "Homo sapiens",
+      "tissue": "colon"
+    },
+    "expected_gse": [
+      "GSE277387",
+      "GSE313894",
+      "GSE147975"
+    ],
+    "category": "basic",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q10",
+    "query": "human blood single-cell analysis",
+    "expected_constraints": {
+      "organism": "Homo sapiens",
+      "tissue": "blood"
+    },
+    "expected_gse": [
+      "GSE297652",
+      "GSE254133",
+      "GSE320155"
+    ],
+    "category": "basic",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q11",
+    "query": "mouse brain scRNA-seq",
+    "expected_constraints": {
+      "organism": "Mus musculus",
+      "tissue": "brain"
+    },
+    "expected_gse": [
+      "GSE241429",
+      "GSE273271",
+      "GSE182211"
+    ],
+    "category": "basic",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q12",
+    "query": "mouse lung single-cell RNA-seq",
+    "expected_constraints": {
+      "organism": "Mus musculus",
+      "tissue": "lung"
+    },
+    "expected_gse": [
+      "GSE277533",
+      "GSE266988",
+      "GSE289559"
+    ],
+    "category": "basic",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q13",
+    "query": "mouse liver single-cell RNA-seq",
+    "expected_constraints": {
+      "organism": "Mus musculus",
+      "tissue": "liver"
+    },
+    "expected_gse": [
+      "GSE193593",
+      "GSE230616",
+      "GSE280889"
+    ],
+    "category": "basic",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q14",
+    "query": "mouse kidney scRNA-seq datasets",
+    "expected_constraints": {
+      "organism": "Mus musculus",
+      "tissue": "kidney"
+    },
+    "expected_gse": [
+      "GSE280300",
+      "GSE217508",
+      "GSE280281"
+    ],
+    "category": "basic",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q15",
+    "query": "mouse spleen single-cell sequencing",
+    "expected_constraints": {
+      "organism": "Mus musculus",
+      "tissue": "spleen"
+    },
+    "expected_gse": [
+      "GSE308336",
+      "GSE213469",
+      "GSE306851"
+    ],
+    "category": "basic",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q16",
+    "query": "mouse bone marrow scRNA-seq",
+    "expected_constraints": {
+      "organism": "Mus musculus",
+      "tissue": "bone marrow"
+    },
+    "expected_gse": [
+      "GSE176195",
+      "GSE270754",
+      "GSE269219"
+    ],
+    "category": "basic",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q17",
+    "query": "lung cancer single-cell RNA-seq",
+    "expected_constraints": {
+      "disease": "cancer",
+      "organism": "Homo sapiens"
+    },
+    "expected_gse": [
+      "GSE143423",
+      "GSE254133",
+      "GSE160244"
+    ],
+    "category": "disease",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q18",
+    "query": "breast cancer scRNA-seq",
+    "expected_constraints": {
+      "disease": "cancer",
+      "organism": "Homo sapiens"
+    },
+    "expected_gse": [
+      "GSE174588",
+      "GSE143423",
+      "GSE195610"
+    ],
+    "category": "disease",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q19",
+    "query": "colorectal cancer single-cell transcriptomics",
+    "expected_constraints": {
+      "disease": "cancer",
+      "organism": "Homo sapiens"
+    },
+    "expected_gse": [
+      "GSE110009",
+      "GSE280312",
+      "GSE200813"
+    ],
+    "category": "disease",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q20",
+    "query": "pancreatic cancer scRNA-seq",
+    "expected_constraints": {
+      "disease": "cancer",
+      "organism": "Homo sapiens"
+    },
+    "expected_gse": [
+      "GSE189924",
+      "GSE272796",
+      "GSE267814"
+    ],
+    "category": "disease",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q21",
+    "query": "glioblastoma single-cell sequencing",
+    "expected_constraints": {
+      "disease": "glioblastoma",
+      "organism": "Homo sapiens"
+    },
+    "expected_gse": [
+      "GSE281796",
+      "GSE138794",
+      "GSE163108"
+    ],
+    "category": "disease",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q22",
+    "query": "melanoma single-cell RNA-seq",
+    "expected_constraints": {
+      "disease": "melanoma",
+      "organism": "Homo sapiens"
+    },
+    "expected_gse": [
+      "GSE243359",
+      "GSE291830",
+      "GSE317605"
+    ],
+    "category": "disease",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q23",
+    "query": "leukemia scRNA-seq",
+    "expected_constraints": {
+      "disease": "leukemia",
+      "organism": "Homo sapiens"
+    },
+    "expected_gse": [
+      "GSE292324",
+      "GSE293390",
+      "GSE220606"
+    ],
+    "category": "disease",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q24",
+    "query": "hepatocellular carcinoma scRNA-seq",
+    "expected_constraints": {
+      "disease": "hepatocellular carcinoma",
+      "organism": "Homo sapiens"
+    },
+    "expected_gse": [
+      "GSE278074",
+      "GSE237425",
+      "GSE320155"
+    ],
+    "category": "disease",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q25",
+    "query": "ovarian cancer single-cell sequencing",
+    "expected_constraints": {
+      "disease": "ovarian cancer",
+      "organism": "Homo sapiens"
+    },
+    "expected_gse": [
+      "GSE274905",
+      "GSE211956",
+      "GSE132149"
+    ],
+    "category": "disease",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q26",
+    "query": "prostate cancer scRNA-seq",
+    "expected_constraints": {
+      "disease": "prostate cancer",
+      "organism": "Homo sapiens"
+    },
+    "expected_gse": [
+      "GSE145825",
+      "GSE292194",
+      "GSE145844"
+    ],
+    "category": "disease",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q27",
+    "query": "COVID-19 single-cell transcriptomics",
+    "expected_constraints": {
+      "disease": "COVID-19",
+      "organism": "Homo sapiens"
+    },
+    "expected_gse": [
+      "GSE212584",
+      "GSE171052",
+      "GSE164948"
+    ],
+    "category": "disease",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q28",
+    "query": "Alzheimer disease single-cell RNA-seq",
+    "expected_constraints": {
+      "disease": "Alzheimer disease"
+    },
+    "expected_gse": [
+      "GSE233208",
+      "GSE189226",
+      "GSE164674"
+    ],
+    "category": "disease",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q29",
+    "query": "liver fibrosis single-cell analysis",
+    "expected_constraints": {
+      "disease": "liver fibrosis"
+    },
+    "expected_gse": [
+      "GSE281196",
+      "GSE300029",
+      "GSE154883"
+    ],
+    "category": "disease",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q30",
+    "query": "kidney disease scRNA-seq",
+    "expected_constraints": {
+      "disease": "kidney disease"
+    },
+    "expected_gse": [
+      "GSE193512",
+      "GSE315877",
+      "GSE167747"
+    ],
+    "category": "disease",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q31",
+    "query": "inflammatory bowel disease scRNA-seq",
+    "expected_constraints": {
+      "disease": "IBD"
+    },
+    "expected_gse": [
+      "GSE302696",
+      "GSE269703",
+      "GSE302709"
+    ],
+    "category": "disease",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q32",
+    "query": "T cell single-cell RNA-seq",
+    "expected_constraints": {
+      "cell_type": "t cell"
+    },
+    "expected_gse": [
+      "GSE302846",
+      "GSE254282",
+      "GSE205551"
+    ],
+    "category": "cell_type",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q33",
+    "query": "macrophage scRNA-seq",
+    "expected_constraints": {
+      "cell_type": "macrophage"
+    },
+    "expected_gse": [
+      "GSE264739",
+      "GSE302846",
+      "GSE193593"
+    ],
+    "category": "cell_type",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q34",
+    "query": "microglia single-cell transcriptomics",
+    "expected_constraints": {
+      "cell_type": "microglia"
+    },
+    "expected_gse": [
+      "GSE319238",
+      "GSE147903",
+      "GSE312664"
+    ],
+    "category": "cell_type",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q35",
+    "query": "epithelial cell scRNA-seq",
+    "expected_constraints": {
+      "cell_type": "epithelial"
+    },
+    "expected_gse": [
+      "GSE203612",
+      "GSE277533",
+      "GSE290273"
+    ],
+    "category": "cell_type",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q36",
+    "query": "fibroblast single-cell RNA-seq",
+    "expected_constraints": {
+      "cell_type": "fibroblast"
+    },
+    "expected_gse": [
+      "GSE231535",
+      "GSE269054",
+      "GSE284230"
+    ],
+    "category": "cell_type",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q37",
+    "query": "dendritic cell scRNA-seq",
+    "expected_constraints": {
+      "cell_type": "dendritic"
+    },
+    "expected_gse": [
+      "GSE285060",
+      "GSE193593",
+      "GSE312479"
+    ],
+    "category": "cell_type",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q38",
+    "query": "natural killer cell single-cell sequencing",
+    "expected_constraints": {
+      "cell_type": "natural killer"
+    },
+    "expected_gse": [
+      "GSE317004",
+      "GSE292828",
+      "GSE266970"
+    ],
+    "category": "cell_type",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q39",
+    "query": "stem cell single-cell RNA-seq",
+    "expected_constraints": {
+      "cell_type": "stem cell"
+    },
+    "expected_gse": [
+      "GSE309829",
+      "GSE235582",
+      "GSE254917"
+    ],
+    "category": "cell_type",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q40",
+    "query": "endothelial cell scRNA-seq",
+    "expected_constraints": {
+      "cell_type": "endothelial"
+    },
+    "expected_gse": [
+      "GSE216544",
+      "GSE266988",
+      "GSE147903"
+    ],
+    "category": "cell_type",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q41",
+    "query": "B cell single-cell sequencing",
+    "expected_constraints": {
+      "cell_type": "b cell"
+    },
+    "expected_gse": [
+      "GSE253955",
+      "GSE241135",
+      "GSE305877"
+    ],
+    "category": "cell_type",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q42",
+    "query": "astrocyte single-cell RNA-seq",
+    "expected_constraints": {
+      "cell_type": "astrocyte"
+    },
+    "expected_gse": [
+      "GSE161132",
+      "GSE144626",
+      "GSE212606"
+    ],
+    "category": "cell_type",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q43",
+    "query": "neutrophil scRNA-seq",
+    "expected_constraints": {
+      "cell_type": "neutrophil"
+    },
+    "expected_gse": [
+      "GSE220913",
+      "GSE234902",
+      "GSE272922"
+    ],
+    "category": "cell_type",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q44",
+    "query": "human lung cancer T cell scRNA-seq",
+    "expected_constraints": {
+      "organism": "Homo sapiens"
+    },
+    "expected_gse": [
+      "GSE143423",
+      "GSE160244",
+      "GSE179994"
+    ],
+    "category": "multi_constraint",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q45",
+    "query": "mouse brain development single-cell RNA-seq",
+    "expected_constraints": {
+      "organism": "Mus musculus"
+    },
+    "expected_gse": [
+      "GSE146878",
+      "GSE270492",
+      "GSE189226"
+    ],
+    "category": "multi_constraint",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q46",
+    "query": "human liver cancer immune microenvironment scRNA-seq",
+    "expected_constraints": {
+      "organism": "Homo sapiens"
+    },
+    "expected_gse": [
+      "GSE237425",
+      "GSE261956",
+      "GSE249361"
+    ],
+    "category": "multi_constraint",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q47",
+    "query": "tumor-infiltrating lymphocytes single-cell RNA-seq",
+    "expected_constraints": {
+      "organism": "Homo sapiens"
+    },
+    "expected_gse": [
+      "GSE262381",
+      "GSE136610",
+      "GSE151537"
+    ],
+    "category": "multi_constraint",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q48",
+    "query": "human bone marrow hematopoiesis scRNA-seq",
+    "expected_constraints": {
+      "organism": "Homo sapiens"
+    },
+    "expected_gse": [
+      "GSE249005",
+      "GSE248810",
+      "GSE275038"
+    ],
+    "category": "multi_constraint",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q49",
+    "query": "mouse intestine development single-cell sequencing",
+    "expected_constraints": {
+      "organism": "Mus musculus"
+    },
+    "expected_gse": [
+      "GSE169351",
+      "GSE312479",
+      "GSE278268"
+    ],
+    "category": "multi_constraint",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q50",
+    "query": "human PBMC immune profiling scRNA-seq",
+    "expected_constraints": {
+      "organism": "Homo sapiens"
+    },
+    "expected_gse": [
+      "GSE267750",
+      "GSE164948",
+      "GSE297652"
+    ],
+    "category": "multi_constraint",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q51",
+    "query": "mouse tumor microenvironment scRNA-seq",
+    "expected_constraints": {
+      "organism": "Mus musculus"
+    },
+    "expected_gse": [
+      "GSE182236",
+      "GSE240148",
+      "GSE281159"
+    ],
+    "category": "multi_constraint",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q52",
+    "query": "human brain glioma immune cells scRNA-seq",
+    "expected_constraints": {
+      "organism": "Homo sapiens"
+    },
+    "expected_gse": [
+      "GSE263612",
+      "GSE275293",
+      "GSE143423"
+    ],
+    "category": "multi_constraint",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q53",
+    "query": "mouse lung fibrosis single-cell RNA-seq",
+    "expected_constraints": {
+      "organism": "Mus musculus"
+    },
+    "expected_gse": [
+      "GSE313672",
+      "GSE278419",
+      "GSE287528"
+    ],
+    "category": "multi_constraint",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q54",
+    "query": "What datasets study the tumor microenvironment in human cancers?",
+    "expected_constraints": {
+      "organism": "Homo sapiens"
+    },
+    "expected_gse": [
+      "GSE143423",
+      "GSE280312",
+      "GSE255107",
+      "GSE256136",
+      "GSE237425"
+    ],
+    "category": "natural_language",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q55",
+    "query": "Find single-cell studies of immune checkpoint therapy response",
+    "expected_constraints": {},
+    "expected_gse": [
+      "GSE193593",
+      "GSE235091",
+      "GSE253955",
+      "GSE313004",
+      "GSE263623"
+    ],
+    "category": "natural_language",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q56",
+    "query": "Studies of cell differentiation at single-cell level",
+    "expected_constraints": {},
+    "expected_gse": [
+      "GSE309829",
+      "GSE235582",
+      "GSE254917",
+      "GSE252235",
+      "GSE302846"
+    ],
+    "category": "natural_language",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q57",
+    "query": "Datasets profiling spatial gene expression in tissues",
+    "expected_constraints": {},
+    "expected_gse": [
+      "GSE309829",
+      "GSE235582",
+      "GSE285060",
+      "GSE203612",
+      "GSE305723"
+    ],
+    "category": "natural_language",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q58",
+    "query": "What scRNA-seq studies investigate drug resistance in cancer?",
+    "expected_constraints": {},
+    "expected_gse": [
+      "GSE160244",
+      "GSE250157",
+      "GSE203612",
+      "GSE299427",
+      "GSE134837"
+    ],
+    "category": "natural_language",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q59",
+    "query": "Find datasets studying cell-cell communication",
+    "expected_constraints": {},
+    "expected_gse": [
+      "GSE274701",
+      "GSE316096",
+      "GSE199999",
+      "GSE237425",
+      "GSE263612"
+    ],
+    "category": "natural_language",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q60",
+    "query": "Single-cell multi-omics datasets combining RNA and ATAC",
+    "expected_constraints": {},
+    "expected_gse": [
+      "GSE267255",
+      "GSE262151",
+      "GSE290273",
+      "GSE305723",
+      "GSE226108"
+    ],
+    "category": "natural_language",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q61",
+    "query": "Studies of clonal evolution using single-cell sequencing",
+    "expected_constraints": {},
+    "expected_gse": [
+      "GSE289611",
+      "GSE308272",
+      "GSE235325",
+      "GSE119045",
+      "GSE314596"
+    ],
+    "category": "natural_language",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q62",
+    "query": "snRNA-seq datasets",
+    "expected_constraints": {
+      "assay": "single-nucleus"
+    },
+    "expected_gse": [
+      "GSE245387",
+      "GSE322480",
+      "GSE140819"
+    ],
+    "category": "modality",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q63",
+    "query": "spatial transcriptomics datasets",
+    "expected_constraints": {
+      "assay": "spatial"
+    },
+    "expected_gse": [
+      "GSE323357",
+      "GSE296731",
+      "GSE312053"
+    ],
+    "category": "modality",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q64",
+    "query": "scATAC-seq datasets",
+    "expected_constraints": {
+      "assay": "atac-seq"
+    },
+    "expected_gse": [
+      "GSE235582",
+      "GSE279313",
+      "GSE240114"
+    ],
+    "category": "modality",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q65",
+    "query": "CITE-seq protein and RNA datasets",
+    "expected_constraints": {
+      "assay": "cite-seq"
+    },
+    "expected_gse": [
+      "GSE302846",
+      "GSE262381",
+      "GSE317004"
+    ],
+    "category": "modality",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q66",
+    "query": "zebrafish single-cell RNA-seq",
+    "expected_constraints": {},
+    "expected_gse": [
+      "GSE192947",
+      "GSE290550",
+      "GSE166052"
+    ],
+    "category": "organism",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q67",
+    "query": "rat single-cell RNA-seq",
+    "expected_constraints": {},
+    "expected_gse": [
+      "GSE309829",
+      "GSE235582",
+      "GSE254917"
+    ],
+    "category": "organism",
+    "difficulty": "easy"
+  }
+]

@@ -1,0 +1,194 @@
+2026-03-22 08:54:30,557 [05b_bench_ctx_mgmt] INFO: Testing 15 queries with 6 strategy categories
+2026-03-22 08:54:30,557 [05b_bench_ctx_mgmt] INFO: Model: qwen2.5-1.5b, default k=5, format=structured
+2026-03-22 08:54:30,557 [05b_bench_ctx_mgmt] INFO: Strategy A: Field-Level Chunking
+2026-03-22 08:54:30,557 [05b_bench_ctx_mgmt] INFO:   Chunking: doc_level
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] INFO:   Chunking: header+metadata
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] INFO:   Chunking: header+summary
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] INFO:   Chunking: all_chunks
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,527 [05b_bench_ctx_mgmt] WARNING:     Failed: 'list' object has no attribute 'get'
+2026-03-22 08:54:55,528 [scmetaintel.evaluate] INFO: Results saved to /home/zeyufu/Desktop/scMetaIntel-Hub/benchmarks/results/context_management_bench.json
+2026-03-22 08:54:55,528 [05b_bench_ctx_mgmt] INFO: Strategy B: Context Compression
+2026-03-22 08:54:55,528 [05b_bench_ctx_mgmt] INFO:   Compression: no_compression
+2026-03-22 08:55:19,629 [05b_bench_ctx_mgmt] INFO:   Compression: compressed_500tok
+2026-03-22 08:56:00,837 [05b_bench_ctx_mgmt] INFO:   Compression: compressed_200tok
+2026-03-22 08:56:35,694 [scmetaintel.evaluate] INFO: Results saved to /home/zeyufu/Desktop/scMetaIntel-Hub/benchmarks/results/context_management_bench.json
+2026-03-22 08:56:35,694 [05b_bench_ctx_mgmt] INFO: Strategy C: Context Ordering
+2026-03-22 08:56:36,066 [05b_bench_ctx_mgmt] INFO:   Ordering: relevance_first
+2026-03-22 08:57:03,642 [05b_bench_ctx_mgmt] INFO:   Ordering: mmr_diverse
+2026-03-22 08:57:05,669 [torchao] WARNING: Skipping import of cpp extensions due to incompatible torch version 2.9.0+cu130 for torchao version 0.16.0             Please see https://github.com/pytorch/ao/issues/2919 for more info
+2026-03-22 08:57:05,896 [datasets] INFO: JAX version 0.8.0 available.
+2026-03-22 08:57:06,468 [httpx] INFO: HTTP Request: HEAD https://huggingface.co/BAAI/bge-m3/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-22 08:57:06,584 [httpx] INFO: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/BAAI/bge-m3/5617a9f61b028005a4858fdac845db406aefb181/config.json "HTTP/1.1 200 OK"
+2026-03-22 08:57:06,852 [httpx] INFO: HTTP Request: HEAD https://huggingface.co/BAAI/bge-m3/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-03-22 08:57:06,852 [huggingface_hub.utils._http] WARNING: Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-03-22 08:57:06,956 [httpx] INFO: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/BAAI/bge-m3/5617a9f61b028005a4858fdac845db406aefb181/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-03-22 08:57:07,230 [httpx] INFO: HTTP Request: GET https://huggingface.co/api/models/BAAI/bge-m3/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-03-22 08:57:07,530 [httpx] INFO: HTTP Request: GET https://huggingface.co/api/models/BAAI/bge-m3/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-03-22 08:57:09,270 [httpx] INFO: HTTP Request: GET https://huggingface.co/api/models/BAAI/bge-m3 "HTTP/1.1 200 OK"
+2026-03-22 08:57:09,540 [httpx] INFO: HTTP Request: GET https://huggingface.co/api/models/BAAI/bge-m3/revision/main "HTTP/1.1 200 OK"
+
+Fetching 30 files:   0%|          | 0/30 [00:00<?, ?it/s]
+Fetching 30 files: 100%|██████████| 30/30 [00:00<00:00, 4219.90it/s]
+
+Loading weights:   0%|          | 0/391 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 391/391 [00:00<00:00, 79153.09it/s]
+2026-03-22 08:57:09,668 [FlagEmbedding.finetune.embedder.encoder_only.m3.runner] INFO: loading existing colbert_linear and sparse_linear---------
+2026-03-22 08:57:09,681 [scmetaintel.embed] INFO: Loaded embedding model: BAAI/bge-m3
+2026-03-22 08:57:31,637 [05b_bench_ctx_mgmt] INFO:   Ordering: recency_first
+2026-03-22 08:57:50,730 [scmetaintel.evaluate] INFO: Results saved to /home/zeyufu/Desktop/scMetaIntel-Hub/benchmarks/results/context_management_bench.json
+2026-03-22 08:57:50,730 [05b_bench_ctx_mgmt] INFO: Strategy D: Ontology Query Expansion
+2026-03-22 08:57:50,935 [scmetaintel.ontology] WARNING: pronto failed for /home/zeyufu/Desktop/scMetaIntel-Hub/ontologies/cl.obo: expected EOL, QuotedString, RFC3987_IriPctEncoded, or RFC3987_IriUCSChar (cl.obo, line 201522). Using simple parser.
+2026-03-22 08:57:50,987 [scmetaintel.ontology] INFO: Loaded CL: 3688 terms
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-equivalent: AEO` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-equivalent: BILA` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-equivalent: BSPO` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-equivalent: CARO` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-equivalent: GO` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-equivalent: OG` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-equivalent: VSAO` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-is_a: BFO` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-is_a: VHOG` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-has-subclass: EHDAA` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-has-subclass: EV` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-has-subclass: NCIT` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-has-subclass: OGES` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-has-subclass: SCTID` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-reverse-genus-differentia: AAO part_of NCBITaxon:8292` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-reverse-genus-differentia: DHBA part_of NCBITaxon:9606` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-reverse-genus-differentia: EHDAA2 part_of NCBITaxon:9606` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-reverse-genus-differentia: EMAPA part_of NCBITaxon:10090` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-reverse-genus-differentia: FBdv part_of NCBITaxon:7227` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-reverse-genus-differentia: FMA part_of NCBITaxon:9606` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-reverse-genus-differentia: HAO part_of NCBITaxon:7399` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-reverse-genus-differentia: HBA part_of NCBITaxon:9606` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-reverse-genus-differentia: KUPO part_of NCBITaxon:9606` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-reverse-genus-differentia: MA part_of NCBITaxon:10090` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-reverse-genus-differentia: MFO part_of NCBITaxon:8089` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-reverse-genus-differentia: PBA part_of NCBITaxon:9443` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-reverse-genus-differentia: SPD part_of NCBITaxon:6893` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-reverse-genus-differentia: TADS part_of NCBITaxon:6939` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-reverse-genus-differentia: TAO part_of NCBITaxon:32443` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-reverse-genus-differentia: TGMA part_of NCBITaxon:44484` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-reverse-genus-differentia: WBbt part_of NCBITaxon:6237` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-reverse-genus-differentia: WBls part_of NCBITaxon:6237` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-reverse-genus-differentia: XAO part_of NCBITaxon:8353` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-reverse-genus-differentia: ZFA part_of NCBITaxon:7954` macro
+  process_clause_header(clause, metadata, self.ont)
+/home/zeyufu/miniconda3/envs/dl/lib/python3.13/site-packages/pronto/parsers/_fastobo.py:49: NotImplementedWarning: cannot process `treat-xrefs-as-reverse-genus-differentia: ZFS part_of NCBITaxon:7954` macro
+  process_clause_header(clause, metadata, self.ont)
+2026-03-22 08:57:51,094 [scmetaintel.ontology] WARNING: pronto failed for /home/zeyufu/Desktop/scMetaIntel-Hub/ontologies/uberon-basic.obo: expected EOL, QuotedString, RFC3987_IriPctEncoded, or RFC3987_IriUCSChar (uberon-basic.obo, line 161914). Using simple parser.
+2026-03-22 08:57:51,198 [scmetaintel.ontology] INFO: Loaded UBERON: 14675 terms
+/home/zeyufu/Desktop/scMetaIntel-Hub/scmetaintel/ontology.py:156: UnicodeWarning: unsound encoding, assuming utf-8 (99% confidence)
+  ont = pronto.Ontology(obo_path)
+2026-03-22 08:57:54,990 [scmetaintel.ontology] INFO: Loaded MONDO: 30538 terms
+2026-03-22 08:57:55,075 [05b_bench_ctx_mgmt] INFO:   Loaded ontologies: ['CL', 'UBERON', 'MONDO']
+2026-03-22 08:57:55,075 [05b_bench_ctx_mgmt] INFO:   Expansion: no_expansion
+2026-03-22 08:58:18,974 [05b_bench_ctx_mgmt] INFO:   Expansion: ontology_synonyms
+2026-03-22 08:58:41,244 [scmetaintel.evaluate] INFO: Results saved to /home/zeyufu/Desktop/scMetaIntel-Hub/benchmarks/results/context_management_bench.json
+2026-03-22 08:58:41,244 [05b_bench_ctx_mgmt] INFO: Strategy E: Token Budget Allocation
+2026-03-22 08:58:41,244 [05b_bench_ctx_mgmt] INFO:   Budget: no_budget
+2026-03-22 08:59:10,914 [05b_bench_ctx_mgmt] INFO:   Budget: budget_2000
+2026-03-22 08:59:40,034 [05b_bench_ctx_mgmt] INFO:   Budget: budget_4000
+2026-03-22 09:00:08,143 [05b_bench_ctx_mgmt] INFO:   Budget: budget_8000
+2026-03-22 09:00:28,955 [scmetaintel.evaluate] INFO: Results saved to /home/zeyufu/Desktop/scMetaIntel-Hub/benchmarks/results/context_management_bench.json
+2026-03-22 09:00:28,955 [05b_bench_ctx_mgmt] INFO: Strategy F: Multi-Step Retrieval
+2026-03-22 09:00:28,955 [05b_bench_ctx_mgmt] INFO:   Multi-step: single_pass
+2026-03-22 09:00:52,057 [05b_bench_ctx_mgmt] INFO:   Multi-step: two_step_refine
+2026-03-22 09:01:09,028 [scmetaintel.evaluate] INFO: Results saved to /home/zeyufu/Desktop/scMetaIntel-Hub/benchmarks/results/context_management_bench.json
+2026-03-22 09:01:09,028 [05b_bench_ctx_mgmt] INFO: Context management benchmark complete. 225 total results.
+2026-03-22 09:01:09,028 [05b_bench_ctx_mgmt] INFO: 
+=== SUMMARY ===
+2026-03-22 09:01:09,028 [05b_bench_ctx_mgmt] INFO:   budget_budget_2000                       | precision=0.539 recall=0.711 grounding=1.000 ctx_tok=580 ms=1941
+2026-03-22 09:01:09,028 [05b_bench_ctx_mgmt] INFO:   budget_budget_4000                       | precision=0.539 recall=0.733 grounding=1.000 ctx_tok=580 ms=1874
+2026-03-22 09:01:09,028 [05b_bench_ctx_mgmt] INFO:   budget_budget_8000                       | precision=0.660 recall=0.578 grounding=1.000 ctx_tok=580 ms=1387
+2026-03-22 09:01:09,028 [05b_bench_ctx_mgmt] INFO:   budget_no_budget                         | precision=0.477 recall=0.600 grounding=1.000 ctx_tok=580 ms=1978
+2026-03-22 09:01:09,028 [05b_bench_ctx_mgmt] INFO:   chunking_doc_level                       | precision=0.623 recall=0.800 grounding=1.000 ctx_tok=318 ms=1665
+2026-03-22 09:01:09,028 [05b_bench_ctx_mgmt] INFO:   compression_compressed_200tok            | precision=0.684 recall=0.867 grounding=1.000 ctx_tok=293 ms=1567
+2026-03-22 09:01:09,028 [05b_bench_ctx_mgmt] INFO:   compression_compressed_500tok            | precision=0.676 recall=0.845 grounding=1.000 ctx_tok=403 ms=1707
+2026-03-22 09:01:09,028 [05b_bench_ctx_mgmt] INFO:   compression_no_compression               | precision=0.707 recall=0.822 grounding=1.000 ctx_tok=318 ms=1607
+2026-03-22 09:01:09,028 [05b_bench_ctx_mgmt] INFO:   expansion_no_expansion                   | precision=0.651 recall=0.756 grounding=1.000 ctx_tok=318 ms=1593
+2026-03-22 09:01:09,028 [05b_bench_ctx_mgmt] INFO:   expansion_ontology_synonyms              | precision=0.747 recall=0.533 grounding=0.867 ctx_tok=318 ms=1221
+2026-03-22 09:01:09,028 [05b_bench_ctx_mgmt] INFO:   multistep_single_pass                    | precision=0.737 recall=0.711 grounding=1.000 ctx_tok=318 ms=1540
+2026-03-22 09:01:09,028 [05b_bench_ctx_mgmt] INFO:   multistep_two_step_refine                | precision=0.873 recall=0.644 grounding=1.000 ctx_tok=318 ms=1023
+2026-03-22 09:01:09,028 [05b_bench_ctx_mgmt] INFO:   ordering_mmr_diverse                     | precision=0.667 recall=0.689 grounding=0.978 ctx_tok=318 ms=1254
+2026-03-22 09:01:09,028 [05b_bench_ctx_mgmt] INFO:   ordering_recency_first                   | precision=0.733 recall=0.644 grounding=1.000 ctx_tok=318 ms=1224
+2026-03-22 09:01:09,028 [05b_bench_ctx_mgmt] INFO:   ordering_relevance_first                 | precision=0.697 recall=0.844 grounding=1.000 ctx_tok=318 ms=1838
+

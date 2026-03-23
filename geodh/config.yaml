@@ -1,0 +1,69 @@
+# ============================================================
+# GEO-DataHub Configuration
+# ============================================================
+# Edit this file to specify your search criteria and preferences.
+
+search:
+  # Main search query - use GEO search syntax
+  # Examples:
+  #   "single cell RNA-seq lung cancer human"
+  #   "scRNA-seq AND (pancreas OR liver) AND Homo sapiens"
+  #   "10x genomics single cell breast cancer"
+  query: "single cell RNA-seq human"
+
+  # Organism filter (optional, leave empty for no filter)
+  organism: "Homo sapiens"
+
+  # GEO dataset type filter (optional)
+  # Common values:
+  #   "Expression profiling by high throughput sequencing"
+  #   "Genome binding/occupancy profiling by high throughput sequencing"  (ATAC-seq/ChIP-seq)
+  dataset_type: "Expression profiling by high throughput sequencing"
+
+  # Maximum number of search results to return
+  max_results: 20
+
+  # Minimum number of samples in a series
+  min_samples: 1
+
+download:
+  # Directory where raw files will be downloaded
+  output_dir: "./downloads"
+
+  # Specific GSE accessions to download (leave empty to download all search results)
+  # Example: ["GSE123456", "GSE789012"]
+  selected_gse: []
+
+  # Maximum file size in GB (skip files larger than this)
+  max_file_size_gb: 5.0
+
+  # Whether to download SOFT metadata
+  download_metadata: true
+
+  # Number of retry attempts for failed downloads
+  max_retries: 3
+
+  # Timeout per file download in seconds
+  timeout: 600
+
+convert:
+  # Input directory (should match download output_dir)
+  input_dir: "./downloads"
+
+  # Output directory for .h5ad files
+  output_dir: "./h5ad_output"
+
+  # Quality control parameters (only applied if apply_qc is true)
+  apply_qc: false
+  min_genes: 200          # Minimum genes per cell
+  min_cells: 3            # Minimum cells per gene
+  max_mito_pct: 20        # Maximum mitochondrial gene percentage
+
+  # Whether to merge multiple samples from the same GSE into one h5ad
+  merge_samples: false
+
+logging:
+  # Log directory
+  log_dir: "./logs"
+  # Log level: DEBUG, INFO, WARNING, ERROR
+  level: "INFO"

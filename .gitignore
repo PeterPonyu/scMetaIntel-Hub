@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual env
+venv/
+.venv/
+
+# Data artifacts
+ontologies/*.obo
+ontologies/*.owl
+enriched_metadata/*.json
+qdrant_data/
+data/downloads/
+data/h5ad_output/
+benchmarks/ground_truth/*.json
+benchmarks/results/*.json
+reports/*.json
+logs/
+
+# IDE
+.vscode/
+.idea/
+
+# Fine-tuning data & compiled caches
+benchmarks/finetuned/llm_data/*.jsonl
+unsloth_compiled_cache/
+
+# Claude Code agent state
+.claude/
+
+# Local env
+.env
