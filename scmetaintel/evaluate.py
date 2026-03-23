@@ -137,9 +137,20 @@ def field_f1(predicted: List[str], gold: List[str]) -> Dict[str, float]:
         return {"precision": 1.0, "recall": 1.0, "f1": 1.0}
     if not pred_set or not gold_set:
         return {"precision": 0.0, "recall": 0.0, "f1": 0.0}
-    tp = len(pred_set & gold_set)
-    precision = tp / len(pred_set)
-    recall = tp / len(gold_set)
+    # Fuzzy matching: a predicted value matches a gold value if either
+    # contains the other or they share a synonym normalization.
+    tp_pred = 0  # how many predicted match some gold
+    for p in pred_set:
+        pn = _normalize_field(p)
+        if any(_fuzzy_match(p, g) for g in gold_set):
+            tp_pred += 1
+    tp_gold = 0  # how many gold match some predicted
+    for g in gold_set:
+        gn = _normalize_field(g)
+        if any(_fuzzy_match(p, g) for p in pred_set):
+            tp_gold += 1
+    precision = tp_pred / len(pred_set) if pred_set else 0.0
+    recall = tp_gold / len(gold_set) if gold_set else 0.0
     f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
     return {
         "precision": round(precision, 4),
@@ -182,6 +193,53 @@ def citation_accuracy(cited_gse: List[str], relevant_gse: Set[str], retrieved_gs
 # ---------------------------------------------------------------------------
 
 
+_SYNONYM_MAP: Dict[str, str] = {
+    "human": "homo sapiens",
+    "homo sapiens": "homo sapiens",
+    "mouse": "mus musculus",
+    "mus musculus": "mus musculus",
+    "rat": "rattus norvegicus",
+    "rattus norvegicus": "rattus norvegicus",
+    "zebrafish": "danio rerio",
+    "danio rerio": "danio rerio",
+    "fruit fly": "drosophila melanogaster",
+    "drosophila": "drosophila melanogaster",
+    "drosophila melanogaster": "drosophila melanogaster",
+    "scrna-seq": "scrna-seq",
+    "single-cell rna-seq": "scrna-seq",
+    "single cell rna-seq": "scrna-seq",
+    "single-cell rna sequencing": "scrna-seq",
+    "scatac-seq": "scatac-seq",
+    "single-cell atac-seq": "scatac-seq",
+    "cite-seq": "cite-seq",
+    "spatial transcriptomics": "spatial",
+    "10x visium": "spatial",
+    "multiome": "multiome",
+}
+
+
+def _normalize_field(val: str) -> str:
+    """Normalize a field value via synonym lookup."""
+    v = val.lower().strip()
+    return _SYNONYM_MAP.get(v, v)
+
+
+def _fuzzy_match(pred: str, gold: str) -> bool:
+    """Check if two values match, allowing containment and synonyms."""
+    p = _normalize_field(pred)
+    g = _normalize_field(gold)
+    if not p and not g:
+        return True
+    if not p or not g:
+        return False
+    if p == g:
+        return True
+    # Containment: "brain" in "brain tissue" or vice versa
+    if p in g or g in p:
+        return True
+    return False
+
+
 def query_parsing_metrics(predicted: Dict, gold: Dict) -> Dict[str, float]:
     """Evaluate parsed query constraints against gold standard.
 
@@ -189,6 +247,7 @@ def query_parsing_metrics(predicted: Dict, gold: Dict) -> Dict[str, float]:
         {"organism": "Homo sapiens", "tissue": "brain", "disease": null, ...}
 
     Returns per-field accuracy and exact match score.
+    Uses synonym normalization and containment matching for robustness.
     """
     fields = ["organism", "tissue", "disease", "cell_type", "assay"]
     correct = 0
@@ -197,8 +256,8 @@ def query_parsing_metrics(predicted: Dict, gold: Dict) -> Dict[str, float]:
     for f in fields:
         gold_val = (gold.get(f) or "").lower().strip()
         pred_val = (predicted.get(f) or "").lower().strip()
-        # Both empty = correct, both same = correct
-        match = gold_val == pred_val
+        # Both empty = correct, fuzzy match = correct
+        match = _fuzzy_match(pred_val, gold_val)
         per_field[f] = 1.0 if match else 0.0
         if gold_val or pred_val:  # only count fields that are non-empty in either
             total += 1

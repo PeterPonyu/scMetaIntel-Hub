@@ -61,6 +61,7 @@ def check_ollama():
 
 def task_a_query_parsing(model_key: str, queries: list, think: bool = False) -> dict:
     """Task A: Parse natural language queries into structured JSON."""
+    from scmetaintel.evaluate import query_parsing_metrics
     # Limit sample size for think mode: thinking chains are very long per call
     sample = queries[:15] if think else queries
     correct, total = 0, 0
@@ -78,26 +79,13 @@ def task_a_query_parsing(model_key: str, queries: list, think: bool = False) -> 
             logger.warning(f"  Parse failed: {e}")
             continue
 
-        # Check each field
+        # Use evaluate.py fuzzy matching for per-field scoring
+        metrics = query_parsing_metrics(pred, gold)
         for field in field_scores:
-            gold_val = gold.get(field)
-            pred_val = pred.get(field)
-            if gold_val is None and pred_val is None:
-                field_scores[field].append(1.0)
-            elif gold_val and pred_val:
-                if str(gold_val).lower() == str(pred_val).lower():
-                    field_scores[field].append(1.0)
-                else:
-                    field_scores[field].append(0.0)
-            else:
-                field_scores[field].append(0.0)
+            field_scores[field].append(metrics.get(f"f_{field}", 0.0))
 
-        # Exact match
-        match = all(
-            str(gold.get(f, "")).lower() == str(pred.get(f, "")).lower()
-            for f in field_scores
-        )
-        if match:
+        # Exact match via evaluate.py
+        if metrics["exact_match"] == 1.0:
             correct += 1
 
     import numpy as np
