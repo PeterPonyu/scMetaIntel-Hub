@@ -67,11 +67,11 @@ FINETUNE_CANDIDATES = {
     },
     "qwen3.5-9b": {
         "hf_name": "Qwen/Qwen3.5-9B",
-        "vram_4bit_gb": 5.5,
+        "vram_4bit_gb": 22.9,  # WARNING: multi-modal (Qwen3_5ForConditionalGeneration)
         "family": "qwen",
-        "tier": "primary",
+        "tier": "skip",  # NOT suitable: vision encoder eats all VRAM
         "recommended": False,
-        "note": "Latest Qwen3.5 architecture, native thinking mode.",
+        "note": "MULTI-MODAL model — vision encoder uses ~23 GB 4-bit. OOMs on 24 GB GPU. Use qwen3-8b instead.",
     },
     "qwen2.5-7b": {
         "hf_name": "Qwen/Qwen2.5-7B-Instruct",
@@ -146,7 +146,8 @@ TRAINING_CONFIG = {
     "warmup_ratio": 0.05,
     "weight_decay": 0.01,
     "max_seq_length": 2048,
-    "fp16": True,
+    "fp16": False,
+    "bf16": True,
     "logging_steps": 10,
     "save_strategy": "epoch",
     "seed": 42,
@@ -362,7 +363,16 @@ def prepare_llm_training_data() -> Path:
         constraints = q.get("expected_constraints", {})
         if not constraints:
             continue
-        output = json.dumps(constraints, indent=2)
+        # Fill all 6 fields — use null for unmentioned (matches system prompt)
+        full_constraints = {
+            "organism": constraints.get("organism") or None,
+            "tissue": constraints.get("tissue") or None,
+            "disease": constraints.get("disease") or None,
+            "cell_type": constraints.get("cell_type") or None,
+            "assay": constraints.get("assay") or None,
+            "free_text": constraints.get("free_text") or q["query"],
+        }
+        output = json.dumps(full_constraints, indent=2)
         conversations.append({
             "messages": [
                 {"role": "system", "content": PARSE_SYSTEM},
@@ -373,6 +383,11 @@ def prepare_llm_training_data() -> Path:
         })
 
     # --- Task B: Metadata extraction (from GSE ground truth) ---
+    # Human cell line keywords for organism validation
+    _HUMAN_KEYWORDS = {"hek293", "k562", "hela", "jurkat", "u937", "thp-1",
+                       "a549", "mcf7", "human", "patient", "homo sapiens"}
+    _TISSUE_BLOCKLIST = {"bacterial culture", "unknown", "n/a", "na", "none"}
+
     for gse_id, d in docs.items():
         title = d.get("title", "")
         summary = d.get("summary", "")
@@ -387,6 +402,17 @@ def prepare_llm_training_data() -> Path:
             "modalities": d.get("modalities", []) or [],
             "organism": d.get("organism", ""),
         }
+
+        # Validate organism: if title/summary mentions human cell lines but
+        # gold says mouse, fix it
+        text_lower = (title + " " + summary).lower()
+        if gold["organism"].lower() in ("mus musculus", "mouse"):
+            if any(kw in text_lower for kw in _HUMAN_KEYWORDS):
+                gold["organism"] = "Homo sapiens"
+
+        # Filter out invalid tissue terms
+        gold["tissues"] = [t for t in gold["tissues"]
+                           if t and t.lower().strip() not in _TISSUE_BLOCKLIST]
 
         # Use domain as disease hint when diseases list is empty
         domain = d.get("domain", "")
@@ -568,6 +594,43 @@ def prepare_llm_training_data() -> Path:
             "task": "ontology_normalization",
         })
 
+    # Add ontology negative examples (terms with no mapping)
+    all_ont_keys = set(cl_map) | set(uberon_map) | set(mondo_map)
+    for gse_id, d in docs.items():
+        cs = d.get("characteristics_summary", {})
+        if not isinstance(cs, dict):
+            continue
+        unmapped = []
+        for field in ("tissues", "cell_types", "diseases"):
+            terms = cs.get(field, []) or d.get(field, [])
+            for term in terms:
+                if not term or len(term) < 3:
+                    continue
+                if term.lower().strip() not in all_ont_keys:
+                    unmapped.append(term)
+        if not unmapped:
+            continue
+        # Build negative example: terms that can't be mapped
+        neg_items = []
+        for term in unmapped[:3]:  # limit to 3 per doc
+            neg_items.append({
+                "raw": term,
+                "ontology_id": None,
+                "ontology_label": None,
+                "confidence": 0.0,
+            })
+        user_text = f"Normalize these biomedical terms from {gse_id}:\n"
+        user_text += json.dumps([t["raw"] for t in neg_items])
+        output = json.dumps({"normalized": neg_items}, indent=2)
+        conversations.append({
+            "messages": [
+                {"role": "system", "content": ONTOLOGY_SYSTEM},
+                {"role": "user", "content": user_text},
+                {"role": "assistant", "content": output},
+            ],
+            "task": "ontology_normalization",
+        })
+
     # --- Task E: Relevance judgment (query + dataset pairs) ---
     all_gse_ids = list(docs.keys())
     for q in queries:
@@ -679,9 +742,11 @@ def prepare_llm_training_data() -> Path:
     return out_path
 
 
-def finetune_llm(base_model_key: str = "qwen3-8b",
+def finetune_llm(base_model_key: str = "qwen3.5-9b",
                  export_gguf: bool = False,
-                 prepare_only: bool = False) -> str:
+                 prepare_only: bool = False,
+                 task_filter: str | None = None,
+                 epochs: int | None = None) -> str:
     """
     Fine-tune an LLM with QLoRA via unsloth.
 
@@ -689,17 +754,48 @@ def finetune_llm(base_model_key: str = "qwen3-8b",
         base_model_key: Key from FINETUNE_CANDIDATES
         export_gguf: If True, export merged model to GGUF for Ollama
         prepare_only: If True, only prepare training data without training
+        task_filter: If set, only include SFT examples for this task
+        epochs: Override default epoch count
     """
     # Step 1: Prepare training data
     data_path = prepare_llm_training_data()
     if prepare_only:
         return str(data_path)
 
-    # Step 2: Load model via unsloth
+    # Step 2: Load model via unsloth (fully offline — use local HF cache)
+    import os
     candidate = FINETUNE_CANDIDATES[base_model_key]
-    hf_name = candidate["hf_name"]
-    logger.info(f"Loading {hf_name} via unsloth (4-bit)...")
 
+    # Reject multi-modal models (vision encoder consumes whole VRAM budget)
+    if candidate.get("tier") == "skip":
+        raise ValueError(
+            f"{base_model_key} is not suitable for text-only SFT: {candidate.get('note')}"
+        )
+
+    hf_name = candidate["hf_name"]
+
+    # Resolve local snapshot path to avoid any network check
+    hf_cache = os.path.expanduser("~/.cache/huggingface/hub")
+    cache_model_dir = os.path.join(hf_cache, "models--" + hf_name.replace("/", "--"), "snapshots")
+    if os.path.isdir(cache_model_dir):
+        snapshots = sorted(os.listdir(cache_model_dir))
+        if snapshots:
+            local_path = os.path.join(cache_model_dir, snapshots[-1])
+            logger.info(f"Using local model path: {local_path}")
+            hf_name = local_path
+        else:
+            raise FileNotFoundError(f"No snapshots found in {cache_model_dir}")
+    else:
+        raise FileNotFoundError(
+            f"Model '{candidate['hf_name']}' not found in HF cache at {cache_model_dir}. "
+            "Download it first with: huggingface-cli download " + candidate["hf_name"]
+        )
+
+    # Prevent any network calls during model load
+    os.environ["HF_HUB_OFFLINE"] = "1"
+    os.environ["TRANSFORMERS_OFFLINE"] = "1"
+
+    logger.info(f"Loading {base_model_key} via unsloth (4-bit, offline)...")
     from unsloth import FastLanguageModel
     import torch
 
@@ -727,7 +823,22 @@ def finetune_llm(base_model_key: str = "qwen3-8b",
     from datasets import load_dataset
 
     dataset = load_dataset("json", data_files=str(data_path), split="train")
+
+    # Filter by task if requested
+    if task_filter:
+        dataset = dataset.filter(lambda x: x["task"] == task_filter)
+        logger.info(f"Filtered to {len(dataset)} {task_filter} examples")
+
     logger.info(f"Loaded {len(dataset)} training examples")
+
+    # Load validation set
+    val_path = Path(data_path).parent / "sft_val.jsonl"
+    val_dataset = None
+    if val_path.exists():
+        val_dataset = load_dataset("json", data_files=str(val_path), split="train")
+        if task_filter:
+            val_dataset = val_dataset.filter(lambda x: x["task"] == task_filter)
+        logger.info(f"Loaded {len(val_dataset)} validation examples")
 
     # Format into chat template
     def format_chat(example):
@@ -738,33 +849,42 @@ def finetune_llm(base_model_key: str = "qwen3-8b",
         return {"text": text}
 
     dataset = dataset.map(format_chat, remove_columns=dataset.column_names)
+    if val_dataset is not None:
+        val_dataset = val_dataset.map(format_chat, remove_columns=val_dataset.column_names)
 
     # Step 5: Train with SFTTrainer
     from trl import SFTTrainer
     from transformers import TrainingArguments
 
+    num_epochs = epochs if epochs is not None else TRAINING_CONFIG["num_train_epochs"]
     output_dir = str(FINETUNE_DIR / f"{base_model_key}-scmetaintel-ft")
     Path(output_dir).mkdir(parents=True, exist_ok=True)
+
+    training_args = TrainingArguments(
+        output_dir=output_dir,
+        per_device_train_batch_size=TRAINING_CONFIG["per_device_train_batch_size"],
+        gradient_accumulation_steps=TRAINING_CONFIG["gradient_accumulation_steps"],
+        num_train_epochs=num_epochs,
+        learning_rate=TRAINING_CONFIG["learning_rate"],
+        lr_scheduler_type=TRAINING_CONFIG["lr_scheduler_type"],
+        warmup_ratio=TRAINING_CONFIG["warmup_ratio"],
+        weight_decay=TRAINING_CONFIG["weight_decay"],
+        fp16=TRAINING_CONFIG["fp16"],
+        bf16=TRAINING_CONFIG.get("bf16", False),
+        logging_steps=TRAINING_CONFIG["logging_steps"],
+        save_strategy=TRAINING_CONFIG["save_strategy"],
+        seed=TRAINING_CONFIG["seed"],
+        report_to="none",
+    )
+    if val_dataset is not None:
+        training_args.eval_strategy = "epoch"
 
     trainer = SFTTrainer(
         model=model,
         tokenizer=tokenizer,
         train_dataset=dataset,
-        args=TrainingArguments(
-            output_dir=output_dir,
-            per_device_train_batch_size=TRAINING_CONFIG["per_device_train_batch_size"],
-            gradient_accumulation_steps=TRAINING_CONFIG["gradient_accumulation_steps"],
-            num_train_epochs=TRAINING_CONFIG["num_train_epochs"],
-            learning_rate=TRAINING_CONFIG["learning_rate"],
-            lr_scheduler_type=TRAINING_CONFIG["lr_scheduler_type"],
-            warmup_ratio=TRAINING_CONFIG["warmup_ratio"],
-            weight_decay=TRAINING_CONFIG["weight_decay"],
-            fp16=TRAINING_CONFIG["fp16"],
-            logging_steps=TRAINING_CONFIG["logging_steps"],
-            save_strategy=TRAINING_CONFIG["save_strategy"],
-            seed=TRAINING_CONFIG["seed"],
-            report_to="none",
-        ),
+        eval_dataset=val_dataset,
+        args=training_args,
         max_seq_length=TRAINING_CONFIG["max_seq_length"],
         dataset_text_field="text",
         packing=True,
@@ -794,6 +914,31 @@ def finetune_llm(base_model_key: str = "qwen3-8b",
         )
         logger.info(f"GGUF exported to {gguf_dir}")
 
+        # Step 7b: Create Ollama model
+        import subprocess
+        gguf_files = list(Path(gguf_dir).glob("*.gguf"))
+        if gguf_files:
+            gguf_path = gguf_files[0]
+            modelfile_path = Path(output_dir) / "Modelfile"
+            ollama_name = f"scmetaintel-{base_model_key}"
+            with open(modelfile_path, "w") as mf:
+                mf.write(f"FROM {gguf_path.resolve()}\n")
+                mf.write("PARAMETER temperature 0.0\n")
+                mf.write("PARAMETER num_ctx 4096\n")
+            logger.info(f"Creating Ollama model: {ollama_name}")
+            try:
+                result = subprocess.run(
+                    ["ollama", "create", ollama_name, "-f", str(modelfile_path)],
+                    capture_output=True, text=True, timeout=600,
+                )
+                if result.returncode == 0:
+                    logger.info(f"Ollama model created: {ollama_name}")
+                else:
+                    logger.warning(f"Ollama create failed: {result.stderr}")
+            except FileNotFoundError:
+                logger.warning("ollama CLI not found — create model manually with:")
+                logger.warning(f"  ollama create {ollama_name} -f {modelfile_path}")
+
     # Save training metadata
     metadata = {
         "base_model": hf_name,
@@ -816,13 +961,20 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--task", choices=["embeddings", "reranker", "llm", "all"],
                         default="all")
-    parser.add_argument("--base-model", default="qwen3-8b",
+    parser.add_argument("--base-model", default="qwen3.5-9b",
                         choices=list(FINETUNE_CANDIDATES.keys()),
                         help="Base LLM for fine-tuning")
     parser.add_argument("--prepare-only", action="store_true",
                         help="Only prepare training data, skip training")
     parser.add_argument("--export-gguf", action="store_true",
                         help="Export fine-tuned model to GGUF for Ollama")
+    parser.add_argument("--task-filter", default=None,
+                        choices=["query_parsing", "metadata_extraction",
+                                 "ontology_normalization", "answer_generation",
+                                 "relevance_judgment"],
+                        help="Only train on examples from this task")
+    parser.add_argument("--epochs", type=int, default=None,
+                        help="Override default epoch count")
     args = parser.parse_args()
 
     results = {}
@@ -852,6 +1004,8 @@ def main():
                 base_model_key=args.base_model,
                 export_gguf=args.export_gguf,
                 prepare_only=args.prepare_only,
+                task_filter=args.task_filter,
+                epochs=args.epochs,
             )
             results["llm_ft"] = {"status": "done", "path": path}
         except Exception as e:

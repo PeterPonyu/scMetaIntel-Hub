@@ -452,6 +452,18 @@ LLM_MODELS: Dict[str, dict] = {
         "think": False,
         "note": "Purpose-built for RAG + grounded generation with citations.",
     },
+
+    # --- Fine-tuned models ---
+    "qwen3-8b-ft": {
+        "ollama_name": "scmetaintel-qwen3-8b:latest",
+        "size_b": 8,
+        "quant": "Q4_K_M",
+        "vram_gb": 5.2,
+        "ctx": 4096,
+        "family": "qwen",
+        "think": False,
+        "note": "Qwen3-8B fine-tuned on scMetaIntel multi-task SFT data.",
+    },
 }
 
 # Recommended frontier defaults (design intent)
