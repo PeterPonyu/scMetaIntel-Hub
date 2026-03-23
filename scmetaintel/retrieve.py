@@ -22,7 +22,7 @@ from qdrant_client.models import Filter, FieldCondition, MatchValue
 
 from .answer import parse_query as llm_parse_query
 from .config import QDRANT_COLLECTION, RERANKER_MODELS, get_config
-from .embed import Embedder, get_qdrant_client, resolve_load_name, search_dense
+from .embed import Embedder, get_qdrant_client, get_safe_device, resolve_load_name, search_dense
 from .models import CharacteristicsSummary, EnrichedStudy, ParsedQuery, SearchResult
 
 logger = logging.getLogger(__name__)
@@ -43,9 +43,9 @@ class Reranker:
         model_cfg = RERANKER_MODELS.get(self.model_key, {})
         # Respect per-model device override (e.g. "cpu" for Blackwell-incompatible models)
         if device is not None:
-            self.device = device
+            self.device = get_safe_device(device)
         else:
-            self.device = model_cfg.get("device", "cuda")
+            self.device = get_safe_device(model_cfg.get("device", "cuda"))
         self._model = None
         self._is_cross_encoder = False
 

@@ -243,9 +243,7 @@ RERANKER_MODELS: Dict[str, dict] = {
     "bge-reranker-v2-m3": {
         "name": "BAAI/bge-reranker-v2-m3",
         "vram_gb": 1.1,
-        "device": "cpu",
-        "disabled": True,
-        "note": "FlagReranker broken with transformers>=5.3 (prepare_for_model removed). Re-enable after fix.",
+        "note": "Loaded via CrossEncoder (FlagReranker bypassed). Works with transformers>=5.3.",
     },
     "bge-reranker-v2-gemma": {
         "name": "BAAI/bge-reranker-v2-gemma",

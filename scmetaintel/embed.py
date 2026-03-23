@@ -15,6 +15,47 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import numpy as np
+
+# ---------- FlagEmbedding compat shim for transformers >= 5.3 ----------
+# FlagEmbedding 1.3.x imports `is_torch_fx_available` which was removed in
+# transformers 5.3.  Inject a no-op stub so the import chain succeeds.
+import transformers.utils.import_utils as _tiu
+if not hasattr(_tiu, "is_torch_fx_available"):
+    _tiu.is_torch_fx_available = lambda: False
+# -----------------------------------------------------------------------
+
+
+def _cuda_really_works() -> bool:
+    """Return True only if CUDA tensors can actually be allocated."""
+    try:
+        import torch
+        if not torch.cuda.is_available():
+            return False
+        torch.randn(1, device="cuda")
+        return True
+    except Exception:
+        return False
+
+
+_CUDA_OK: bool | None = None
+
+
+def get_safe_device(requested: str) -> str:
+    """Return *requested* if it works, otherwise fall back to 'cpu'."""
+    global _CUDA_OK
+    if requested != "cuda":
+        return requested
+    if _CUDA_OK is None:
+        _CUDA_OK = _cuda_really_works()
+        if not _CUDA_OK:
+            logger.warning(
+                "CUDA requested but not functional (PyTorch arch mismatch?). "
+                "Falling back to CPU for HuggingFace models. "
+                "Use the 'dl' conda env for GPU acceleration."
+            )
+    return "cuda" if _CUDA_OK else "cpu"
+
+
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, FieldCondition, Filter, MatchValue, PayloadSchemaType, PointStruct, ScoredPoint, VectorParams
 
@@ -53,9 +94,9 @@ class Embedder:
         self.model_cfg = __import__("scmetaintel.config", fromlist=["EMBEDDING_MODELS"]).EMBEDDING_MODELS[self.model_key]
         # Respect per-model device override (e.g. "cpu" for Blackwell-incompatible BERT models)
         if device is not None:
-            self.device = device
+            self.device = get_safe_device(device)
         else:
-            self.device = self.model_cfg.get("device", "cuda")
+            self.device = get_safe_device(self.model_cfg.get("device", "cuda"))
         self._model = None
         self._is_flag = self.model_key == "bge-m3"
 
