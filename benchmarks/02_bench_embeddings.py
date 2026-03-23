@@ -278,12 +278,15 @@ def main():
             all_results[model_key] = results
             logger.info(f"  Results: {json.dumps(results, indent=2)[:500]}")
 
-            # Free memory
+            # Free memory aggressively between models
             del embedder
             gc.collect()
+            gc.collect()  # Second pass catches ref cycles
             try:
                 import torch
-                torch.cuda.empty_cache()
+                if torch.cuda.is_available():
+                    torch.cuda.synchronize()
+                    torch.cuda.empty_cache()
             except Exception:
                 pass
 
