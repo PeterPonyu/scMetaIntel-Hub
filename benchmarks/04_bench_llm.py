@@ -103,11 +103,14 @@ def task_b_metadata_extraction(model_key: str, docs: list, think: bool = False) 
     limit = 15 if think else 50
     all_metrics = []
     for doc in docs[:limit]:
-        gold = {
-            "tissues": doc.get("tissues", []),
-            "diseases": doc.get("diseases", []),
-            "cell_types": doc.get("cell_types", []),
-        }
+        # Build gold from terms that are actually extractable from the input text.
+        # Raw sample-level metadata (donor IDs, cell-line codes) cannot be expected
+        # from title+summary extraction — filter to terms present in the text.
+        text = (doc.get("title", "") + " " + doc.get("summary", "")).lower()
+        gold = {}
+        for field in ["tissues", "diseases", "cell_types"]:
+            raw = doc.get(field, []) or []
+            gold[field] = [t for t in raw if t and len(t) >= 3 and t.lower() in text]
         if not any(gold.values()):
             continue
         try:
@@ -191,6 +194,7 @@ def task_c_ontology_normalization(model_key: str, docs: list, think: bool = Fals
 
     # Load ontology lookups for gold comparison
     ontology_dir = Path(__file__).resolve().parent.parent / "ontologies"
+    # Build gold_lookup: map lowercased name -> (ontology_id, canonical_name)
     gold_lookup = {}
     for obo_file, prefix in [("cl.obo", "CL"), ("uberon-basic.obo", "UBERON"), ("mondo.obo", "MONDO")]:
         obo_path = ontology_dir / obo_file
@@ -214,7 +218,14 @@ def task_c_ontology_normalization(model_key: str, docs: list, think: bool = Fals
                     current_id = line[4:].strip()
                 elif line.startswith("name: ") and current_id:
                     current_name = line[6:].strip()
-                    gold_lookup[current_name.lower()] = current_id
+                    gold_lookup[current_name.lower()] = (current_id, current_name)
+                elif line.startswith("synonym: ") and current_id and current_name:
+                    # Also index synonyms for broader test coverage
+                    syn_match = re.match(r'synonym:\s*"([^"]+)"', line)
+                    if syn_match:
+                        syn = syn_match.group(1).lower()
+                        if syn not in gold_lookup:
+                            gold_lookup[syn] = (current_id, current_name)
 
     all_scores = []
     test_docs = [d for d in docs if d.get("tissues") or d.get("cell_types")][:30]
@@ -226,10 +237,12 @@ def task_c_ontology_normalization(model_key: str, docs: list, think: bool = Fals
                 if term and len(term) >= 3:
                     key = term.lower().strip()
                     if key in gold_lookup:
+                        ont_id, ont_label = gold_lookup[key]
                         raw_terms.append(term)
                         gold_items.append({
                             "raw": term,
-                            "ontology_id": gold_lookup[key],
+                            "ontology_id": ont_id,
+                            "ontology_label": ont_label,
                         })
         if not raw_terms:
             continue

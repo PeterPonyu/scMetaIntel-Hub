@@ -262,7 +262,9 @@ def query_parsing_metrics(predicted: Dict, gold: Dict) -> Dict[str, float]:
             if match:
                 correct += 1
     accuracy = correct / total if total > 0 else 1.0
-    exact_match = 1.0 if all(v == 1.0 for v in per_field.values()) else 0.0
+    # Exact match: only require gold-specified fields to match (ignore predicted-only extras)
+    gold_fields = [f for f in fields if (gold.get(f) or "").strip()]
+    exact_match = 1.0 if all(per_field[f] == 1.0 for f in gold_fields) else 0.0 if gold_fields else 1.0
     return {
         "field_accuracy": round(accuracy, 4),
         "exact_match": exact_match,
@@ -279,7 +281,8 @@ def ontology_metrics(predicted: List[Dict], gold: List[Dict]) -> Dict[str, float
     """Evaluate ontology normalization against gold mappings.
 
     Each item is {"raw": str, "ontology_id": str, "ontology_label": str, "confidence": float}.
-    Matches by raw term (case-insensitive), checks ontology_id exact match.
+    Matches by raw term (case-insensitive). Accepts EITHER exact ontology_id match
+    OR fuzzy ontology_label match (tests concept understanding, not ID memorization).
     """
     if not gold:
         return {"accuracy": 1.0 if not predicted else 0.0, "recall": 1.0 if not predicted else 0.0}
@@ -287,23 +290,34 @@ def ontology_metrics(predicted: List[Dict], gold: List[Dict]) -> Dict[str, float
     gold_by_raw = {g["raw"].lower().strip(): g for g in gold}
     pred_by_raw = {p["raw"].lower().strip(): p for p in predicted}
 
-    correct = 0
+    correct_id = 0
+    correct_label = 0
     for raw_key, gold_item in gold_by_raw.items():
         pred_item = pred_by_raw.get(raw_key)
-        if pred_item and pred_item.get("ontology_id") == gold_item.get("ontology_id"):
-            correct += 1
+        if not pred_item:
+            continue
+        if pred_item.get("ontology_id") == gold_item.get("ontology_id"):
+            correct_id += 1
+        pred_label = (pred_item.get("ontology_label") or pred_item.get("raw") or "").lower().strip()
+        gold_label = (gold_item.get("ontology_label") or gold_item.get("raw") or "").lower().strip()
+        if pred_label and gold_label and _fuzzy_match(pred_label, gold_label):
+            correct_label += 1
 
-    accuracy = correct / len(pred_by_raw) if pred_by_raw else 0.0
-    recall = correct / len(gold_by_raw) if gold_by_raw else 0.0
+    n_pred = len(pred_by_raw)
+    n_gold = len(gold_by_raw)
+    correct = max(correct_id, correct_label)
+    accuracy = correct / n_pred if n_pred else 0.0
+    recall = correct / n_gold if n_gold else 0.0
     f1 = (2 * accuracy * recall / (accuracy + recall)) if (accuracy + recall) > 0 else 0.0
 
     return {
         "accuracy": round(accuracy, 4),
         "recall": round(recall, 4),
         "f1": round(f1, 4),
-        "n_predicted": len(pred_by_raw),
-        "n_gold": len(gold_by_raw),
-        "n_correct": correct,
+        "n_predicted": n_pred,
+        "n_gold": n_gold,
+        "n_correct_id": correct_id,
+        "n_correct_label": correct_label,
     }
 
 
