@@ -59,6 +59,28 @@ def check_ollama():
         return []
 
 
+def unload_ollama_models():
+    """Unload all models from Ollama VRAM to free GPU memory between runs."""
+    import requests
+    try:
+        resp = requests.get("http://localhost:11434/api/ps", timeout=5)
+        loaded = resp.json().get("models", [])
+        for m in loaded:
+            name = m["name"]
+            logger.info(f"  Unloading {name} from VRAM ...")
+            requests.post(
+                "http://localhost:11434/api/generate",
+                json={"model": name, "keep_alive": 0},
+                timeout=30,
+            )
+        if loaded:
+            import time
+            time.sleep(2)  # brief pause for VRAM release
+            logger.info(f"  Unloaded {len(loaded)} model(s)")
+    except Exception as e:
+        logger.warning(f"  Failed to unload models: {e}")
+
+
 def task_a_query_parsing(model_key: str, queries: list, think: bool = False) -> dict:
     """Task A: Parse natural language queries into structured JSON."""
     from scmetaintel.evaluate import query_parsing_metrics
@@ -379,8 +401,27 @@ def main():
     logger.info(f"  Non-thinking: {[mk for mk in active if not LLM_MODELS[mk].get('think')]}")
     logger.info(f"Loaded {len(queries)} queries, {len(docs)} docs")
 
+    # Load existing results to support incremental runs (skip already-tested)
+    results_path = BENCHMARK_DIR / "results" / "llm_bench.json"
     all_results = {}
+    if results_path.exists():
+        with open(results_path) as f:
+            all_results = json.load(f)
+        logger.info(f"Loaded {len(all_results)} existing results from {results_path}")
+
+    prev_model_key = None
     for model_key, think_mode, run_label in runs:
+        # Skip if already benchmarked
+        if run_label in all_results and "error" not in str(all_results[run_label]):
+            logger.info(f"Skipping {run_label} (already in results)")
+            continue
+
+        # Unload previous model from VRAM before loading new one
+        if prev_model_key != model_key:
+            logger.info(f"GPU memory management: unloading before {model_key}")
+            unload_ollama_models()
+            prev_model_key = model_key
+
         logger.info(f"\n{'='*60}")
         logger.info(f"Benchmarking: {run_label} (think={think_mode})")
         logger.info(f"{'='*60}")
@@ -416,6 +457,7 @@ def main():
         save_results(all_results, "llm_bench")
 
     save_results(all_results, "llm_bench")
+    unload_ollama_models()  # free VRAM after benchmark
     logger.info("LLM benchmark complete.")
 
 

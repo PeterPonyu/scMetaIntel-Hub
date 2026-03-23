@@ -252,8 +252,15 @@ def query_parsing_metrics(predicted: Dict, gold: Dict) -> Dict[str, float]:
     total = 0
     per_field = {}
     for f in fields:
-        gold_val = (gold.get(f) or "").lower().strip()
-        pred_val = (predicted.get(f) or "").lower().strip()
+        raw_gold = gold.get(f) or ""
+        raw_pred = predicted.get(f) or ""
+        # Coerce lists to first element (some models return lists instead of strings)
+        if isinstance(raw_gold, list):
+            raw_gold = raw_gold[0] if raw_gold else ""
+        if isinstance(raw_pred, list):
+            raw_pred = raw_pred[0] if raw_pred else ""
+        gold_val = str(raw_gold).lower().strip()
+        pred_val = str(raw_pred).lower().strip()
         # Both empty = correct, fuzzy match = correct
         match = _fuzzy_match(pred_val, gold_val)
         per_field[f] = 1.0 if match else 0.0
@@ -263,7 +270,7 @@ def query_parsing_metrics(predicted: Dict, gold: Dict) -> Dict[str, float]:
                 correct += 1
     accuracy = correct / total if total > 0 else 1.0
     # Exact match: only require gold-specified fields to match (ignore predicted-only extras)
-    gold_fields = [f for f in fields if (gold.get(f) or "").strip()]
+    gold_fields = [f for f in fields if str(gold.get(f) or "").strip()]
     exact_match = 1.0 if all(per_field[f] == 1.0 for f in gold_fields) else 0.0 if gold_fields else 1.0
     return {
         "field_accuracy": round(accuracy, 4),
