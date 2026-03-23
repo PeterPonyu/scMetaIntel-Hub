@@ -58,7 +58,7 @@ def run_strategy(strategy: str, embedder: Embedder, client, queries: list,
         reranker=reranker if "rerank" in strategy else None,
         strategy=strategy,
         top_k=50,
-        rerank_k=10,
+        rerank_k=50,
     )
 
     per_query = []
