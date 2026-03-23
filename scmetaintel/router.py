@@ -16,30 +16,31 @@ from .config import LLM_MODELS, DEFAULT_LLM
 
 logger = logging.getLogger(__name__)
 
-# Best model per task based on bench 04 results (fixed fuzzy eval, 2026-03-23):
-#   Task A (query parsing):        qwen2.5-7b  = 91.4% cell_type, 82.8% tissue (best overall)
-#   Task B (metadata extraction):  qwen2.5-7b  = 0.367 avg-F1 (best extraction)
-#   Task C (ontology norm):        qwen2.5-7b  = 85% accuracy (label-based eval)
-#   Task D (answer generation):    qwen2.5-1.5b = 91.1% citation_recall, 100% grounding (BEST)
-#   Task E (speed):                qwen2.5-1.5b = 93.3 tok/s (fastest)
+# Best model per task based on bench 04 (all 17 models, 2026-03-23):
+#   Task A (query parsing):        llama3.1-8b  = 93.1% EM (best parser overall)
+#   Task B (metadata extraction):  qwen2.5-7b   = 0.367 avg-F1 (best structured extraction)
+#   Task C (ontology norm):        qwen3.5-9b   = 90% F1 (8 models tied at 90%)
+#   Task D (answer generation):    qwen3.5-9b   = 100% recall, 100% grounding, 71.9 tok/s
+#   Task E (speed):                qwen2.5-0.5b = 246 tok/s (fastest)
+#   Composite winner:              qwen3.5-9b   = 0.785 (best quality/speed balance)
 # Embedding (bench 02): mxbai-embed-large R@50=0.410 (best) | medcpt-query R@50=0.392
 # Retrieval (bench 03): mxbai + hybrid+filter R@50=0.428, MRR=0.190, 82ms
 # Context (bench 05):   k=3 structured = 100% precision, 91.1% recall, 168 tokens
 TASK_MODEL_MAP: Dict[str, str] = {
-    "query_parsing": "qwen2.5-7b",
+    "query_parsing": "llama3.1-8b",
     "metadata_extraction": "qwen2.5-7b",
-    "ontology_normalization": "qwen2.5-7b",
-    "answer_generation": "qwen2.5-1.5b",
-    "relevance_judgment": "qwen2.5-7b",
-    "fast_utility": "qwen2.5-1.5b",
+    "ontology_normalization": "qwen3.5-9b",
+    "answer_generation": "qwen3.5-9b",
+    "relevance_judgment": "qwen3.5-9b",
+    "fast_utility": "qwen2.5-0.5b",
 }
 
 # Performance tier presets for pipeline configurations
 PIPELINE_TIERS: Dict[str, Dict[str, str]] = {
     "quality": {
         "description": "Best quality, ~2-3s per query",
-        "parse_model": "qwen2.5-7b",
-        "answer_model": "qwen2.5-1.5b",
+        "parse_model": "llama3.1-8b",
+        "answer_model": "qwen3.5-9b",
         "embedding": "mxbai-embed-large",
         "strategy": "hybrid+filter",
         "context_format": "structured",
@@ -56,8 +57,8 @@ PIPELINE_TIERS: Dict[str, Dict[str, str]] = {
     },
     "balanced": {
         "description": "Good balance, ~1.5-2s per query",
-        "parse_model": "qwen2.5-1.5b",
-        "answer_model": "qwen2.5-1.5b",
+        "parse_model": "llama3.1-8b",
+        "answer_model": "qwen3.5-9b",
         "embedding": "mxbai-embed-large",
         "strategy": "hybrid+filter",
         "context_format": "structured",
