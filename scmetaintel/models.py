@@ -112,14 +112,36 @@ class EnrichedStudy:
         """Deserialize from dict."""
         samples = {}
         for gsm_id, s in d.get("samples", {}).items():
-            samples[gsm_id] = SampleMeta(**s)
+            if isinstance(s, dict):
+                # Only pass keys that SampleMeta accepts
+                samples[gsm_id] = SampleMeta(
+                    gsm_id=s.get("gsm_id", gsm_id),
+                    title=s.get("title", ""),
+                    source=s.get("source", ""),
+                    characteristics=s.get("characteristics", {}),
+                    organism=s.get("organism", ""),
+                    platform=s.get("platform", ""),
+                )
 
         pubmed = None
-        if d.get("pubmed"):
-            pubmed = PubMedInfo(**d["pubmed"])
+        pm = d.get("pubmed")
+        if isinstance(pm, list) and pm:
+            first = pm[0]
+            pubmed = PubMedInfo(
+                pmid=first.get("pmid", ""),
+                title=first.get("title", ""),
+                abstract=first.get("abstract", ""),
+                mesh_terms=first.get("mesh_terms", []),
+                keywords=first.get("keywords", []),
+            )
+        elif isinstance(pm, dict) and pm:
+            pubmed = PubMedInfo(**pm)
 
         cs_data = d.get("characteristics_summary", {})
-        cs = CharacteristicsSummary(**cs_data)
+        # Filter to only CharacteristicsSummary fields
+        cs_fields = {"tissues", "diseases", "cell_types", "treatments",
+                      "organisms", "donor_count", "sex", "age_range"}
+        cs = CharacteristicsSummary(**{k: v for k, v in cs_data.items() if k in cs_fields})
 
         ontology_mappings = {}
         for key, mappings in d.get("ontology_mappings", {}).items():
