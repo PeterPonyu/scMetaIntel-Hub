@@ -463,7 +463,7 @@ RECOMMENDED_RERANKER = "qwen3-reranker-4b"
 # Practical locally-runnable defaults (execution intent)
 DEFAULT_LLM = os.getenv("SCMETA_LLM_MODEL", "qwen2.5-1.5b")
 DEFAULT_LLM_FAST = os.getenv("SCMETA_LLM_FAST_MODEL", "qwen2.5-1.5b")
-DEFAULT_EMBEDDING = os.getenv("SCMETA_EMBED_MODEL", "medcpt-query")
+DEFAULT_EMBEDDING = os.getenv("SCMETA_EMBED_MODEL", "mxbai-embed-large")
 DEFAULT_EMBED_HYBRID = "bge-m3"
 DEFAULT_EMBED_BIO = os.getenv("SCMETA_BIO_EMBED_MODEL", "biolord-2023")
 DEFAULT_RERANKER = os.getenv("SCMETA_RERANK_MODEL", "ms-marco-minilm-l6")

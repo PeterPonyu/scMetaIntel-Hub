@@ -18,12 +18,12 @@ logger = logging.getLogger(__name__)
 
 # Best model per task based on bench 04 results (fixed fuzzy eval, 2026-03-23):
 #   Task A (query parsing):        qwen2.5-7b  = 91.4% cell_type, 82.8% tissue (best overall)
-#   Task B (metadata extraction):  qwen2.5-7b  = 0.269 avg-F1 (best extraction)
-#   Task C (ontology norm):        all 0% with ID-matching — redesigned with label eval
+#   Task B (metadata extraction):  qwen2.5-7b  = 0.367 avg-F1 (best extraction)
+#   Task C (ontology norm):        qwen2.5-7b  = 85% accuracy (label-based eval)
 #   Task D (answer generation):    qwen2.5-1.5b = 91.1% citation_recall, 100% grounding (BEST)
-#   Task E (speed):                qwen2.5-1.5b = 112.2 tok/s (fastest)
-# Embedding (bench 02): medcpt-query R@50=0.392 | mxbai-embed-large R@50=0.410
-# Retrieval (bench 03): hybrid+filter R@50=0.414, MRR=0.183, 181ms
+#   Task E (speed):                qwen2.5-1.5b = 93.3 tok/s (fastest)
+# Embedding (bench 02): mxbai-embed-large R@50=0.410 (best) | medcpt-query R@50=0.392
+# Retrieval (bench 03): mxbai + hybrid+filter R@50=0.428, MRR=0.190, 82ms
 # Context (bench 05):   k=3 structured = 100% precision, 91.1% recall, 168 tokens
 TASK_MODEL_MAP: Dict[str, str] = {
     "query_parsing": "qwen2.5-7b",
@@ -40,7 +40,7 @@ PIPELINE_TIERS: Dict[str, Dict[str, str]] = {
         "description": "Best quality, ~2-3s per query",
         "parse_model": "qwen2.5-7b",
         "answer_model": "qwen2.5-1.5b",
-        "embedding": "medcpt-query",
+        "embedding": "mxbai-embed-large",
         "strategy": "hybrid+filter",
         "context_format": "structured",
         "context_k": 3,
@@ -49,7 +49,7 @@ PIPELINE_TIERS: Dict[str, Dict[str, str]] = {
         "description": "Fastest, ~0.5-1s per query",
         "parse_model": "qwen2.5-1.5b",
         "answer_model": "qwen2.5-1.5b",
-        "embedding": "medcpt-query",
+        "embedding": "mxbai-embed-large",
         "strategy": "dense",
         "context_format": "structured",
         "context_k": 3,
@@ -58,7 +58,7 @@ PIPELINE_TIERS: Dict[str, Dict[str, str]] = {
         "description": "Good balance, ~1.5-2s per query",
         "parse_model": "qwen2.5-1.5b",
         "answer_model": "qwen2.5-1.5b",
-        "embedding": "medcpt-query",
+        "embedding": "mxbai-embed-large",
         "strategy": "hybrid+filter",
         "context_format": "structured",
         "context_k": 3,
