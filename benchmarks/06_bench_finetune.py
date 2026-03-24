@@ -31,6 +31,7 @@ import argparse
 import json
 import logging
 import random
+import re
 import sys
 import time
 from pathlib import Path
@@ -138,8 +139,8 @@ LORA_CONFIG = {
 }
 
 TRAINING_CONFIG = {
-    "per_device_train_batch_size": 2,
-    "gradient_accumulation_steps": 4,  # effective batch = 8
+    "per_device_train_batch_size": 1,
+    "gradient_accumulation_steps": 8,  # effective batch = 8
     "num_train_epochs": 3,
     "learning_rate": 2e-4,
     "lr_scheduler_type": "cosine",
@@ -197,6 +198,231 @@ RELEVANCE_SYSTEM = (
     "Return JSON: {\"relevant\": bool, \"score\": float (0-1), "
     "\"reasoning\": str (1-2 sentences)}"
 )
+
+# ---------------------------------------------------------------------------
+# Data-cleaning helpers
+# ---------------------------------------------------------------------------
+
+# Mojibake patterns (UTF-8 bytes decoded as Latin-1, then re-encoded)
+_MOJIBAKE = [
+    ("â\x80\x99", "\u2019"), ("â\x80\x98", "\u2018"),  # curly quotes
+    ("â\x80\x9c", "\u201c"), ("â\x80\x9d", "\u201d"),
+    ("â\x80\x93", "\u2013"), ("â\x80\x94", "\u2014"),  # dashes
+    ("Î±", "\u03b1"), ("Î²", "\u03b2"), ("Î³", "\u03b3"),  # Greek
+    ("Î´", "\u03b4"), ("Îµ", "\u03b5"), ("Î¶", "\u03b6"),
+    ("Î¼", "\u03bc"), ("Î»", "\u03bb"), ("Îº", "\u03ba"),
+    ("Ï\x80", "\u03c0"), ("Ï\x83", "\u03c3"), ("Ï\x84", "\u03c4"),
+    ("Ã\x97", "\u00d7"),  # multiplication sign
+    ("Â±", "\u00b1"), ("Â°", "\u00b0"),  # plus-minus, degree
+    ("Ã©", "\u00e9"), ("Ã¼", "\u00fc"),  # accented letters
+]
+
+
+def fix_mojibake(text: str) -> str:
+    """Fix common UTF-8 mojibake patterns in GEO metadata."""
+    for bad, good in _MOJIBAKE:
+        text = text.replace(bad, good)
+    # Generic fallback: try Latin-1 round-trip for remaining garbled chars
+    try:
+        fixed = text.encode("latin-1").decode("utf-8")
+        if fixed != text:
+            text = fixed
+    except (UnicodeDecodeError, UnicodeEncodeError):
+        pass
+    return text
+
+
+# Cell line names that appear in tissue fields but are NOT tissues
+_CELL_LINE_NAMES = {
+    "a172", "a549", "a13lg", "hek293", "hek293t", "hela", "hepg2",
+    "jurkat", "k562", "lncap", "mcf7", "mcf-7", "thp-1", "u937",
+    "pc9", "snu719", "akata", "mutu", "yccel1", "4t1",
+    "huh-1", "huh-7", "huh1", "huh7", "caco-2", "caco2",
+}
+
+# Terms that are NOT diseases
+_NOT_DISEASE = {
+    "development", "immunology", "in vitro", "healthy", "control",
+    "controls", "normal", "case", "mild", "parental and differentiated",
+    "differentiated", "aging", "ageing",
+}
+
+# Disease keywords → if these appear in a tissue term, move to disease
+_DISEASE_KEYWORDS = {
+    "cancer", "tumor", "tumour", "carcinoma", "melanoma", "lymphoma",
+    "leukemia", "leukaemia", "adenoma", "sarcoma", "glioblastoma",
+    "glioma", "myeloma", "neuroblastoma", "mesothelioma", "fibrosis",
+    "cirrhosis", "hepatitis", "colitis", "arthritis", "diabetes",
+    "alzheimer", "parkinson", "infection", "hiv", "covid",
+}
+
+# Organism keywords for query parsing
+_ORGANISM_KEYWORDS = {
+    "human": "Homo sapiens", "mouse": "Mus musculus",
+    "rat": "Rattus norvegicus", "zebrafish": "Danio rerio",
+    "drosophila": "Drosophila melanogaster", "fly": "Drosophila melanogaster",
+    "worm": "Caenorhabditis elegans", "c. elegans": "Caenorhabditis elegans",
+    "pig": "Sus scrofa", "chicken": "Gallus gallus",
+    "macaque": "Macaca mulatta", "monkey": "Macaca mulatta",
+}
+
+# Known correct ontology overrides (fixing systematic wrong IDs)
+_ONTOLOGY_OVERRIDES = {
+    "skin": ("UBERON:0002097", "skin of body"),
+    "hippocampus": ("UBERON:0002421", "hippocampal formation"),
+    "bone marrow": ("UBERON:0002371", "bone marrow"),
+    "peripheral blood": ("UBERON:0013756", "venous blood"),
+    "peripheral blood mononuclear cells": ("CL:2000001", "peripheral blood mononuclear cell"),
+    "pbmcs": ("CL:2000001", "peripheral blood mononuclear cell"),
+    "pbmc": ("CL:2000001", "peripheral blood mononuclear cell"),
+    "t cells": ("CL:0000084", "T cell"),
+    "t cell": ("CL:0000084", "T cell"),
+    "cd4+ t cells": ("CL:0000624", "CD4-positive, alpha-beta T cell"),
+    "cd8+ t cells": ("CL:0000625", "CD8-positive, alpha-beta T cell"),
+    "b cells": ("CL:0000236", "B cell"),
+    "b cell": ("CL:0000236", "B cell"),
+    "macrophages": ("CL:0000235", "macrophage"),
+    "macrophage": ("CL:0000235", "macrophage"),
+    "neutrophils": ("CL:0000775", "neutrophil"),
+    "neutrophil": ("CL:0000775", "neutrophil"),
+    "monocytes": ("CL:0000576", "monocyte"),
+    "monocyte": ("CL:0000576", "monocyte"),
+    "fibroblasts": ("CL:0000057", "fibroblast"),
+    "fibroblast": ("CL:0000057", "fibroblast"),
+    "epithelial cells": ("CL:0000066", "epithelial cell"),
+    "epithelial cell": ("CL:0000066", "epithelial cell"),
+    "endothelial cells": ("CL:0000115", "endothelial cell"),
+    "endothelial cell": ("CL:0000115", "endothelial cell"),
+    "neurons": ("CL:0000540", "neuron"),
+    "neuron": ("CL:0000540", "neuron"),
+    "nk cells": ("CL:0000623", "natural killer cell"),
+    "natural killer cells": ("CL:0000623", "natural killer cell"),
+    "dendritic cells": ("CL:0000451", "dendritic cell"),
+    "dendritic cell": ("CL:0000451", "dendritic cell"),
+    "cardiomyocytes": ("CL:0000746", "cardiac muscle cell"),
+    "cardiomyocyte": ("CL:0000746", "cardiac muscle cell"),
+    "astrocytes": ("CL:0000127", "astrocyte"),
+    "astrocyte": ("CL:0000127", "astrocyte"),
+    "microglia": ("CL:0000129", "microglial cell"),
+    "oligodendrocytes": ("CL:0000128", "oligodendrocyte"),
+    "hepatocytes": ("CL:0000182", "hepatocyte"),
+    "hepatocyte": ("CL:0000182", "hepatocyte"),
+    "pancreatic islets": ("UBERON:0000006", "islet of Langerhans"),
+    "islets of langerhans": ("UBERON:0000006", "islet of Langerhans"),
+    "glioblastoma": ("MONDO:0018177", "glioblastoma"),
+    "melanoma": ("MONDO:0005105", "melanoma"),
+    "breast cancer": ("MONDO:0007254", "breast cancer"),
+    "lung cancer": ("MONDO:0008903", "lung cancer"),
+    "colorectal cancer": ("MONDO:0005575", "colorectal cancer"),
+    "pancreatic cancer": ("MONDO:0005192", "pancreatic cancer"),
+    "prostate cancer": ("MONDO:0008315", "prostate cancer"),
+    "liver cancer": ("MONDO:0007256", "liver cancer"),
+    "leukemia": ("MONDO:0005059", "leukemia"),
+    "lymphoma": ("MONDO:0005062", "lymphoma"),
+    "calvarium": ("UBERON:0004339", "vault of skull"),
+    "nasal epithelium": ("UBERON:0005384", "nasal cavity epithelium"),
+}
+
+
+def clean_tissue_list(tissues: list, diseases: list) -> tuple[list, list]:
+    """Clean tissue list: remove cell lines, move diseases to disease list."""
+    clean_tissues = []
+    for t in tissues:
+        t_low = t.lower().strip()
+        # Skip cell line names
+        if t_low in _CELL_LINE_NAMES or any(
+            cl in t_low for cl in _CELL_LINE_NAMES if len(cl) > 3
+        ):
+            continue
+        # Skip sample IDs (contain digits + letters, no spaces)
+        if re.match(r'^[a-z0-9_-]+$', t_low) and any(c.isdigit() for c in t_low):
+            continue
+        # Check if this looks like a disease — move to diseases
+        if any(dk in t_low for dk in _DISEASE_KEYWORDS):
+            if t not in diseases:
+                diseases.append(t)
+            continue
+        clean_tissues.append(t)
+    return clean_tissues, diseases
+
+
+def clean_disease_list(diseases: list) -> list:
+    """Remove non-disease terms from disease list."""
+    return [d for d in diseases if d.lower().strip() not in _NOT_DISEASE
+            and not re.match(r'^[0-9x?]+$', d.lower().strip())]
+
+
+def extract_diseases_from_text(title: str, summary: str,
+                               existing_diseases: list) -> list:
+    """Extract obvious disease terms from title/summary when diseases is empty."""
+    if existing_diseases:
+        return existing_diseases
+    text_low = (title + " " + summary).lower()
+    found = []
+    # Check for common disease patterns
+    disease_patterns = [
+        (r"\b(alzheimer(?:'?s)?(?:\s+disease)?)\b", "Alzheimer's disease"),
+        (r"\b(parkinson(?:'?s)?(?:\s+disease)?)\b", "Parkinson's disease"),
+        (r"\bbreast\s+(?:cancer|carcinoma|tumor)\b", "breast cancer"),
+        (r"\blung\s+(?:cancer|adenocarcinoma|carcinoma)\b", "lung cancer"),
+        (r"\bcolorectal\s+(?:cancer|carcinoma|adenocarcinoma)\b", "colorectal cancer"),
+        (r"\bpancreatic\s+(?:cancer|carcinoma|adenocarcinoma)\b", "pancreatic cancer"),
+        (r"\bprostate\s+(?:cancer|carcinoma|adenocarcinoma)\b", "prostate cancer"),
+        (r"\b(?:liver|hepatocellular)\s+(?:cancer|carcinoma)\b", "liver cancer"),
+        (r"\bglioblastoma\b", "glioblastoma"),
+        (r"\bglioma\b", "glioma"),
+        (r"\bmelanoma\b", "melanoma"),
+        (r"\b(?:acute\s+)?leukemia\b", "leukemia"),
+        (r"\blymphoma\b", "lymphoma"),
+        (r"\bdiabetes(?:\s+mellitus)?\b", "diabetes"),
+        (r"\bfibrosis\b", "fibrosis"),
+        (r"\bcovid-?19\b", "COVID-19"),
+        (r"\bsars-cov-2\b", "COVID-19"),
+        (r"\bcarcinoma\b", "carcinoma"),
+        (r"\bsarcoma\b", "sarcoma"),
+        (r"\bneuroblastoma\b", "neuroblastoma"),
+        (r"\bmyeloma\b", "myeloma"),
+        (r"\b(?:crohn(?:'?s)?)\b", "Crohn's disease"),
+        (r"\bhypertension\b", "hypertension"),
+        (r"\batherosclerosis\b", "atherosclerosis"),
+    ]
+    for pattern, disease_name in disease_patterns:
+        if re.search(pattern, text_low):
+            if disease_name not in found:
+                found.append(disease_name)
+    return found
+
+
+def extract_cell_types_from_text(title: str, summary: str,
+                                 existing: list) -> list:
+    """Extract obvious cell type terms when cell_types is empty."""
+    if existing:
+        return existing
+    text_low = (title + " " + summary).lower()
+    found = []
+    cell_patterns = [
+        (r"\bmacrophage[s]?\b", "macrophages"),
+        (r"\bneutrophil[s]?\b", "neutrophils"),
+        (r"\bt\s*cell[s]?\b", "T cells"),
+        (r"\bb\s*cell[s]?\b", "B cells"),
+        (r"\bfibroblast[s]?\b", "fibroblasts"),
+        (r"\bneuron[s]?\b", "neurons"),
+        (r"\bastrocyte[s]?\b", "astrocytes"),
+        (r"\bmicroglia[l]?\b", "microglia"),
+        (r"\boligodendrocyte[s]?\b", "oligodendrocytes"),
+        (r"\bendothelial\s+cell[s]?\b", "endothelial cells"),
+        (r"\bepithelial\s+cell[s]?\b", "epithelial cells"),
+        (r"\bcardiomyocyte[s]?\b", "cardiomyocytes"),
+        (r"\bhepatocyte[s]?\b", "hepatocytes"),
+        (r"\bmonocyte[s]?\b", "monocytes"),
+        (r"\bdendritic\s+cell[s]?\b", "dendritic cells"),
+        (r"\bnk\s+cell[s]?\b", "NK cells"),
+    ]
+    for pattern, cell_name in cell_patterns:
+        if re.search(pattern, text_low):
+            if cell_name not in found:
+                found.append(cell_name)
+    return found
 
 
 # ------------------------------------------------------------------
@@ -394,6 +620,10 @@ def prepare_llm_training_data() -> Path:
         if not title or not summary:
             continue
 
+        # Fix mojibake in text
+        title = fix_mojibake(title)
+        summary = fix_mojibake(summary)
+
         # Build gold metadata from available fields
         gold = {
             "tissues": d.get("tissues", []) or [],
@@ -414,20 +644,40 @@ def prepare_llm_training_data() -> Path:
         gold["tissues"] = [t for t in gold["tissues"]
                            if t and t.lower().strip() not in _TISSUE_BLOCKLIST]
 
+        # Clean tissue list: remove cell lines, move diseases to disease list
+        gold["tissues"], gold["diseases"] = clean_tissue_list(
+            gold["tissues"], gold["diseases"])
+
+        # Clean disease list: remove non-disease terms
+        gold["diseases"] = clean_disease_list(gold["diseases"])
+
         # Use domain as disease hint when diseases list is empty
         domain = d.get("domain", "")
-        if not gold["diseases"] and domain and domain != "unknown":
+        if not gold["diseases"] and domain and domain not in ("unknown", "development"):
             gold["diseases"] = [domain]
+
+        # Extract diseases from text if still empty
+        gold["diseases"] = extract_diseases_from_text(
+            title, summary, gold["diseases"])
 
         # Build tissue/celltype from characteristics_summary if available
         cs = d.get("characteristics_summary", {})
         if isinstance(cs, dict):
             if not gold["tissues"] and cs.get("tissues"):
-                gold["tissues"] = cs["tissues"]
+                raw_tissues = cs["tissues"]
+                raw_tissues = [t for t in raw_tissues
+                               if t and t.lower().strip() not in _TISSUE_BLOCKLIST]
+                raw_tissues, gold["diseases"] = clean_tissue_list(
+                    raw_tissues, gold["diseases"])
+                gold["tissues"] = raw_tissues
             if not gold["cell_types"] and cs.get("cell_types"):
                 gold["cell_types"] = cs["cell_types"]
             if not gold["diseases"] and cs.get("diseases"):
-                gold["diseases"] = cs["diseases"]
+                gold["diseases"] = clean_disease_list(cs["diseases"])
+
+        # Extract cell types from text if still empty
+        gold["cell_types"] = extract_cell_types_from_text(
+            title, summary, gold["cell_types"])
 
         user_text = f"Title: {title}\n\nSummary: {summary[:1500]}"
         output = json.dumps(gold, indent=2)
@@ -441,17 +691,25 @@ def prepare_llm_training_data() -> Path:
         })
 
     # --- Task C: Answer generation (query + context -> cited answer) ---
-    for q in queries:
+    _ANSWER_INTROS = [
+        'Based on the retrieved studies, here are the relevant datasets for "{query}":\n\n',
+        'The following datasets are relevant to "{query}":\n\n',
+        'For your query about "{query}", I found these relevant datasets:\n\n',
+        'Here are the single-cell datasets matching "{query}":\n\n',
+    ]
+    for qi, q in enumerate(queries):
         expected_gse = q.get("expected_gse", [])
         context_parts = []
         for gse_id in expected_gse:
             if gse_id not in docs:
                 continue
             d = docs[gse_id]
+            ctx_title = fix_mojibake(d.get('title', ''))
+            ctx_summary = fix_mojibake(d.get('summary', '')[:300])
             context_parts.append(
-                f"[{gse_id}] {d.get('title', '')}\n"
+                f"[{gse_id}] {ctx_title}\n"
                 f"  Organism: {d.get('organism', 'N/A')}\n"
-                f"  Summary: {d.get('summary', '')[:300]}"
+                f"  Summary: {ctx_summary}"
             )
         if not context_parts:
             continue
@@ -462,21 +720,20 @@ def prepare_llm_training_data() -> Path:
             f"User query: {q['query']}\n\n"
             f"Provide a comprehensive answer citing relevant GSE accessions."
         )
-        # Build a reference answer
-        gse_list = ", ".join(f"[{g}]" for g in expected_gse if g in docs)
-        answer = (
-            f"Based on the retrieved studies, here are the relevant datasets "
-            f"for \"{q['query']}\":\n\n"
-        )
+        # Build a reference answer with varied intros
+        intro = _ANSWER_INTROS[qi % len(_ANSWER_INTROS)]
+        answer = intro.format(query=q['query'])
         for gse_id in expected_gse:
             if gse_id not in docs:
                 continue
             d = docs[gse_id]
+            a_title = fix_mojibake(d.get('title', ''))
             answer += (
-                f"- [{gse_id}]: {d.get('title', '')}. "
+                f"- [{gse_id}]: {a_title}. "
                 f"Organism: {d.get('organism', 'N/A')}. "
                 f"Modalities: {', '.join(d.get('modalities', ['N/A']))}.\n"
             )
+        gse_list = ", ".join(f"[{g}]" for g in expected_gse if g in docs)
         answer += f"\nThese datasets {gse_list} are relevant to the query."
 
         conversations.append({
@@ -553,12 +810,24 @@ def prepare_llm_training_data() -> Path:
         if in_term and current_id and current_name and not is_obsolete:
             target_map[current_name.lower()] = (current_id, current_name)
 
+    # Apply overrides to the ontology maps (fix known wrong IDs + add missing)
+    for key, (oid, olabel) in _ONTOLOGY_OVERRIDES.items():
+        if oid.startswith("UBERON"):
+            uberon_map[key] = (oid, olabel)
+        elif oid.startswith("CL"):
+            cl_map[key] = (oid, olabel)
+        elif oid.startswith("MONDO"):
+            mondo_map[key] = (oid, olabel)
+
+    all_ont_keys = set(cl_map) | set(uberon_map) | set(mondo_map)
+
     for gse_id, d in docs.items():
         cs = d.get("characteristics_summary", {})
         if not isinstance(cs, dict):
             continue
 
-        raw_terms = []
+        mapped_terms = []
+        unmapped_terms = []
         for field, ont_map, ont_name in [
             ("tissues", uberon_map, "UBERON"),
             ("cell_types", cl_map, "CL"),
@@ -569,59 +838,34 @@ def prepare_llm_training_data() -> Path:
                 if not term or len(term) < 3:
                     continue
                 key = term.lower().strip()
+                # Skip cell lines and non-biological terms
+                if key in _CELL_LINE_NAMES or key in _NOT_DISEASE:
+                    continue
                 if key in ont_map:
                     oid, olabel = ont_map[key]
-                    raw_terms.append({
+                    mapped_terms.append({
                         "raw": term,
                         "ontology_id": oid,
                         "ontology_label": olabel,
                         "confidence": 1.0,
                     })
+                else:
+                    unmapped_terms.append({
+                        "raw": term,
+                        "ontology_id": None,
+                        "ontology_label": None,
+                        "confidence": 0.0,
+                    })
 
-        if not raw_terms:
+        # Create mixed examples (both mapped and unmapped) when possible
+        all_terms = mapped_terms + unmapped_terms
+        if not all_terms:
             continue
 
         user_text = f"Normalize these biomedical terms from {gse_id}:\n"
-        user_text += json.dumps([t["raw"] for t in raw_terms])
-        output = json.dumps({"normalized": raw_terms}, indent=2)
+        user_text += json.dumps([t["raw"] for t in all_terms])
+        output = json.dumps({"normalized": all_terms}, indent=2)
 
-        conversations.append({
-            "messages": [
-                {"role": "system", "content": ONTOLOGY_SYSTEM},
-                {"role": "user", "content": user_text},
-                {"role": "assistant", "content": output},
-            ],
-            "task": "ontology_normalization",
-        })
-
-    # Add ontology negative examples (terms with no mapping)
-    all_ont_keys = set(cl_map) | set(uberon_map) | set(mondo_map)
-    for gse_id, d in docs.items():
-        cs = d.get("characteristics_summary", {})
-        if not isinstance(cs, dict):
-            continue
-        unmapped = []
-        for field in ("tissues", "cell_types", "diseases"):
-            terms = cs.get(field, []) or d.get(field, [])
-            for term in terms:
-                if not term or len(term) < 3:
-                    continue
-                if term.lower().strip() not in all_ont_keys:
-                    unmapped.append(term)
-        if not unmapped:
-            continue
-        # Build negative example: terms that can't be mapped
-        neg_items = []
-        for term in unmapped[:3]:  # limit to 3 per doc
-            neg_items.append({
-                "raw": term,
-                "ontology_id": None,
-                "ontology_label": None,
-                "confidence": 0.0,
-            })
-        user_text = f"Normalize these biomedical terms from {gse_id}:\n"
-        user_text += json.dumps([t["raw"] for t in neg_items])
-        output = json.dumps({"normalized": neg_items}, indent=2)
         conversations.append({
             "messages": [
                 {"role": "system", "content": ONTOLOGY_SYSTEM},
@@ -635,24 +879,39 @@ def prepare_llm_training_data() -> Path:
     all_gse_ids = list(docs.keys())
     for q in queries:
         expected = set(q.get("expected_gse", []))
+        query_lower = q['query'].lower()
         # Positive examples (relevant datasets)
         for gse_id in expected:
             if gse_id not in docs:
                 continue
             d = docs[gse_id]
+            d_title = fix_mojibake(d.get('title', ''))
+            d_summary = fix_mojibake(d.get('summary', '')[:500])
             user_text = (
                 f"Query: {q['query']}\n\n"
                 f"Dataset [{gse_id}]:\n"
-                f"Title: {d.get('title', '')}\n"
-                f"Summary: {d.get('summary', '')[:500]}"
+                f"Title: {d_title}\n"
+                f"Summary: {d_summary}"
+            )
+            # Build specific reasoning from metadata overlap
+            overlaps = []
+            if d.get('organism', '').lower() in query_lower:
+                overlaps.append(f"organism ({d['organism']})")
+            for t in (d.get('tissues', []) or [])[:2]:
+                if t.lower() in query_lower:
+                    overlaps.append(f"tissue ({t})")
+            for dt in (d.get('diseases', []) or [])[:2]:
+                if dt.lower() in query_lower:
+                    overlaps.append(f"disease ({dt})")
+            overlap_str = ", ".join(overlaps) if overlaps else "the study topic"
+            reasoning = (
+                f"This dataset is relevant because it matches the query on "
+                f"{overlap_str} and uses single-cell sequencing."
             )
             output = json.dumps({
                 "relevant": True,
                 "score": 0.95,
-                "reasoning": (
-                    f"This dataset is relevant because it directly addresses "
-                    f"the query about {q['query'].lower()}."
-                ),
+                "reasoning": reasoning,
             }, indent=2)
             conversations.append({
                 "messages": [
@@ -667,19 +926,37 @@ def prepare_llm_training_data() -> Path:
         neg_pool = [g for g in all_gse_ids if g not in expected]
         for neg_gse in random.sample(neg_pool, min(2, len(neg_pool))):
             d = docs[neg_gse]
+            d_title = fix_mojibake(d.get('title', ''))
+            d_summary = fix_mojibake(d.get('summary', '')[:500])
             user_text = (
                 f"Query: {q['query']}\n\n"
                 f"Dataset [{neg_gse}]:\n"
-                f"Title: {d.get('title', '')}\n"
-                f"Summary: {d.get('summary', '')[:500]}"
+                f"Title: {d_title}\n"
+                f"Summary: {d_summary}"
+            )
+            # Build specific reasoning for why it's NOT relevant
+            mismatches = []
+            q_org = q.get('expected_constraints', {}).get('organism', '')
+            if q_org and d.get('organism', '') != q_org:
+                mismatches.append(
+                    f"studies {d.get('organism', 'unknown')} instead of {q_org}")
+            q_tissue = q.get('expected_constraints', {}).get('tissue', '')
+            if q_tissue:
+                d_tissues = " ".join(d.get('tissues', []) or []).lower()
+                if q_tissue.lower() not in d_tissues:
+                    mismatches.append(
+                        f"focuses on different tissues")
+            mismatch_str = ("; ".join(mismatches)
+                           if mismatches
+                           else "studies a different biological context")
+            reasoning = (
+                f"This dataset is not relevant to the query because it "
+                f"{mismatch_str}."
             )
             output = json.dumps({
                 "relevant": False,
                 "score": 0.1,
-                "reasoning": (
-                    f"This dataset is not directly relevant to the query "
-                    f"about {q['query'].lower()}."
-                ),
+                "reasoning": reasoning,
             }, indent=2)
             conversations.append({
                 "messages": [
@@ -703,6 +980,37 @@ def prepare_llm_training_data() -> Path:
         logger.info(f"Merged {n_enhanced} enhanced samples from {enhanced_path}")
     else:
         logger.info("No enhanced data found — run scripts/enhance_training_data.py first")
+
+    # Deduplicate by user message content (keep first occurrence)
+    seen_user_msgs = set()
+    deduped = []
+    for conv in conversations:
+        user_msg = conv["messages"][1]["content"]  # user message
+        key = (conv["task"], user_msg)
+        if key in seen_user_msgs:
+            continue
+        seen_user_msgs.add(key)
+        deduped.append(conv)
+    n_removed = len(conversations) - len(deduped)
+    if n_removed:
+        logger.info(f"Removed {n_removed} duplicate examples")
+    conversations = deduped
+
+    # Fix mojibake in ALL conversations (including enhanced data)
+    for conv in conversations:
+        for msg in conv["messages"]:
+            msg["content"] = fix_mojibake(msg["content"])
+
+    # Clean "development" from disease fields in enhanced extraction data
+    for conv in conversations:
+        if conv["task"] == "metadata_extraction":
+            try:
+                resp = json.loads(conv["messages"][2]["content"])
+                if "development" in resp.get("diseases", []):
+                    resp["diseases"] = clean_disease_list(resp["diseases"])
+                    conv["messages"][2]["content"] = json.dumps(resp, indent=2)
+            except (json.JSONDecodeError, KeyError):
+                pass
 
     # Shuffle and save
     random.seed(42)
@@ -746,7 +1054,8 @@ def finetune_llm(base_model_key: str = "qwen3.5-9b",
                  export_gguf: bool = False,
                  prepare_only: bool = False,
                  task_filter: str | None = None,
-                 epochs: int | None = None) -> str:
+                 epochs: int | None = None,
+                 resume: bool = False) -> str:
     """
     Fine-tune an LLM with QLoRA via unsloth.
 
@@ -756,6 +1065,7 @@ def finetune_llm(base_model_key: str = "qwen3.5-9b",
         prepare_only: If True, only prepare training data without training
         task_filter: If set, only include SFT examples for this task
         epochs: Override default epoch count
+        resume: If True, resume training from the latest checkpoint
     """
     # Step 1: Prepare training data
     data_path = prepare_llm_training_data()
@@ -887,12 +1197,21 @@ def finetune_llm(base_model_key: str = "qwen3.5-9b",
         args=training_args,
         max_seq_length=TRAINING_CONFIG["max_seq_length"],
         dataset_text_field="text",
-        packing=True,
+        packing=False,
     )
 
     logger.info("Starting training...")
     t0 = time.time()
-    train_result = trainer.train()
+    resume_ckpt = None
+    if resume:
+        ckpt_dirs = sorted(Path(output_dir).glob("checkpoint-*"),
+                           key=lambda p: int(p.name.split("-")[-1]))
+        if ckpt_dirs:
+            resume_ckpt = str(ckpt_dirs[-1])
+            logger.info(f"Resuming from checkpoint: {resume_ckpt}")
+        else:
+            logger.warning("No checkpoint found — starting fresh")
+    train_result = trainer.train(resume_from_checkpoint=resume_ckpt)
     train_time = time.time() - t0
     logger.info(f"Training completed in {train_time:.0f}s")
     logger.info(f"  Loss: {train_result.training_loss:.4f}")
@@ -975,6 +1294,8 @@ def main():
                         help="Only train on examples from this task")
     parser.add_argument("--epochs", type=int, default=None,
                         help="Override default epoch count")
+    parser.add_argument("--resume", action="store_true",
+                        help="Resume training from latest checkpoint")
     args = parser.parse_args()
 
     results = {}
@@ -1006,6 +1327,7 @@ def main():
                 prepare_only=args.prepare_only,
                 task_filter=args.task_filter,
                 epochs=args.epochs,
+                resume=args.resume,
             )
             results["llm_ft"] = {"status": "done", "path": path}
         except Exception as e:

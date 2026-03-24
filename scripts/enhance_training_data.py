@@ -22,6 +22,7 @@ import argparse
 import json
 import logging
 import random
+import re
 import sys
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -98,6 +99,29 @@ ORG_SHORT = {
     "Bos taurus": "cow",
     "Gallus gallus": "chicken",
 }
+
+# Import cleaning helpers from the finetune module
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "benchmarks"))
+from importlib import import_module as _imp
+_bench = _imp("06_bench_finetune")
+fix_mojibake = _bench.fix_mojibake
+clean_tissue_list = _bench.clean_tissue_list
+clean_disease_list = _bench.clean_disease_list
+_NOT_DISEASE = _bench._NOT_DISEASE
+_CELL_LINE_NAMES = _bench._CELL_LINE_NAMES
+_ONTOLOGY_OVERRIDES = _bench._ONTOLOGY_OVERRIDES
+
+
+def _full_constraints(**kwargs) -> dict:
+    """Build a full 6-field constraint dict, filling missing with None."""
+    return {
+        "organism": kwargs.get("organism", None),
+        "tissue": kwargs.get("tissue", None),
+        "disease": kwargs.get("disease", None),
+        "cell_type": kwargs.get("cell_type", None),
+        "assay": kwargs.get("assay", None),
+        "free_text": kwargs.get("free_text", None),
+    }
 
 # Generic terms to skip in query/ontology generation
 BLOCKLIST = {
@@ -305,7 +329,7 @@ def enhance_query_parsing(docs: dict, ontologies: dict, target: int = 650) -> li
             if key in seen:
                 continue
             seen.add(key)
-            constraints = {"organism": org_full, "tissue": tissue}
+            constraints = _full_constraints(organism=org_full, tissue=tissue)
             convs.append(_make_conv(
                 PARSE_SYSTEM, query,
                 json.dumps(constraints, indent=2),
@@ -320,7 +344,7 @@ def enhance_query_parsing(docs: dict, ontologies: dict, target: int = 650) -> li
             if key in seen:
                 continue
             seen.add(key)
-            constraints = {"organism": org_full, "disease": disease}
+            constraints = _full_constraints(organism=org_full, disease=disease)
             convs.append(_make_conv(
                 PARSE_SYSTEM, query,
                 json.dumps(constraints, indent=2),
@@ -338,7 +362,7 @@ def enhance_query_parsing(docs: dict, ontologies: dict, target: int = 650) -> li
             if key in seen:
                 continue
             seen.add(key)
-            constraints = {"organism": org_full, "tissue": tissue, "disease": disease}
+            constraints = _full_constraints(organism=org_full, tissue=tissue, disease=disease)
             convs.append(_make_conv(
                 PARSE_SYSTEM, query,
                 json.dumps(constraints, indent=2),
@@ -353,7 +377,7 @@ def enhance_query_parsing(docs: dict, ontologies: dict, target: int = 650) -> li
             if key in seen:
                 continue
             seen.add(key)
-            constraints = {"cell_type": ct}
+            constraints = _full_constraints(cell_type=ct)
             convs.append(_make_conv(
                 PARSE_SYSTEM, query,
                 json.dumps(constraints, indent=2),
@@ -370,7 +394,7 @@ def enhance_query_parsing(docs: dict, ontologies: dict, target: int = 650) -> li
             if key in seen:
                 continue
             seen.add(key)
-            constraints = {"cell_type": ct, "tissue": tissue}
+            constraints = _full_constraints(cell_type=ct, tissue=tissue)
             convs.append(_make_conv(
                 PARSE_SYSTEM, query,
                 json.dumps(constraints, indent=2),
@@ -385,7 +409,7 @@ def enhance_query_parsing(docs: dict, ontologies: dict, target: int = 650) -> li
             if key in seen:
                 continue
             seen.add(key)
-            constraints = {"organism": org_full, "assay": mod}
+            constraints = _full_constraints(organism=org_full, assay=mod)
             convs.append(_make_conv(
                 PARSE_SYSTEM, query,
                 json.dumps(constraints, indent=2),
@@ -406,9 +430,8 @@ def enhance_query_parsing(docs: dict, ontologies: dict, target: int = 650) -> li
             if key in seen:
                 continue
             seen.add(key)
-            constraints = {"organism": org_full, "tissue": tissue}
-            if diseases:
-                constraints["disease"] = diseases[0]
+            constraints = _full_constraints(organism=org_full, tissue=tissue,
+                                            disease=diseases[0] if diseases else None)
             convs.append(_make_conv(
                 PARSE_SYSTEM, query,
                 json.dumps(constraints, indent=2),
