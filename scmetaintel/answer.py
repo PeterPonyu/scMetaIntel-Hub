@@ -141,6 +141,7 @@ def ollama_generate(
         "options": {
             "temperature": temperature,
             "num_predict": max_tokens,
+            "num_ctx": 4096,
         },
     }
     if supports_think_api:
@@ -194,6 +195,7 @@ def ollama_generate_stream(
             "options": {
                 "temperature": temperature,
                 "num_predict": max_tokens,
+                "num_ctx": 4096,
             },
         },
         timeout=timeout,
