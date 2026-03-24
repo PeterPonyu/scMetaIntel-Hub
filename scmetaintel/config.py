@@ -453,6 +453,21 @@ LLM_MODELS: Dict[str, dict] = {
         "note": "Purpose-built for RAG + grounded generation with citations.",
     },
 
+    # --- Q3_K_M requantized models ---
+    # qwen3:32b Q3_K_M: eliminates 5.1GB CPU spill → 4.2x faster (7→30 tok/s); keep
+    "qwen3-32b-q3km": {
+        "ollama_name": "qwen3-32b-q3km",
+        "size_b": 32,
+        "quant": "Q3_K_M",
+        "vram_gb": 17,
+        "ctx": 40960,
+        "family": "qwen",
+        "think": False,
+        "note": "qwen3:32b Q3_K_M: 4.2x faster than Q4_K_M, full GPU fit.",
+    },
+    # qwen3.5:27b Q3_K_M: 3.3x SLOWER than Q4_K_M due to M-RoPE patched code path; avoid
+    # command-r:35b Q3_K_M: 4x slower + ontology broken (6%); avoid
+
     # --- Fine-tuned models ---
     "qwen3-8b-ft": {
         "ollama_name": "scmetaintel-qwen3-8b:latest",

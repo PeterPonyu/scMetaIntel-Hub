@@ -364,10 +364,12 @@ def main():
     model_keys = args.models or list(LLM_MODELS.keys())
     # Filter to installed models (exact ollama_name match)
     active = []
+    # Strip :latest from available names for flexible matching
+    available_base = [n.removesuffix(":latest") for n in available]
     for mk in model_keys:
         if mk in LLM_MODELS:
             ollama_name = LLM_MODELS[mk]["ollama_name"]
-            if ollama_name in available:
+            if ollama_name in available or ollama_name in available_base:
                 active.append(mk)
             else:
                 logger.warning(f"Model {mk} ({ollama_name}) not pulled in Ollama")
