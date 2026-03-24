@@ -11,8 +11,9 @@ from __future__ import annotations
 import json
 import logging
 import math
+import re
 from pathlib import Path
-from typing import Dict, List, Optional, Set
+from typing import Dict, List, Optional, Set, Tuple
 
 import numpy as np
 
@@ -419,6 +420,173 @@ def calibration_metrics(
         "brier": round(float(brier), 4),
         "n_samples": len(predictions),
     }
+
+
+# ---------------------------------------------------------------------------
+# Gold-truth cleaning helpers (shared by bench 04 and 06)
+# ---------------------------------------------------------------------------
+
+# Cell line names that should NOT appear in tissue gold truth
+CELL_LINE_NAMES = {
+    "a172", "a549", "a13lg", "hek293", "hek293t", "hela", "hepg2",
+    "jurkat", "k562", "lncap", "mcf7", "mcf-7", "thp-1", "u937",
+    "pc9", "snu719", "akata", "mutu", "yccel1", "4t1",
+    "huh-1", "huh-7", "huh1", "huh7", "caco-2", "caco2",
+}
+
+# Terms that are NOT diseases
+NOT_DISEASE = {
+    "development", "immunology", "in vitro", "healthy", "control",
+    "controls", "normal", "case", "mild", "parental and differentiated",
+    "differentiated", "aging", "ageing",
+}
+
+# Disease keywords — if these appear in a tissue term, move to diseases
+DISEASE_KEYWORDS = {
+    "cancer", "tumor", "tumour", "carcinoma", "melanoma", "lymphoma",
+    "leukemia", "leukaemia", "adenoma", "sarcoma", "glioblastoma",
+    "glioma", "myeloma", "neuroblastoma", "mesothelioma", "fibrosis",
+    "cirrhosis", "hepatitis", "colitis", "arthritis", "diabetes",
+    "alzheimer", "parkinson", "infection", "hiv", "covid",
+}
+
+# Common disease regex patterns for text extraction
+_DISEASE_PATTERNS = [
+    (r"\b(alzheimer(?:'?s)?(?:\s+disease)?)\b", "Alzheimer's disease"),
+    (r"\b(parkinson(?:'?s)?(?:\s+disease)?)\b", "Parkinson's disease"),
+    (r"\bbreast\s+(?:cancer|carcinoma|tumor)\b", "breast cancer"),
+    (r"\blung\s+(?:cancer|adenocarcinoma|carcinoma)\b", "lung cancer"),
+    (r"\bcolorectal\s+(?:cancer|carcinoma|adenocarcinoma)\b", "colorectal cancer"),
+    (r"\bpancreatic\s+(?:cancer|carcinoma|adenocarcinoma)\b", "pancreatic cancer"),
+    (r"\bprostate\s+(?:cancer|carcinoma|adenocarcinoma)\b", "prostate cancer"),
+    (r"\b(?:liver|hepatocellular)\s+(?:cancer|carcinoma)\b", "liver cancer"),
+    (r"\bglioblastoma\b", "glioblastoma"),
+    (r"\bglioma\b", "glioma"),
+    (r"\bmelanoma\b", "melanoma"),
+    (r"\b(?:acute\s+)?leukemia\b", "leukemia"),
+    (r"\blymphoma\b", "lymphoma"),
+    (r"\bdiabetes(?:\s+mellitus)?\b", "diabetes"),
+    (r"\bfibrosis\b", "fibrosis"),
+    (r"\bcovid-?19\b", "COVID-19"),
+    (r"\bsars-cov-2\b", "COVID-19"),
+    (r"\bcarcinoma\b", "carcinoma"),
+    (r"\bsarcoma\b", "sarcoma"),
+    (r"\bneuroblastoma\b", "neuroblastoma"),
+    (r"\bmyeloma\b", "myeloma"),
+    (r"\b(?:crohn(?:'?s)?)\b", "Crohn's disease"),
+    (r"\bhypertension\b", "hypertension"),
+    (r"\batherosclerosis\b", "atherosclerosis"),
+]
+
+# Common cell type regex patterns for text extraction
+_CELL_TYPE_PATTERNS = [
+    (r"\bmacrophage[s]?\b", "macrophages"),
+    (r"\bneutrophil[s]?\b", "neutrophils"),
+    (r"\bt\s*cell[s]?\b", "T cells"),
+    (r"\bb\s*cell[s]?\b", "B cells"),
+    (r"\bfibroblast[s]?\b", "fibroblasts"),
+    (r"\bneuron[s]?\b", "neurons"),
+    (r"\bastrocyte[s]?\b", "astrocytes"),
+    (r"\bmicroglia[l]?\b", "microglia"),
+    (r"\boligodendrocyte[s]?\b", "oligodendrocytes"),
+    (r"\bendothelial\s+cell[s]?\b", "endothelial cells"),
+    (r"\bepithelial\s+cell[s]?\b", "epithelial cells"),
+    (r"\bcardiomyocyte[s]?\b", "cardiomyocytes"),
+    (r"\bhepatocyte[s]?\b", "hepatocytes"),
+    (r"\bmonocyte[s]?\b", "monocytes"),
+    (r"\bdendritic\s+cell[s]?\b", "dendritic cells"),
+    (r"\bnk\s+cell[s]?\b", "NK cells"),
+]
+
+
+def clean_tissue_list(tissues: List[str], diseases: List[str]) -> Tuple[List[str], List[str]]:
+    """Clean tissue list: remove cell lines, move disease terms to disease list."""
+    clean_tissues = []
+    for t in tissues:
+        t_low = t.lower().strip()
+        if t_low in CELL_LINE_NAMES or any(
+            cl in t_low for cl in CELL_LINE_NAMES if len(cl) > 3
+        ):
+            continue
+        if re.match(r'^[a-z0-9_-]+$', t_low) and any(c.isdigit() for c in t_low):
+            continue
+        if any(dk in t_low for dk in DISEASE_KEYWORDS):
+            if t not in diseases:
+                diseases.append(t)
+            continue
+        clean_tissues.append(t)
+    return clean_tissues, diseases
+
+
+def clean_disease_list(diseases: List[str]) -> List[str]:
+    """Remove non-disease terms from disease list."""
+    return [d for d in diseases if d.lower().strip() not in NOT_DISEASE
+            and not re.match(r'^[0-9x?]+$', d.lower().strip())]
+
+
+def extract_diseases_from_text(title: str, summary: str,
+                               existing_diseases: List[str]) -> List[str]:
+    """Extract disease terms from title/summary when diseases list is empty."""
+    if existing_diseases:
+        return existing_diseases
+    text_low = (title + " " + summary).lower()
+    found = []
+    for pattern, disease_name in _DISEASE_PATTERNS:
+        if re.search(pattern, text_low):
+            if disease_name not in found:
+                found.append(disease_name)
+    return found
+
+
+def extract_cell_types_from_text(title: str, summary: str,
+                                 existing: List[str]) -> List[str]:
+    """Extract cell type terms from title/summary when cell_types is empty."""
+    if existing:
+        return existing
+    text_low = (title + " " + summary).lower()
+    found = []
+    for pattern, cell_name in _CELL_TYPE_PATTERNS:
+        if re.search(pattern, text_low):
+            if cell_name not in found:
+                found.append(cell_name)
+    return found
+
+
+def clean_extraction_gold(doc: Dict) -> Dict[str, List[str]]:
+    """Build clean extraction gold truth from a GSE doc.
+
+    Applies the full cleaning pipeline:
+    1. Text-presence filter (only terms extractable from title+summary)
+    2. Remove cell lines from tissues
+    3. Move disease terms from tissues to diseases
+    4. Remove non-disease terms from diseases
+    5. Extract diseases from text when list is empty
+    6. Extract cell types from text when list is empty
+    """
+    title = doc.get("title", "")
+    summary = doc.get("summary", "")
+    text = (title + " " + summary).lower()
+
+    gold = {}
+    for field in ["tissues", "diseases", "cell_types"]:
+        raw = doc.get(field, []) or []
+        gold[field] = [t for t in raw if t and len(t) >= 3 and t.lower() in text]
+
+    # Clean tissues: remove cell lines, migrate diseases
+    gold["tissues"], gold["diseases"] = clean_tissue_list(
+        gold["tissues"], gold["diseases"]
+    )
+    # Clean diseases: remove non-disease terms
+    gold["diseases"] = clean_disease_list(gold["diseases"])
+    # Fill empty diseases from text
+    gold["diseases"] = extract_diseases_from_text(
+        title, summary, gold["diseases"]
+    )
+    # Fill empty cell types from text
+    gold["cell_types"] = extract_cell_types_from_text(
+        title, summary, gold["cell_types"]
+    )
+    return gold
 
 
 # ---------------------------------------------------------------------------

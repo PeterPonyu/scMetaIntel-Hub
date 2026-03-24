@@ -39,6 +39,7 @@ from scmetaintel.evaluate import (
     field_f1, extraction_metrics, citation_accuracy,
     query_parsing_metrics, ontology_metrics,
     load_eval_queries, save_results,
+    clean_extraction_gold,
 )
 
 logging.basicConfig(level=logging.INFO,
@@ -125,14 +126,9 @@ def task_b_metadata_extraction(model_key: str, docs: list, think: bool = False) 
     limit = 15 if think else 50
     all_metrics = []
     for doc in docs[:limit]:
-        # Build gold from terms that are actually extractable from the input text.
-        # Raw sample-level metadata (donor IDs, cell-line codes) cannot be expected
-        # from title+summary extraction — filter to terms present in the text.
-        text = (doc.get("title", "") + " " + doc.get("summary", "")).lower()
-        gold = {}
-        for field in ["tissues", "diseases", "cell_types"]:
-            raw = doc.get(field, []) or []
-            gold[field] = [t for t in raw if t and len(t) >= 3 and t.lower() in text]
+        # Build clean gold truth: text-presence filter + cell-line removal +
+        # disease migration + non-disease removal + text-based gap filling.
+        gold = clean_extraction_gold(doc)
         if not any(gold.values()):
             continue
         try:

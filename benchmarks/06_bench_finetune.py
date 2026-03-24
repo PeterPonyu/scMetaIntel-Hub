@@ -42,7 +42,12 @@ from scmetaintel.config import (
     EMBEDDING_MODELS, LLM_MODELS,
     GROUND_TRUTH_DIR, BENCHMARK_DIR,
 )
-from scmetaintel.evaluate import load_eval_queries, save_results
+from scmetaintel.evaluate import (
+    load_eval_queries, save_results,
+    CELL_LINE_NAMES, NOT_DISEASE, DISEASE_KEYWORDS,
+    clean_tissue_list, clean_disease_list,
+    extract_diseases_from_text, extract_cell_types_from_text,
+)
 
 logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s [%(name)s] %(levelname)s: %(message)s")
@@ -232,29 +237,10 @@ def fix_mojibake(text: str) -> str:
     return text
 
 
-# Cell line names that appear in tissue fields but are NOT tissues
-_CELL_LINE_NAMES = {
-    "a172", "a549", "a13lg", "hek293", "hek293t", "hela", "hepg2",
-    "jurkat", "k562", "lncap", "mcf7", "mcf-7", "thp-1", "u937",
-    "pc9", "snu719", "akata", "mutu", "yccel1", "4t1",
-    "huh-1", "huh-7", "huh1", "huh7", "caco-2", "caco2",
-}
-
-# Terms that are NOT diseases
-_NOT_DISEASE = {
-    "development", "immunology", "in vitro", "healthy", "control",
-    "controls", "normal", "case", "mild", "parental and differentiated",
-    "differentiated", "aging", "ageing",
-}
-
-# Disease keywords → if these appear in a tissue term, move to disease
-_DISEASE_KEYWORDS = {
-    "cancer", "tumor", "tumour", "carcinoma", "melanoma", "lymphoma",
-    "leukemia", "leukaemia", "adenoma", "sarcoma", "glioblastoma",
-    "glioma", "myeloma", "neuroblastoma", "mesothelioma", "fibrosis",
-    "cirrhosis", "hepatitis", "colitis", "arthritis", "diabetes",
-    "alzheimer", "parkinson", "infection", "hiv", "covid",
-}
+# Aliases for backward-compat references within this file
+_CELL_LINE_NAMES = CELL_LINE_NAMES
+_NOT_DISEASE = NOT_DISEASE
+_DISEASE_KEYWORDS = DISEASE_KEYWORDS
 
 # Organism keywords for query parsing
 _ORGANISM_KEYWORDS = {
@@ -322,107 +308,6 @@ _ONTOLOGY_OVERRIDES = {
     "calvarium": ("UBERON:0004339", "vault of skull"),
     "nasal epithelium": ("UBERON:0005384", "nasal cavity epithelium"),
 }
-
-
-def clean_tissue_list(tissues: list, diseases: list) -> tuple[list, list]:
-    """Clean tissue list: remove cell lines, move diseases to disease list."""
-    clean_tissues = []
-    for t in tissues:
-        t_low = t.lower().strip()
-        # Skip cell line names
-        if t_low in _CELL_LINE_NAMES or any(
-            cl in t_low for cl in _CELL_LINE_NAMES if len(cl) > 3
-        ):
-            continue
-        # Skip sample IDs (contain digits + letters, no spaces)
-        if re.match(r'^[a-z0-9_-]+$', t_low) and any(c.isdigit() for c in t_low):
-            continue
-        # Check if this looks like a disease — move to diseases
-        if any(dk in t_low for dk in _DISEASE_KEYWORDS):
-            if t not in diseases:
-                diseases.append(t)
-            continue
-        clean_tissues.append(t)
-    return clean_tissues, diseases
-
-
-def clean_disease_list(diseases: list) -> list:
-    """Remove non-disease terms from disease list."""
-    return [d for d in diseases if d.lower().strip() not in _NOT_DISEASE
-            and not re.match(r'^[0-9x?]+$', d.lower().strip())]
-
-
-def extract_diseases_from_text(title: str, summary: str,
-                               existing_diseases: list) -> list:
-    """Extract obvious disease terms from title/summary when diseases is empty."""
-    if existing_diseases:
-        return existing_diseases
-    text_low = (title + " " + summary).lower()
-    found = []
-    # Check for common disease patterns
-    disease_patterns = [
-        (r"\b(alzheimer(?:'?s)?(?:\s+disease)?)\b", "Alzheimer's disease"),
-        (r"\b(parkinson(?:'?s)?(?:\s+disease)?)\b", "Parkinson's disease"),
-        (r"\bbreast\s+(?:cancer|carcinoma|tumor)\b", "breast cancer"),
-        (r"\blung\s+(?:cancer|adenocarcinoma|carcinoma)\b", "lung cancer"),
-        (r"\bcolorectal\s+(?:cancer|carcinoma|adenocarcinoma)\b", "colorectal cancer"),
-        (r"\bpancreatic\s+(?:cancer|carcinoma|adenocarcinoma)\b", "pancreatic cancer"),
-        (r"\bprostate\s+(?:cancer|carcinoma|adenocarcinoma)\b", "prostate cancer"),
-        (r"\b(?:liver|hepatocellular)\s+(?:cancer|carcinoma)\b", "liver cancer"),
-        (r"\bglioblastoma\b", "glioblastoma"),
-        (r"\bglioma\b", "glioma"),
-        (r"\bmelanoma\b", "melanoma"),
-        (r"\b(?:acute\s+)?leukemia\b", "leukemia"),
-        (r"\blymphoma\b", "lymphoma"),
-        (r"\bdiabetes(?:\s+mellitus)?\b", "diabetes"),
-        (r"\bfibrosis\b", "fibrosis"),
-        (r"\bcovid-?19\b", "COVID-19"),
-        (r"\bsars-cov-2\b", "COVID-19"),
-        (r"\bcarcinoma\b", "carcinoma"),
-        (r"\bsarcoma\b", "sarcoma"),
-        (r"\bneuroblastoma\b", "neuroblastoma"),
-        (r"\bmyeloma\b", "myeloma"),
-        (r"\b(?:crohn(?:'?s)?)\b", "Crohn's disease"),
-        (r"\bhypertension\b", "hypertension"),
-        (r"\batherosclerosis\b", "atherosclerosis"),
-    ]
-    for pattern, disease_name in disease_patterns:
-        if re.search(pattern, text_low):
-            if disease_name not in found:
-                found.append(disease_name)
-    return found
-
-
-def extract_cell_types_from_text(title: str, summary: str,
-                                 existing: list) -> list:
-    """Extract obvious cell type terms when cell_types is empty."""
-    if existing:
-        return existing
-    text_low = (title + " " + summary).lower()
-    found = []
-    cell_patterns = [
-        (r"\bmacrophage[s]?\b", "macrophages"),
-        (r"\bneutrophil[s]?\b", "neutrophils"),
-        (r"\bt\s*cell[s]?\b", "T cells"),
-        (r"\bb\s*cell[s]?\b", "B cells"),
-        (r"\bfibroblast[s]?\b", "fibroblasts"),
-        (r"\bneuron[s]?\b", "neurons"),
-        (r"\bastrocyte[s]?\b", "astrocytes"),
-        (r"\bmicroglia[l]?\b", "microglia"),
-        (r"\boligodendrocyte[s]?\b", "oligodendrocytes"),
-        (r"\bendothelial\s+cell[s]?\b", "endothelial cells"),
-        (r"\bepithelial\s+cell[s]?\b", "epithelial cells"),
-        (r"\bcardiomyocyte[s]?\b", "cardiomyocytes"),
-        (r"\bhepatocyte[s]?\b", "hepatocytes"),
-        (r"\bmonocyte[s]?\b", "monocytes"),
-        (r"\bdendritic\s+cell[s]?\b", "dendritic cells"),
-        (r"\bnk\s+cell[s]?\b", "NK cells"),
-    ]
-    for pattern, cell_name in cell_patterns:
-        if re.search(pattern, text_low):
-            if cell_name not in found:
-                found.append(cell_name)
-    return found
 
 
 # ------------------------------------------------------------------
