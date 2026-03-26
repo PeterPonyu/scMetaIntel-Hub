@@ -23,23 +23,6 @@ logs/
 .vscode/
 .idea/
 
-# Fine-tuning data & compiled caches
-benchmarks/finetuned/llm_data/*.jsonl
-unsloth_compiled_cache/
-
-# Fine-tuning model artifacts (large binary files)
-benchmarks/finetuned/*/checkpoint-*/
-benchmarks/finetuned/*/merged_16bit*/
-benchmarks/finetuned/*/lora_adapter/
-benchmarks/finetuned/*/gguf/
-benchmarks/finetuned/*/*.safetensors
-benchmarks/finetuned/*/*.bin
-benchmarks/finetuned/*.log
-# Base-model files copied during merge (large, not unique to fine-tune)
-benchmarks/finetuned/*/tokenizer.json
-benchmarks/finetuned/*/model.safetensors.index.json
-benchmarks/finetuned/*/unsloth_compiled_cache/
-
 # Claude Code agent state
 .claude/
 

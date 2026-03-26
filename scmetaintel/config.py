@@ -62,7 +62,8 @@ EMBEDDING_MODELS: Dict[str, dict] = {
         "tier": "general",
         "mrl": True,
         "vram_gb": 16,
-        "note": "Best-quality dense embedder; use when VRAM allows.",
+        "disabled": True,
+        "note": "Incomplete download (missing shards). Re-download to enable.",
     },
     "qwen3-embed-4b": {
         "name": "Qwen/Qwen3-Embedding-4B",
@@ -72,7 +73,8 @@ EMBEDDING_MODELS: Dict[str, dict] = {
         "tier": "general",
         "mrl": True,
         "vram_gb": 8,
-        "note": "Balanced quality / VRAM.",
+        "disabled": True,
+        "note": "Incomplete download (missing shards). Re-download to enable.",
     },
     "qwen3-embed-0.6b": {
         "name": "Qwen/Qwen3-Embedding-0.6B",
@@ -278,17 +280,8 @@ LLM_MODELS: Dict[str, dict] = {
         "ctx": 256000,
         "family": "qwen",
         "think": True,
-        "note": "Recommended primary reasoning model.",
-    },
-    "qwen3.5-9b": {
-        "ollama_name": "qwen3.5:9b",
-        "size_b": 9,
-        "quant": "Q4_K_M",
-        "vram_gb": 6.6,
-        "ctx": 256000,
-        "family": "qwen",
-        "think": True,
-        "note": "Recommended fast reasoning model.",
+        "cpu_spill": True,
+        "note": "Recommended primary reasoning model. Minor 2.7GB CPU spill at default ctx.",
     },
     "qwen3.5-9b-q8": {
         "ollama_name": "qwen3.5:9b-q8_0",
@@ -298,27 +291,7 @@ LLM_MODELS: Dict[str, dict] = {
         "ctx": 256000,
         "family": "qwen",
         "think": True,
-        "note": "Higher precision 9B ablation model.",
-    },
-    "qwen3-32b": {
-        "ollama_name": "qwen3:32b",
-        "size_b": 32,
-        "quant": "Q4_K_M",
-        "vram_gb": 20,
-        "ctx": 256000,
-        "family": "qwen",
-        "think": True,
-        "note": "High-end dense reasoning model.",
-    },
-    "qwen3-14b": {
-        "ollama_name": "qwen3:14b",
-        "size_b": 14,
-        "quant": "Q4_K_M",
-        "vram_gb": 9.3,
-        "ctx": 256000,
-        "family": "qwen",
-        "think": True,
-        "note": "LoRA-friendly medium model.",
+        "note": "Recommended fast reasoning model. Q8_0 replaces Q4_K_M.",
     },
     "qwen3-14b-q8": {
         "ollama_name": "qwen3:14b-q8_0",
@@ -450,11 +423,11 @@ LLM_MODELS: Dict[str, dict] = {
         "ctx": 128000,
         "family": "command-r",
         "think": False,
-        "note": "Purpose-built for RAG + grounded generation with citations.",
+        "cpu_spill": True,
+        "note": "Purpose-built for RAG + grounded generation. 7.1GB CPU spill at default ctx.",
     },
 
-    # --- Q3_K_M requantized models ---
-    # qwen3:32b Q3_K_M: eliminates 5.1GB CPU spill → 4.2x faster (7→30 tok/s); keep
+    # --- Q3_K_M requantized models (100% GPU at num_ctx=4096 on RTX 5090 Laptop) ---
     "qwen3-32b-q3km": {
         "ollama_name": "qwen3-32b-q3km",
         "size_b": 32,
@@ -463,27 +436,16 @@ LLM_MODELS: Dict[str, dict] = {
         "ctx": 40960,
         "family": "qwen",
         "think": False,
-        "note": "qwen3:32b Q3_K_M: 4.2x faster than Q4_K_M, full GPU fit.",
+        "note": "qwen3:32b Q3_K_M: full GPU fit, ~3x faster than Q4_K_M with CPU spill.",
     },
-    # qwen3.5:27b Q3_K_M: 3.3x SLOWER than Q4_K_M due to M-RoPE patched code path; avoid
-    # command-r:35b Q3_K_M: 4x slower + ontology broken (6%); avoid
-
-    # --- Fine-tuned models ---
-    "qwen3-8b-ft": {
-        "ollama_name": "scmetaintel-qwen3-8b:latest",
-        "size_b": 8,
-        "quant": "Q4_K_M",
-        "vram_gb": 5.2,
-        "ctx": 4096,
-        "family": "qwen",
-        "think": False,
-        "note": "Qwen3-8B fine-tuned on scMetaIntel multi-task SFT data.",
-    },
+    # Q3_K_M tested but not kept:
+    # - qwen3.5-27b: quality preserved (0.800 composite) but no speed gain over Q4_K_M@4k ctx
+    # - command-r-35b: ontology destroyed (65%→0%), -0.150 composite. REJECTED.
 }
 
 # Recommended frontier defaults (design intent)
 RECOMMENDED_LLM = "qwen3.5-27b"
-RECOMMENDED_LLM_FAST = "qwen3.5-9b"
+RECOMMENDED_LLM_FAST = "qwen3.5-9b-q8"
 RECOMMENDED_EMBEDDING = "qwen3-embed-8b"
 RECOMMENDED_RERANKER = "qwen3-reranker-4b"
 

@@ -88,7 +88,7 @@ def get_tier_config(tier: str) -> Dict[str, str]:
 
 
 def update_task_model(task: str, model_key: str):
-    """Update the model for a specific task (e.g., after fine-tuning)."""
+    """Update the model for a specific task at runtime."""
     if model_key not in LLM_MODELS:
         logger.warning(f"Model {model_key} not in LLM_MODELS")
         return

@@ -354,6 +354,8 @@ def main():
                         help="LLM model keys to test")
     parser.add_argument("--no-think-ablation", action="store_true",
                         help="Skip thinking-mode ablation (only test think=False)")
+    parser.add_argument("--include-spill", action="store_true",
+                        help="Include models marked cpu_spill=True (skipped by default)")
     args = parser.parse_args()
 
     available = check_ollama()
@@ -368,7 +370,11 @@ def main():
     available_base = [n.removesuffix(":latest") for n in available]
     for mk in model_keys:
         if mk in LLM_MODELS:
-            ollama_name = LLM_MODELS[mk]["ollama_name"]
+            cfg = LLM_MODELS[mk]
+            if cfg.get("cpu_spill") and not args.include_spill and not args.models:
+                logger.info(f"Skipping {mk} (cpu_spill=True, use --include-spill to override)")
+                continue
+            ollama_name = cfg["ollama_name"]
             if ollama_name in available or ollama_name in available_base:
                 active.append(mk)
             else:

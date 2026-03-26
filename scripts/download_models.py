@@ -21,7 +21,6 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import importlib.util
 import json
 import logging
 import os
@@ -65,7 +64,6 @@ class Category(Enum):
     OLLAMA = "ollama"
     HF_EMBEDDING = "hf-embedding"
     HF_RERANKER = "hf-reranker"
-    HF_FINETUNE = "hf-finetune"
 
 
 class Status(Enum):
@@ -97,26 +95,6 @@ class DownloadResult:
 
 
 # ---------------------------------------------------------------------------
-# FINETUNE_CANDIDATES loader (avoids importing full benchmark module)
-# ---------------------------------------------------------------------------
-
-def _load_finetune_candidates() -> Dict[str, dict]:
-    """Import FINETUNE_CANDIDATES from benchmarks/06_bench_finetune.py."""
-    bench_path = PROJECT_ROOT / "benchmarks" / "06_bench_finetune.py"
-    if not bench_path.exists():
-        logger.warning(f"Fine-tune benchmark not found at {bench_path}")
-        return {}
-    spec = importlib.util.spec_from_file_location("bench_finetune", bench_path)
-    mod = importlib.util.module_from_spec(spec)
-    try:
-        spec.loader.exec_module(mod)
-    except Exception as e:
-        logger.warning(f"Could not load finetune candidates: {e}")
-        return {}
-    return getattr(mod, "FINETUNE_CANDIDATES", {})
-
-
-# ---------------------------------------------------------------------------
 # Registry — builds categorized model lists from project config
 # ---------------------------------------------------------------------------
 
@@ -124,13 +102,6 @@ class Registry:
 
     def __init__(self, include_disabled: bool = False):
         self.include_disabled = include_disabled
-        self._finetune_candidates: Dict[str, dict] | None = None
-
-    @property
-    def finetune_candidates(self) -> Dict[str, dict]:
-        if self._finetune_candidates is None:
-            self._finetune_candidates = _load_finetune_candidates()
-        return self._finetune_candidates
 
     def get_ollama_models(self) -> List[ModelSpec]:
         models = []
@@ -175,19 +146,6 @@ class Registry:
                 download_id=cfg["name"],
                 disabled=disabled,
                 estimated_size_gb=cfg.get("vram_gb", 0.5),
-                note=cfg.get("note", ""),
-            ))
-        return models
-
-    def get_hf_finetune_models(self) -> List[ModelSpec]:
-        models = []
-        for key, cfg in self.finetune_candidates.items():
-            models.append(ModelSpec(
-                key=key,
-                display_name=cfg["hf_name"],
-                category=Category.HF_FINETUNE,
-                download_id=cfg["hf_name"],
-                estimated_size_gb=cfg.get("vram_4bit_gb", 5) * 4,
                 note=cfg.get("note", ""),
             ))
         return models
@@ -273,14 +231,11 @@ class Registry:
                 + self.get_hf_embedding_models()
                 + self.get_hf_reranker_models()
             )
-        elif phase == "finetune":
-            return self.get_hf_finetune_models()
         elif phase == "all":
             return (
                 self.get_ollama_models()
                 + self.get_hf_embedding_models()
                 + self.get_hf_reranker_models()
-                + self.get_hf_finetune_models()
             )
         else:
             raise ValueError(f"Unknown phase: {phase}")
@@ -291,7 +246,6 @@ class Registry:
             Category.OLLAMA: self.get_ollama_models,
             Category.HF_EMBEDDING: self.get_hf_embedding_models,
             Category.HF_RERANKER: self.get_hf_reranker_models,
-            Category.HF_FINETUNE: self.get_hf_finetune_models,
         }
         return dispatch[cat]()
 
@@ -586,7 +540,6 @@ class CacheChecker:
             "ollama": [],
             "hf-embedding": [],
             "hf-reranker": [],
-            "hf-finetune": [],
         }
 
         # Ollama
@@ -645,25 +598,6 @@ class CacheChecker:
                 "incomplete_blobs": n_partial,
             })
 
-        for model in self.registry.get_hf_finetune_models():
-            is_cached, path = self.hf.is_cached(model.download_id)
-            has_partial, n_partial = self.hf.has_incomplete_blobs(model.download_id)
-            size_mb = self.hf.cached_size_mb(model.download_id)
-            if has_partial:
-                status = "partial"
-            elif is_cached:
-                status = "cached"
-            else:
-                status = "missing"
-            report["hf-finetune"].append({
-                "key": model.key,
-                "repo": model.download_id,
-                "status": status,
-                "path": path,
-                "size_mb": size_mb,
-                "incomplete_blobs": n_partial,
-            })
-
         return report
 
     def print_report(self, report: Dict[str, List[dict]]):
@@ -671,7 +605,6 @@ class CacheChecker:
             "ollama": "Ollama LLMs",
             "hf-embedding": "HuggingFace Embeddings",
             "hf-reranker": "HuggingFace Rerankers",
-            "hf-finetune": "HuggingFace Fine-tune Base Models",
         }
         for cat_key, entries in report.items():
             cached = sum(1 for e in entries if e["status"] == "cached")
@@ -875,8 +808,7 @@ Examples:
   %(prog)s --phase core                    # 4 default runtime models
   %(prog)s --phase router                  # 4 task-specific router models
   %(prog)s --phase benchmark               # All 39 benchmark models
-  %(prog)s --phase finetune                # 8 HF fine-tuning base models
-  %(prog)s --phase all                     # Everything (~47 models)
+  %(prog)s --phase all                     # Everything (~39 models)
   %(prog)s --category hf-embedding         # Only HF embeddings
   %(prog)s --category ollama               # Only Ollama LLMs
   %(prog)s --check                         # Report cache status
@@ -888,12 +820,12 @@ Examples:
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument(
         "--phase",
-        choices=["core", "router", "benchmark", "finetune", "all"],
+        choices=["core", "router", "benchmark", "all"],
         help="Download phase preset",
     )
     group.add_argument(
         "--category",
-        choices=["ollama", "hf-embedding", "hf-reranker", "hf-finetune"],
+        choices=["ollama", "hf-embedding", "hf-reranker"],
         help="Download a specific model category",
     )
     group.add_argument(

@@ -12,7 +12,6 @@ Level 2 – Representation    (02_bench_embeddings.py)
 Level 3 – Retrieval         (03_bench_retrieval.py)
 Level 4 – Intelligence      (04_bench_llm.py)
 Level 5 – Context & E2E     (05/05b/07)
-Level 6 – Fine-tuning       (06/06b)
 ```
 
 ---
@@ -88,15 +87,6 @@ Compares all LLMs (17 models x 2 think modes where applicable) across 5 sub-task
 
 ---
 
-### Level 6 – Fine-tuning
-
-| Script | What | Data |
-|--------|------|------|
-| `06_bench_finetune.py` | SFT training on domain data | `finetuned/llm_data/sft_train*.jsonl` (13K+ examples) |
-| `06b_eval_finetuned.py` | Compare fine-tuned vs base model | same eval queries |
-
----
-
 ## Eval Queries
 
 **67 queries** in `eval_queries.json`, categorized:
@@ -152,5 +142,4 @@ Benchmark results are saved to `results/` as JSON files. Previous runs:
 - `embedding_bench.json` – embedding model comparison
 - `retrieval_bench.json` – retrieval strategy comparison
 - `llm_bench.json` – LLM comparison (all 17 models, think ablation)
-- `finetune_bench.json` – fine-tuning results
 - `context_bench.json` / `context_management_bench.json` – context strategies
