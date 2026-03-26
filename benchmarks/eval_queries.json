@@ -953,13 +953,210 @@
   {
     "id": "q67",
     "query": "rat single-cell RNA-seq",
-    "expected_constraints": {},
+    "expected_constraints": {
+      "organism": "Rattus norvegicus"
+    },
     "expected_gse": [
-      "GSE309829",
-      "GSE235582",
-      "GSE254917"
+      "GSE216665",
+      "GSE298059",
+      "GSE286034"
     ],
     "category": "organism",
     "difficulty": "easy"
+  },
+  {
+    "id": "q68",
+    "query": "Drosophila melanogaster single-cell RNA-seq",
+    "expected_constraints": {
+      "organism": "Drosophila melanogaster"
+    },
+    "expected_gse": [
+      "GSE278063",
+      "GSE138625",
+      "GSE220615"
+    ],
+    "category": "organism",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q69",
+    "query": "pig single-cell transcriptomics",
+    "expected_constraints": {
+      "organism": "Sus scrofa"
+    },
+    "expected_gse": [
+      "GSE242553",
+      "GSE174112",
+      "GSE263465"
+    ],
+    "category": "organism",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q70",
+    "query": "macaque brain single-cell RNA-seq",
+    "expected_constraints": {
+      "organism": "Macaca mulatta",
+      "tissue": "brain"
+    },
+    "expected_gse": [
+      "GSE221815",
+      "GSE306257"
+    ],
+    "category": "organism",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q71",
+    "query": "human thymus single-cell RNA-seq",
+    "expected_constraints": {
+      "organism": "Homo sapiens",
+      "tissue": "thymus"
+    },
+    "expected_gse": [
+      "GSE233180",
+      "GSE212244",
+      "GSE271304"
+    ],
+    "category": "basic",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q72",
+    "query": "human breast cancer single-cell RNA-seq",
+    "expected_constraints": {
+      "organism": "Homo sapiens",
+      "disease": "breast cancer"
+    },
+    "expected_gse": [
+      "GSE286038",
+      "GSE210963",
+      "GSE227244"
+    ],
+    "category": "disease",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q73",
+    "query": "mouse intestine single-cell RNA-seq",
+    "expected_constraints": {
+      "organism": "Mus musculus",
+      "tissue": "intestine"
+    },
+    "expected_gse": [
+      "GSE201446",
+      "GSE193593",
+      "GSE236565"
+    ],
+    "category": "basic",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q74",
+    "query": "human Crohn's disease single-cell sequencing",
+    "expected_constraints": {
+      "disease": "Crohn's disease",
+      "organism": "Homo sapiens"
+    },
+    "expected_gse": [
+      "GSE210955",
+      "GSE290695",
+      "GSE156776"
+    ],
+    "category": "disease",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q75",
+    "query": "scATAC-seq human immune cells",
+    "expected_constraints": {
+      "assay": "atac-seq",
+      "organism": "Homo sapiens"
+    },
+    "expected_gse": [
+      "GSE226108",
+      "GSE289515",
+      "GSE308365"
+    ],
+    "category": "modality",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q76",
+    "query": "single-cell multiome human",
+    "expected_constraints": {
+      "assay": "multiome",
+      "organism": "Homo sapiens"
+    },
+    "expected_gse": [
+      "GSE313672",
+      "GSE289515",
+      "GSE294221"
+    ],
+    "category": "modality",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q77",
+    "query": "human brain Alzheimer's disease scRNA-seq",
+    "expected_constraints": {
+      "organism": "Homo sapiens",
+      "tissue": "brain",
+      "disease": "Alzheimer's disease"
+    },
+    "expected_gse": [
+      "GSE308007",
+      "GSE307866",
+      "GSE153807"
+    ],
+    "category": "multi_constraint",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q78",
+    "query": "mouse lung fibrosis macrophage scRNA-seq",
+    "expected_constraints": {
+      "organism": "Mus musculus",
+      "tissue": "lung",
+      "disease": "fibrosis"
+    },
+    "expected_gse": [
+      "GSE313672",
+      "GSE180139",
+      "GSE263042"
+    ],
+    "category": "multi_constraint",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q79",
+    "query": "human liver hepatocellular carcinoma immune scRNA-seq",
+    "expected_constraints": {
+      "organism": "Homo sapiens",
+      "tissue": "liver",
+      "disease": "liver cancer"
+    },
+    "expected_gse": [
+      "GSE103867",
+      "GSE245905",
+      "GSE261618"
+    ],
+    "category": "multi_constraint",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q80",
+    "query": "human prostate cancer single-cell sequencing",
+    "expected_constraints": {
+      "organism": "Homo sapiens",
+      "disease": "prostate cancer"
+    },
+    "expected_gse": [
+      "GSE268308",
+      "GSE245387",
+      "GSE277080"
+    ],
+    "category": "disease",
+    "difficulty": "medium"
   }
 ]

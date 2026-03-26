@@ -89,20 +89,20 @@ Compares all LLMs (17 models x 2 think modes where applicable) across 5 sub-task
 
 ## Eval Queries
 
-**67 queries** in `eval_queries.json`, categorized:
+**80 queries** in `eval_queries.json`, categorized:
 
 | Category | Count | Difficulty | Example |
 |----------|-------|------------|---------|
-| `basic` | 16 | easy | "human brain scRNA-seq" |
-| `disease` | 15 | medium | "Alzheimer's disease single-cell" |
+| `basic` | 18 | easy | "human brain scRNA-seq" |
+| `disease` | 18 | medium | "breast cancer single-cell RNA-seq" |
 | `cell_type` | 12 | medium | "T cell single-cell RNA-seq" |
-| `multi_constraint` | 10 | hard | "mouse kidney diabetic nephropathy scRNA-seq" |
+| `multi_constraint` | 13 | hard | "human brain Alzheimer's disease scRNA-seq" |
 | `natural_language` | 8 | hard | "What datasets study the tumor microenvironment?" |
-| `modality` | 4 | medium | "spatial transcriptomics human brain" |
-| `organism` | 2 | easy | "zebrafish single-cell sequencing" |
+| `modality` | 6 | medium | "single-cell multiome human" |
+| `organism` | 5 | easy–medium | "Drosophila melanogaster single-cell RNA-seq" |
 
-Each query has `expected_gse` (3–5 GSE IDs) for measuring retrieval precision/recall.
-All 168 unique expected GSEs are present in `ground_truth/`.
+Each query has `expected_gse` (2–5 GSE IDs) for measuring retrieval precision/recall.
+All 203 unique expected GSEs are present in `ground_truth/`.
 
 ## Ground Truth Corpus
 
