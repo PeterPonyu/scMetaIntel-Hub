@@ -43,54 +43,85 @@ logger = logging.getLogger("augment_gt")
 # ---------------------------------------------------------------------------
 
 SEARCH_TERMS = [
-    # Priority 1: Disease-enriched studies
-    {"query": "single cell RNA-seq Alzheimer disease", "organism": "Homo sapiens", "max_results": 40, "category": "disease"},
-    {"query": "single cell RNA-seq Alzheimer disease", "organism": "Mus musculus", "max_results": 25, "category": "disease"},
-    {"query": "single cell RNA-seq Parkinson disease", "organism": "Homo sapiens", "max_results": 30, "category": "disease"},
+    # =========================================================================
+    # GAP 1: Autoimmune / Inflammatory diseases (15 studies → target 80+)
+    # =========================================================================
+    {"query": "single cell RNA-seq rheumatoid arthritis", "organism": "Homo sapiens", "max_results": 30, "category": "autoimmune"},
+    {"query": "single cell RNA-seq lupus SLE systemic lupus", "organism": "Homo sapiens", "max_results": 30, "category": "autoimmune"},
+    {"query": "single cell RNA-seq ulcerative colitis inflammatory bowel", "organism": "Homo sapiens", "max_results": 30, "category": "autoimmune"},
+    {"query": "single cell RNA-seq Crohn disease", "organism": "Homo sapiens", "max_results": 25, "category": "autoimmune"},
+    {"query": "single cell RNA-seq psoriasis dermatitis atopic", "organism": "Homo sapiens", "max_results": 25, "category": "autoimmune"},
+    {"query": "single cell RNA-seq multiple sclerosis", "organism": "Homo sapiens", "max_results": 25, "category": "autoimmune"},
+    {"query": "single cell RNA-seq asthma COPD", "organism": "Homo sapiens", "max_results": 25, "category": "autoimmune"},
+    {"query": "single cell RNA-seq type 1 diabetes autoimmune", "organism": "Homo sapiens", "max_results": 20, "category": "autoimmune"},
+    {"query": "single cell RNA-seq myasthenia gravis autoimmune", "organism": "", "max_results": 15, "category": "autoimmune"},
+    {"query": "single cell RNA-seq scleroderma systemic sclerosis", "organism": "Homo sapiens", "max_results": 15, "category": "autoimmune"},
+
+    # =========================================================================
+    # GAP 2: Cardiovascular diseases (18 studies → target 60+)
+    # =========================================================================
+    {"query": "single cell RNA-seq heart failure", "organism": "Homo sapiens", "max_results": 30, "category": "cardiovascular"},
+    {"query": "single cell RNA-seq myocardial infarction heart", "organism": "", "max_results": 30, "category": "cardiovascular"},
+    {"query": "single cell RNA-seq atherosclerosis", "organism": "", "max_results": 25, "category": "cardiovascular"},
+    {"query": "single cell RNA-seq cardiomyopathy dilated hypertrophic", "organism": "", "max_results": 25, "category": "cardiovascular"},
+    {"query": "single cell RNA-seq aortic valve calcification", "organism": "", "max_results": 15, "category": "cardiovascular"},
+    {"query": "single cell RNA-seq stroke cerebrovascular", "organism": "", "max_results": 15, "category": "cardiovascular"},
+    {"query": "single cell RNA-seq pulmonary hypertension", "organism": "", "max_results": 15, "category": "cardiovascular"},
+
+    # =========================================================================
+    # GAP 3: Neurodegeneration (20 studies → target 60+)
+    # =========================================================================
+    {"query": "single cell RNA-seq Alzheimer disease", "organism": "Homo sapiens", "max_results": 40, "category": "neurodegeneration"},
+    {"query": "single cell RNA-seq Alzheimer disease mouse model", "organism": "Mus musculus", "max_results": 30, "category": "neurodegeneration"},
+    {"query": "single cell RNA-seq Parkinson disease", "organism": "Homo sapiens", "max_results": 30, "category": "neurodegeneration"},
+    {"query": "single cell RNA-seq ALS amyotrophic lateral sclerosis", "organism": "", "max_results": 20, "category": "neurodegeneration"},
+    {"query": "single cell RNA-seq Huntington disease neurodegeneration", "organism": "", "max_results": 15, "category": "neurodegeneration"},
+    {"query": "single cell RNA-seq multiple system atrophy frontotemporal dementia", "organism": "", "max_results": 15, "category": "neurodegeneration"},
+
+    # =========================================================================
+    # GAP 4: Perturb-seq / functional genomics (15 studies → target 40+)
+    # =========================================================================
+    {"query": "Perturb-seq CRISPR single cell", "organism": "", "max_results": 40, "category": "modality"},
+    {"query": "CROP-seq CRISPR screen single cell", "organism": "", "max_results": 30, "category": "modality"},
+    {"query": "single cell CRISPR perturbation screen", "organism": "", "max_results": 30, "category": "modality"},
+    {"query": "scVDJ-seq single cell VDJ immune repertoire", "organism": "", "max_results": 25, "category": "modality"},
+
+    # =========================================================================
+    # GAP 5: Non-model organisms (sparse coverage)
+    # =========================================================================
+    {"query": "single cell RNA-seq", "organism": "Sus scrofa", "max_results": 30, "category": "organism"},
+    {"query": "single cell RNA-seq", "organism": "Macaca mulatta", "max_results": 30, "category": "organism"},
+    {"query": "single cell RNA-seq primate non-human", "organism": "Macaca fascicularis", "max_results": 20, "category": "organism"},
+    {"query": "single cell RNA-seq", "organism": "Gallus gallus", "max_results": 25, "category": "organism"},
+    {"query": "single cell RNA-seq", "organism": "Drosophila melanogaster", "max_results": 30, "category": "organism"},
+    {"query": "single cell RNA-seq", "organism": "Danio rerio", "max_results": 30, "category": "organism"},
+    {"query": "single cell RNA-seq", "organism": "Canis lupus familiaris", "max_results": 20, "category": "organism"},
+    {"query": "single cell RNA-seq", "organism": "Rattus norvegicus", "max_results": 25, "category": "organism"},
+    {"query": "single cell RNA-seq", "organism": "Xenopus", "max_results": 15, "category": "organism"},
+
+    # =========================================================================
+    # EXISTING GAPS: Other diseases, tissues, modalities (maintain balance)
+    # =========================================================================
+    # Metabolic
     {"query": "single cell RNA-seq type 2 diabetes", "organism": "Homo sapiens", "max_results": 25, "category": "disease"},
-    {"query": "single cell RNA-seq NAFLD liver fibrosis", "organism": "Homo sapiens", "max_results": 20, "category": "disease"},
-    {"query": "single cell RNA-seq rheumatoid arthritis", "organism": "Homo sapiens", "max_results": 20, "category": "disease"},
-    {"query": "single cell RNA-seq ulcerative colitis IBD", "organism": "Homo sapiens", "max_results": 20, "category": "disease"},
-    {"query": "single cell RNA-seq multiple sclerosis", "organism": "Homo sapiens", "max_results": 15, "category": "disease"},
-    {"query": "single cell RNA-seq heart failure cardiomyopathy", "organism": "Homo sapiens", "max_results": 20, "category": "disease"},
-    {"query": "single cell RNA-seq atherosclerosis", "organism": "Homo sapiens", "max_results": 15, "category": "disease"},
-    {"query": "single cell RNA-seq tuberculosis", "organism": "Homo sapiens", "max_results": 15, "category": "disease"},
-    {"query": "single cell RNA-seq HIV", "organism": "Homo sapiens", "max_results": 15, "category": "disease"},
-    {"query": "single cell RNA-seq hepatocellular carcinoma", "organism": "Homo sapiens", "max_results": 20, "category": "disease"},
-    {"query": "single cell RNA-seq pancreatic cancer PDAC", "organism": "Homo sapiens", "max_results": 15, "category": "disease"},
-    {"query": "single cell RNA-seq colorectal cancer", "organism": "Homo sapiens", "max_results": 20, "category": "disease"},
-    {"query": "single cell RNA-seq AML leukemia", "organism": "Homo sapiens", "max_results": 20, "category": "disease"},
-    {"query": "single cell RNA-seq glioblastoma brain tumor", "organism": "Homo sapiens", "max_results": 20, "category": "disease"},
-    {"query": "single cell RNA-seq asthma COPD", "organism": "Homo sapiens", "max_results": 15, "category": "disease"},
-    {"query": "single cell RNA-seq melanoma", "organism": "Homo sapiens", "max_results": 15, "category": "disease"},
-    {"query": "single cell RNA-seq lupus SLE", "organism": "Homo sapiens", "max_results": 15, "category": "disease"},
-
-    # Priority 2: Underrepresented modalities
-    {"query": "spatial transcriptomics Visium 10x", "organism": "", "max_results": 50, "category": "modality"},
-    {"query": "CITE-seq multimodal single cell protein RNA", "organism": "", "max_results": 40, "category": "modality"},
-    {"query": "single cell multiome ATAC RNA", "organism": "", "max_results": 40, "category": "modality"},
-    {"query": "single nuclei RNA-seq snRNA-seq", "organism": "Homo sapiens", "max_results": 40, "category": "modality"},
-    {"query": "single cell ATAC-seq chromatin accessibility", "organism": "", "max_results": 30, "category": "modality"},
-
-    # Priority 3: Underrepresented tissues
+    {"query": "single cell RNA-seq NAFLD NASH liver fibrosis", "organism": "Homo sapiens", "max_results": 20, "category": "disease"},
+    {"query": "single cell RNA-seq obesity metabolic syndrome", "organism": "", "max_results": 15, "category": "disease"},
+    # Infectious
+    {"query": "single cell RNA-seq tuberculosis", "organism": "Homo sapiens", "max_results": 20, "category": "disease"},
+    {"query": "single cell RNA-seq HIV", "organism": "Homo sapiens", "max_results": 20, "category": "disease"},
+    {"query": "single cell RNA-seq malaria Plasmodium", "organism": "", "max_results": 15, "category": "disease"},
+    # Underrepresented tissues
     {"query": "single cell RNA-seq placenta", "organism": "Homo sapiens", "max_results": 20, "category": "tissue"},
-    {"query": "single cell RNA-seq ovary", "organism": "Homo sapiens", "max_results": 20, "category": "tissue"},
     {"query": "single cell RNA-seq testis spermatogenesis", "organism": "", "max_results": 20, "category": "tissue"},
     {"query": "single cell RNA-seq skeletal muscle", "organism": "", "max_results": 20, "category": "tissue"},
-    {"query": "single cell RNA-seq thymus", "organism": "", "max_results": 20, "category": "tissue"},
-    {"query": "single cell RNA-seq stomach gastric", "organism": "Homo sapiens", "max_results": 20, "category": "tissue"},
-    {"query": "single cell RNA-seq small intestine", "organism": "", "max_results": 20, "category": "tissue"},
-    {"query": "single cell RNA-seq thyroid adrenal endocrine", "organism": "", "max_results": 20, "category": "tissue"},
-    {"query": "single cell RNA-seq adipose fat obesity", "organism": "", "max_results": 15, "category": "tissue"},
-
-    # Priority 4: Underrepresented organisms
-    {"query": "single cell RNA-seq", "organism": "Danio rerio", "max_results": 40, "category": "organism"},
-    {"query": "single cell RNA-seq", "organism": "Rattus norvegicus", "max_results": 30, "category": "organism"},
-    {"query": "single cell RNA-seq", "organism": "Macaca mulatta", "max_results": 25, "category": "organism"},
-    {"query": "single cell RNA-seq", "organism": "Drosophila melanogaster", "max_results": 25, "category": "organism"},
-    {"query": "single cell RNA-seq", "organism": "Sus scrofa", "max_results": 20, "category": "organism"},
-    {"query": "single cell RNA-seq", "organism": "Gallus gallus", "max_results": 15, "category": "organism"},
-    {"query": "single cell RNA-seq", "organism": "Canis lupus familiaris", "max_results": 15, "category": "organism"},
+    {"query": "single cell RNA-seq thyroid adrenal endocrine", "organism": "", "max_results": 15, "category": "tissue"},
+    {"query": "single cell RNA-seq adipose fat tissue", "organism": "", "max_results": 15, "category": "tissue"},
+    {"query": "single cell RNA-seq lymph node", "organism": "Homo sapiens", "max_results": 20, "category": "tissue"},
+    {"query": "single cell RNA-seq spinal cord", "organism": "", "max_results": 15, "category": "tissue"},
+    # Modalities
+    {"query": "spatial transcriptomics Visium MERFISH Xenium", "organism": "", "max_results": 40, "category": "modality"},
+    {"query": "CITE-seq multimodal single cell protein RNA", "organism": "", "max_results": 30, "category": "modality"},
+    {"query": "single cell multiome ATAC RNA 10x", "organism": "", "max_results": 30, "category": "modality"},
 ]
 
 
@@ -269,8 +300,8 @@ def enrich_new_studies(new_ids: list, existing: set) -> dict:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Augment ground truth from 1,357 to 2,000 studies")
-    parser.add_argument("--target", type=int, default=2000,
+        description="Augment ground truth with gap-targeted GEO search + enrichment")
+    parser.add_argument("--target", type=int, default=2500,
                         help="Target number of total studies")
     parser.add_argument("--search-only", action="store_true",
                         help="Only search, don't enrich")

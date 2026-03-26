@@ -1158,5 +1158,153 @@
     ],
     "category": "disease",
     "difficulty": "medium"
+  },
+  {
+    "id": "q81",
+    "query": "atherosclerosis single-cell RNA-seq",
+    "expected_constraints": {
+      "disease": "atherosclerosis",
+      "organism": "Homo sapiens"
+    },
+    "expected_gse": [
+      "GSE189179",
+      "GSE253903",
+      "GSE287081"
+    ],
+    "category": "disease",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q82",
+    "query": "Perturb-seq CRISPR screen single-cell",
+    "expected_constraints": {
+      "assay": "perturb-seq"
+    },
+    "expected_gse": [
+      "GSE140553",
+      "GSE142451",
+      "GSE164996"
+    ],
+    "category": "modality",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q83",
+    "query": "rheumatoid arthritis single-cell RNA-seq",
+    "expected_constraints": {
+      "disease": "rheumatoid arthritis",
+      "organism": "Homo sapiens"
+    },
+    "expected_gse": [
+      "GSE109449",
+      "GSE159117",
+      "GSE296117"
+    ],
+    "category": "disease",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q84",
+    "query": "ALS amyotrophic lateral sclerosis single-cell",
+    "expected_constraints": {
+      "disease": "ALS"
+    },
+    "expected_gse": [
+      "GSE244263",
+      "GSE178693",
+      "GSE306675"
+    ],
+    "category": "disease",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q85",
+    "query": "mouse myocardial infarction single-cell RNA-seq",
+    "expected_constraints": {
+      "organism": "Mus musculus",
+      "disease": "myocardial infarction"
+    },
+    "expected_gse": [
+      "GSE106472",
+      "GSE132143",
+      "GSE132144"
+    ],
+    "category": "multi_constraint",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q86",
+    "query": "human heart failure single-cell transcriptomics",
+    "expected_constraints": {
+      "organism": "Homo sapiens",
+      "tissue": "heart",
+      "disease": "heart failure"
+    },
+    "expected_gse": [
+      "GSE166462",
+      "GSE196632",
+      "GSE266307"
+    ],
+    "category": "multi_constraint",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q87",
+    "query": "Parkinson's disease single-cell RNA-seq brain",
+    "expected_constraints": {
+      "disease": "Parkinson's disease",
+      "tissue": "brain"
+    },
+    "expected_gse": [
+      "GSE189226",
+      "GSE164674",
+      "GSE233208"
+    ],
+    "category": "disease",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q88",
+    "query": "Xenopus single-cell RNA-seq",
+    "expected_constraints": {
+      "organism": "Xenopus"
+    },
+    "expected_gse": [
+      "GSE146830",
+      "GSE146837",
+      "GSE165901"
+    ],
+    "category": "organism",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q89",
+    "query": "human lupus SLE single-cell immune",
+    "expected_constraints": {
+      "disease": "lupus",
+      "organism": "Homo sapiens"
+    },
+    "expected_gse": [
+      "GSE180133",
+      "GSE185623",
+      "GSE116341"
+    ],
+    "category": "disease",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q90",
+    "query": "human adipose tissue single-cell RNA-seq",
+    "expected_constraints": {
+      "organism": "Homo sapiens",
+      "tissue": "adipose"
+    },
+    "expected_gse": [
+      "GSE267314",
+      "GSE267320",
+      "GSE268811"
+    ],
+    "category": "basic",
+    "difficulty": "easy"
   }
 ]

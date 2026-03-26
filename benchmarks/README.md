@@ -89,24 +89,24 @@ Compares all LLMs (17 models x 2 think modes where applicable) across 5 sub-task
 
 ## Eval Queries
 
-**80 queries** in `eval_queries.json`, categorized:
+**90 queries** in `eval_queries.json`, categorized:
 
 | Category | Count | Difficulty | Example |
 |----------|-------|------------|---------|
-| `basic` | 18 | easy | "human brain scRNA-seq" |
-| `disease` | 18 | medium | "breast cancer single-cell RNA-seq" |
+| `basic` | 19 | easy | "human brain scRNA-seq" |
+| `disease` | 23 | medium | "atherosclerosis single-cell RNA-seq" |
 | `cell_type` | 12 | medium | "T cell single-cell RNA-seq" |
-| `multi_constraint` | 13 | hard | "human brain Alzheimer's disease scRNA-seq" |
+| `multi_constraint` | 15 | hard | "mouse myocardial infarction single-cell RNA-seq" |
 | `natural_language` | 8 | hard | "What datasets study the tumor microenvironment?" |
-| `modality` | 6 | medium | "single-cell multiome human" |
-| `organism` | 5 | easy–medium | "Drosophila melanogaster single-cell RNA-seq" |
+| `modality` | 7 | medium | "Perturb-seq CRISPR screen single-cell" |
+| `organism` | 6 | easy–medium | "Xenopus single-cell RNA-seq" |
 
 Each query has `expected_gse` (2–5 GSE IDs) for measuring retrieval precision/recall.
-All 203 unique expected GSEs are present in `ground_truth/`.
+All 227 unique expected GSEs are present in `ground_truth/`.
 
 ## Ground Truth Corpus
 
-- **1994 enriched GSE JSON files** in `ground_truth/`
+- **2189 enriched GSE JSON files** in `ground_truth/`
 - **1943** have non-empty tissue annotations
 - **1064** have non-empty cell_type annotations
 - **186** have non-empty disease annotations
