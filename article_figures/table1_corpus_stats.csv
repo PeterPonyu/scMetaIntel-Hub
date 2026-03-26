@@ -1,0 +1,20 @@
+Metric,Value
+Total studies,2189
+Unique organisms,42
+Tissue annotations,1835 (83.8%)
+Disease annotations,981 (44.8%)
+Cell type annotations,1590 (72.6%)
+PubMed linked,1510 (69.0%)
+Document text,2189 (100.0%)
+
+Organism,Count,Percentage
+Homo sapiens,1113,50.8%
+Mus musculus,851,38.9%
+Danio rerio,42,1.9%
+Rattus norvegicus,35,1.6%
+Drosophila melanogaster,30,1.4%
+Sus scrofa,24,1.1%
+Gallus gallus,20,0.9%
+Macaca mulatta,15,0.7%
+Plasmodium falciparum,4,0.2%
+Arabidopsis thaliana,4,0.2%

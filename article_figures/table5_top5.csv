@@ -1,0 +1,6 @@
+Rank,Model,Family,Size(B),Composite,Parse_EM,Extract_F1,Onto_F1,Cite_Recall,Grounding,Tok/s
+1,qwen3-14b-q8+think,qwen,14,0.7916,1.0000,0.3440,0.8889,0.9778,1.0000,48.3
+2,qwen3-8b+think,qwen,8,0.7634,1.0000,0.3090,0.6111,0.9111,0.9778,96.1
+3,qwen3.5-9b-q8,qwen,9,0.7516,0.7683,0.3290,0.8889,1.0000,1.0000,54.4
+4,gemma3-27b-qat+think,gemma,27,0.7452,1.0000,0.2825,0.8889,0.9333,1.0000,20.9
+5,gemma3-12b-q8+think,gemma,12,0.7347,1.0000,0.2996,0.8889,0.8444,1.0000,20.3

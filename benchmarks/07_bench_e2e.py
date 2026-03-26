@@ -58,18 +58,18 @@ CONFIGS = {
         "context_k": 10,
     },
     "optimized_quality": {
-        "description": "Best quality — task-routed models, reranker, structured context",
-        "embedding": "bge-m3",
-        "strategy": "hybrid+filter+rerank",
-        "reranker": True,
-        "llm": "command-r-35b",
-        "parse_model": "command-r-35b",
+        "description": "Best quality — top embedding, hybrid+filter, large LLM, structured context",
+        "embedding": "mxbai-embed-large",
+        "strategy": "hybrid+filter",
+        "reranker": False,
+        "llm": "qwen3.5-27b",
+        "parse_model": "llama3.1-8b",
         "context_format": "structured",
-        "context_k": 5,
+        "context_k": 3,
     },
     "optimized_fast": {
-        "description": "Fast pipeline — hybrid+filter, no reranker, small context",
-        "embedding": "bge-m3",
+        "description": "Fast pipeline — top embedding, hybrid+filter, small LLM",
+        "embedding": "mxbai-embed-large",
         "strategy": "hybrid+filter",
         "reranker": False,
         "llm": "qwen2.5-1.5b",
@@ -77,15 +77,15 @@ CONFIGS = {
         "context_format": "structured",
         "context_k": 3,
     },
-    "finetuned": {
-        "description": "Fine-tuned model — update llm after 06 completes",
-        "embedding": "bge-m3",
-        "strategy": "hybrid+filter+rerank",
-        "reranker": True,
-        "llm": "qwen3-8b",  # replace with fine-tuned Ollama tag after 06
-        "parse_model": None,
+    "balanced": {
+        "description": "Balanced quality/speed — top embedding, mid-size LLM",
+        "embedding": "mxbai-embed-large",
+        "strategy": "hybrid+filter",
+        "reranker": False,
+        "llm": "qwen3.5-9b-q8",
+        "parse_model": "llama3.1-8b",
         "context_format": "structured",
-        "context_k": 5,
+        "context_k": 3,
     },
 }
 
@@ -126,14 +126,9 @@ def resolve_configs(configs: dict) -> dict:
         cfg = dict(cfg)
         desired = cfg.get("llm")
         if desired and not model_is_pulled(desired, pulled):
-            if name == "optimized":
+            if name in ("optimized_quality", "balanced"):
                 fallback = pick_best_available_llm(
-                    ["qwen3.5-27b", "qwen3.5-9b", "qwen3-14b", "qwen2.5-7b", "qwen2.5-1.5b", "qwen2.5-0.5b"],
-                    pulled,
-                )
-            elif name == "finetuned":
-                fallback = pick_best_available_llm(
-                    ["qwen3-14b", "qwen3.5-9b", "qwen2.5-7b", "qwen2.5-1.5b", "qwen2.5-0.5b"],
+                    ["qwen3.5-27b", "qwen3.5-9b-q8", "qwen3-14b-q8", "qwen2.5-7b", "qwen2.5-1.5b", "qwen2.5-0.5b"],
                     pulled,
                 )
             else:
@@ -272,8 +267,18 @@ def main():
 
     active_configs = resolve_configs(CONFIGS)
 
+    # Load existing results for incremental/crash-safe runs
+    results_path = BENCHMARK_DIR / "results" / "e2e_report.json"
     all_results = {}
+    if results_path.exists():
+        with open(results_path) as f:
+            all_results = json.load(f)
+        logger.info(f"Loaded {len(all_results)} existing E2E results")
+
     for config_name, config in active_configs.items():
+        if config_name in all_results and "error" not in str(all_results[config_name]):
+            logger.info(f"Skipping {config_name} (already in results)")
+            continue
         try:
             result = run_e2e_pipeline(config_name, config, queries, docs)
             all_results[config_name] = result
@@ -281,6 +286,8 @@ def main():
         except Exception as e:
             logger.error(f"  {config_name} failed: {e}")
             all_results[config_name] = {"error": str(e)}
+        # Save after each config (crash-safe)
+        save_results(all_results, "e2e_report")
 
     # Comparison summary
     logger.info("\n" + "="*60)
