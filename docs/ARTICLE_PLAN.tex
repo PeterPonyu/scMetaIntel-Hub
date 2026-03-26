@@ -1,0 +1,513 @@
+% ============================================================================
+% scMetaIntel-Hub: Article Plan & Benchmarking Design
+% Version 0.3.0 — 2026-03-26
+% ============================================================================
+\documentclass[11pt,a4paper]{article}
+
+% --- Packages ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{caption}
+
+\hypersetup{colorlinks=true, linkcolor=blue!70!black, citecolor=green!50!black, urlcolor=blue!60!black}
+
+\title{%
+  \textbf{scMetaIntel-Hub}: Benchmarking Local LLMs for \\
+  Single-Cell Metadata Intelligence \\[6pt]
+  \large Article Plan \& Benchmarking Design (v0.3.0)}
+\author{Zeyu Fu}
+\date{March 2026}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+% ============================================================================
+\section{Article Positioning}
+% ============================================================================
+
+\subsection{Central Claim}
+
+We present \textbf{scMetaIntel-Hub}, a fully local, privacy-preserving
+pipeline that converts natural language queries into grounded, cited answers
+over single-cell genomics metadata --- without requiring gene expression
+matrices or cloud API access. Through systematic benchmarking of 21 LLM
+configurations across 5 task dimensions, we show that mid-size local models
+(9B parameters) match or exceed larger models on metadata-centric tasks when
+paired with the right retrieval strategy.
+
+\subsection{Key Contributions}
+
+\begin{enumerate}[leftmargin=2em]
+  \item \textbf{Metadata-only intelligence}: A complete pipeline (enrich
+        $\to$ ontology $\to$ embed $\to$ retrieve $\to$ answer) that operates
+        exclusively on GEO metadata and PubMed abstracts --- no expression
+        matrices, no cloud dependencies.
+  \item \textbf{Comprehensive local LLM benchmark}: 21 model configurations
+        (5 families: Qwen3/3.5, LLaMA~3.1, Gemma~3, Mistral, Command-R)
+        evaluated across 5 tasks (parsing, extraction, ontology normalization,
+        answer generation, speed) on a curated 2{,}189-study corpus with 90
+        evaluation queries.
+  \item \textbf{Optimal pipeline recipe}: Bench-validated configuration
+        achieving 100\% citation recall, 100\% grounding, 93.1\% query parse
+        exact match, and 0.428 hybrid retrieval R@50 --- all running locally
+        on a single laptop GPU (RTX~5090, 25\,GB VRAM).
+  \item \textbf{Curated evaluation resource}: 2{,}189 enriched GSE metadata
+        JSONs spanning 43 organisms, 90 evaluation queries across 7
+        categories, and a reproducible cleaning pipeline for ground truth
+        quality.
+\end{enumerate}
+
+\subsection{Target Venue}
+
+\begin{itemize}
+  \item Primary: \textit{Bioinformatics} (Applications Note or Original Paper)
+  \item Alternative: \textit{Nucleic Acids Research} (Web Server / Database issue),
+        \textit{Briefings in Bioinformatics}, or \textit{Genome Biology} (Tools)
+\end{itemize}
+
+% ============================================================================
+\section{Article Structure}
+% ============================================================================
+
+% ---------------------------------------------------------------------------
+\subsection{Title Options}
+
+\begin{enumerate}
+  \item \textit{scMetaIntel-Hub: Benchmarking Local LLMs for Privacy-Preserving
+        Single-Cell Dataset Discovery}
+  \item \textit{Local LLMs for Single-Cell Metadata Intelligence: A Systematic
+        Benchmark of 21 Models Across 5 Tasks}
+  \item \textit{From Query to Citation: A Fully Local Pipeline for Grounded
+        Single-Cell Dataset Search}
+\end{enumerate}
+
+% ---------------------------------------------------------------------------
+\subsection{Abstract (Target: 250 words)}
+
+\paragraph{Structure:}
+\textbf{Background} (metadata explosion, need for intelligent search,
+privacy concerns with cloud APIs) $\to$ \textbf{Method} (local LLM pipeline,
+hybrid retrieval, 5-task benchmark on 2{,}189 GEO studies) $\to$
+\textbf{Results} (top model picks, 100\% citation recall, bigger $\neq$
+better finding) $\to$ \textbf{Conclusion} (practical recipe, open resource).
+
+% ---------------------------------------------------------------------------
+\subsection{Section 1: Introduction (1.5 pages)}
+
+\begin{enumerate}[leftmargin=2em]
+  \item Single-cell genomics growth: 2{,}000+ new GEO datasets per year;
+        metadata is the primary discovery interface.
+  \item Problem: existing search (GEO text search, CellxGene) is keyword-only;
+        no semantic understanding, no structured constraint parsing, no
+        cited answers.
+  \item LLM opportunity: local models can parse, extract, normalize, and
+        generate --- but which model, for which task?
+  \item Gap: no systematic benchmark of local LLMs on single-cell metadata
+        tasks. Existing LLM-for-bio benchmarks (e.g., BioASQ, PubMedQA)
+        focus on literature QA, not structured metadata retrieval.
+  \item Contribution summary (4 points from \S1.2).
+\end{enumerate}
+
+% ---------------------------------------------------------------------------
+\subsection{Section 2: Methods (3--4 pages)}
+
+\subsubsection{2.1 Data Collection and Curation}
+
+\begin{itemize}
+  \item \textbf{Corpus construction}: 2{,}189 GEO Series (GSE) metadata
+        documents enriched from GEO SOFT + PubMed E-utilities.
+  \item \textbf{Schema}: \texttt{gse\_id}, \texttt{title}, \texttt{summary},
+        \texttt{organism}, \texttt{tissues}, \texttt{diseases},
+        \texttt{cell\_types}, \texttt{document\_text}, \texttt{pubmed},
+        \texttt{samples}.
+  \item \textbf{Cleaning pipeline}: (1) remove non-diseases (healthy,
+        control, etc.), (2) migrate disease terms from tissue field, (3)
+        extract diseases/cell-types from text when annotations are empty,
+        (4) fix encoding artifacts (\texttt{scripts/clean\_ground\_truth.py}).
+  \item \textbf{Coverage}: 83.8\% tissues, 44.8\% diseases, 72.6\%
+        cell types, 69.0\% PubMed, 100\% document text. 43 organisms.
+  \item \textbf{Table 1}: Corpus statistics by organism, disease category,
+        modality.
+\end{itemize}
+
+\subsubsection{2.2 Pipeline Architecture}
+
+\begin{itemize}
+  \item \textbf{Figure 1}: Architecture diagram. Query $\to$
+        Parse (LLM) $\to$ Embed (HF model) $\to$
+        Retrieve (Qdrant hybrid dense+sparse) $\to$
+        Context Assembly ($k$=3, structured format) $\to$
+        Answer Generation (LLM with citations).
+  \item Ontology normalization: 3-layer (exact/synonym $\to$ BioLORD
+        embedding $\to$ LLM fallback) against CL, UBERON, MONDO.
+  \item All components are local: Ollama (LLMs), HuggingFace
+        (embeddings/rerankers), Qdrant (vector store).
+\end{itemize}
+
+\subsubsection{2.3 Evaluation Queries}
+
+\begin{itemize}
+  \item 90 queries across 7 categories:
+        basic (19), disease (23), cell\_type (12),
+        multi\_constraint (15), natural\_language (8),
+        modality (7), organism (6).
+  \item 3 difficulty levels: easy (22), medium (37), hard (21).
+  \item 227 unique expected GSEs (10.4\% corpus coverage).
+  \item \textbf{Table 2}: Query category distribution with examples.
+\end{itemize}
+
+\subsubsection{2.4 Benchmark Design (5 Levels)}
+
+\paragraph{Level 2 --- Embedding comparison (16 models)}
+
+\begin{itemize}
+  \item Models: 10 general (mxbai, bge-m3, nomic, gte, stella, qwen3-embed
+        $\times$3, jina, snowflake) + 6 biomedical (biolord,
+        biomedbert $\times$2, medcpt $\times$2, specter2).
+  \item 4 sub-tasks: semantic clustering (silhouette), retrieval accuracy
+        (P@5/10, R@50, MRR, nDCG@10), ontology matching (recall@1/5),
+        encoding speed (tok/s).
+\end{itemize}
+
+\paragraph{Level 3 --- Retrieval strategy comparison (6 strategies)}
+
+\begin{itemize}
+  \item Strategies: dense, sparse, hybrid, hybrid+filter, hybrid+rerank,
+        hybrid+filter+rerank.
+  \item Best embedding from Level~2 (mxbai-embed-large).
+  \item Metrics: P@5, P@10, R@50, MRR, nDCG@10, latency.
+\end{itemize}
+
+\paragraph{Level 4 --- LLM comparison (21 configurations)}
+
+\begin{itemize}
+  \item Models: 5 families, 7B--32B, Q4\_K\_M and Q8\_0 quantizations,
+        thinking-mode ablation where supported.
+  \item 5 sub-tasks:
+    \begin{enumerate}
+      \item[A.] \textbf{Query Parsing}: NL $\to$ structured JSON
+            (organism/tissue/disease/assay/cell\_type). Metric: exact match, field accuracy.
+      \item[B.] \textbf{Metadata Extraction}: title+summary $\to$
+            tissues/diseases/cell\_types arrays. Metric: per-field P/R/F1.
+      \item[C.] \textbf{Ontology Normalization}: raw terms $\to$
+            UBERON/CL/MONDO IDs. Metric: accuracy, F1.
+      \item[D.] \textbf{Answer Generation}: query + context $\to$ cited
+            answer. Metric: citation precision/recall, grounding rate.
+      \item[E.] \textbf{Inference Speed}: tok/s throughput.
+    \end{enumerate}
+  \item Composite score: weighted combination of all 5 tasks.
+  \item \textbf{Table 3}: Full LLM comparison matrix (21 rows $\times$
+        5 tasks + composite).
+\end{itemize}
+
+\paragraph{Level 5 --- Context optimization}
+
+\begin{itemize}
+  \item Variables: $k$ (1--10), format (full/structured/minimal), system
+        prompt variants.
+  \item Advanced strategies: MMR diversity, recency reorder, ontology
+        expansion, multi-step retrieval.
+\end{itemize}
+
+\paragraph{Level 7 --- End-to-end pipeline}
+
+\begin{itemize}
+  \item Full pipeline: query $\to$ parse $\to$ retrieve $\to$ answer.
+  \item Metrics: end-to-end latency, citation quality, answer correctness.
+\end{itemize}
+
+\subsubsection{2.5 Hardware and Environment}
+
+\begin{itemize}
+  \item GPU: NVIDIA RTX 5090 Laptop (25\,GB VRAM), CUDA 13.0.
+  \item LLM serving: Ollama with \texttt{num\_ctx=4096}.
+  \item Embeddings: HuggingFace + PyTorch 2.9.0 (conda \texttt{dl} env).
+  \item Vector store: Qdrant (local persistent).
+  \item OS: Linux 6.14.
+\end{itemize}
+
+% ---------------------------------------------------------------------------
+\subsection{Section 3: Results (3--4 pages)}
+
+\subsubsection{3.1 Embedding Results}
+
+\begin{itemize}
+  \item \textbf{Finding}: mxbai-embed-large dominates with R@50=0.410 dense,
+        0.428 hybrid+filter.
+  \item \textbf{Finding}: Biomedical embedders (biolord, medcpt) are strong
+        at ontology matching but weaker at general retrieval.
+  \item \textbf{Figure 2}: Radar chart --- general vs biomedical embedders
+        across 4 sub-tasks.
+\end{itemize}
+
+\subsubsection{3.2 Retrieval Strategy Results}
+
+\begin{itemize}
+  \item \textbf{Finding}: hybrid+filter is optimal (R@50=0.428, MRR=0.190,
+        82\,ms). Reranking \textit{hurts} (-MRR, +110\,ms) because
+        the non-biomedical reranker (ms-marco) degrades domain relevance.
+  \item \textbf{Table 4}: 6 strategies $\times$ metrics. Breakdown by query
+        difficulty.
+\end{itemize}
+
+\subsubsection{3.3 LLM Benchmark Results}
+
+\begin{itemize}
+  \item \textbf{Key Finding 1}: \textit{Bigger is NOT better} --- qwen3.5-9b
+        (0.800 composite) beats qwen3-32b and command-r-35b.
+  \item \textbf{Key Finding 2}: Qwen3.5 family dominates top 3 (27b, 9b,
+        9b-q8). Thinking mode helps parsing (+3\%) but not answer
+        generation.
+  \item \textbf{Key Finding 3}: Best model per task diverges ---
+        llama3.1-8b for parsing (93.1\% EM), qwen2.5-7b for extraction
+        (0.380 F1), qwen3.5-9b for answers (100\% recall).
+  \item \textbf{Key Finding 4}: 100\% answer citation recall requires
+        $\geq$9B parameters.
+  \item \textbf{Figure 3}: Composite score vs model size scatter plot
+        (annotated with model names, color by family).
+  \item \textbf{Figure 4}: Per-task heatmap (21 models $\times$ 5 tasks).
+  \item \textbf{Table 5}: Top-5 model comparison with per-task breakdown.
+\end{itemize}
+
+\subsubsection{3.4 Context Optimization Results}
+
+\begin{itemize}
+  \item $k$=3 structured format achieves 100\% precision, 91.1\% recall,
+        168 tokens average context.
+  \item Diminishing returns beyond $k$=5.
+  \item \textbf{Figure 5}: Precision/recall curve vs $k$.
+\end{itemize}
+
+\subsubsection{3.5 End-to-End Pipeline Performance}
+
+\begin{itemize}
+  \item Full pipeline latency breakdown: parse (X\,ms) + retrieve (82\,ms)
+        + answer (Y\,ms).
+  \item \textbf{Table 6}: Optimal pipeline recipe card.
+\end{itemize}
+
+% ---------------------------------------------------------------------------
+\subsection{Section 4: Discussion (1.5 pages)}
+
+\begin{enumerate}[leftmargin=2em]
+  \item \textbf{Task-specific routing matters}: No single model wins all
+        tasks. A router that dispatches llama3.1-8b for parsing and
+        qwen3.5-9b for answers outperforms any monolithic choice.
+  \item \textbf{Quantization trade-offs}: Q8\_0 vs Q4\_K\_M yields
+        negligible quality difference at 1.4$\times$ speed cost.
+        Q3\_K\_M only viable for standard-RoPE models without CPU spill.
+  \item \textbf{Reranking paradox}: Generic rerankers degrade
+        domain-specific retrieval. Bio-domain rerankers are needed.
+  \item \textbf{Metadata quality is the real bottleneck}: Disease annotations
+        are sparse (44.8\% after aggressive extraction). We release the
+        cleaning pipeline to help the community.
+  \item \textbf{Limitations}: (a) GEO-centric (no CellxGene, HCA, or other
+        portals), (b) English-only, (c) metadata only --- no expression
+        data integration, (d) single-GPU evaluation.
+  \item \textbf{Comparison with related work}: contrast with scBERT,
+        GeneFormer, CellPLM (expression-based), PubMedQA, BioASQ
+        (literature QA), and CellxGene/GEO metadata search
+        (keyword-only).
+\end{enumerate}
+
+% ---------------------------------------------------------------------------
+\subsection{Section 5: Conclusion (0.5 page)}
+
+\begin{enumerate}[leftmargin=2em]
+  \item Summarize optimal recipe: llama3.1-8b (parse) + mxbai-embed-large
+        (embed) + hybrid+filter (retrieve) + qwen3.5-9b (answer).
+  \item \textbf{Practical message}: A 9B model on a laptop GPU achieves
+        state-of-the-art metadata intelligence without cloud APIs.
+  \item \textbf{Resource release}: Corpus (2{,}189 GSEs), 90 eval queries,
+        benchmark scripts, cleaning pipelines --- all open-source.
+\end{enumerate}
+
+% ============================================================================
+\section{Figures and Tables Plan (8 total)}
+% ============================================================================
+
+\begin{longtable}{@{}clp{7cm}@{}}
+\toprule
+\# & Type & Description \\
+\midrule
+1 & Figure & Pipeline architecture diagram \\
+2 & Figure & Embedding radar chart (general vs biomedical) \\
+3 & Figure & Composite score vs model size scatter plot \\
+4 & Figure & Per-task heatmap (21 models $\times$ 5 tasks) \\
+5 & Figure & Precision/recall vs context $k$ \\
+6 & Table  & Corpus statistics (organism, disease category, modality) \\
+7 & Table  & Retrieval strategy comparison (6 strategies) \\
+8 & Table  & LLM comparison matrix (top-5 with per-task breakdown) \\
+\bottomrule
+\end{longtable}
+
+% ============================================================================
+\section{Supplementary Materials}
+% ============================================================================
+
+\begin{itemize}
+  \item \textbf{Supp Table S1}: Full 21-model LLM comparison (all metrics).
+  \item \textbf{Supp Table S2}: Full 16-model embedding comparison.
+  \item \textbf{Supp Table S3}: 90 evaluation queries with expected GSEs.
+  \item \textbf{Supp Table S4}: Corpus disease/tissue/cell-type distributions.
+  \item \textbf{Supp Table S5}: Quantization ablation (Q4\_K\_M vs Q8\_0 vs Q3\_K\_M).
+  \item \textbf{Supp Figure S1}: Thinking-mode ablation (think=True vs False).
+  \item \textbf{Supp Figure S2}: Context management strategies comparison.
+  \item \textbf{Supp Figure S3}: Retrieval performance by query difficulty.
+\end{itemize}
+
+% ============================================================================
+\section{Re-Benchmarking Plan (Pre-Article)}
+% ============================================================================
+
+The corpus has changed (1{,}994 $\to$ 2{,}189 studies; 67 $\to$ 90 eval
+queries; cleaned ground truth). All previous benchmark results were computed
+on the old corpus. The following re-benchmarking sequence is required before
+writing the article.
+
+\subsection{Phase 1: Infrastructure (no GPU needed)}
+
+\begin{enumerate}[leftmargin=2em]
+  \item \textbf{Re-index Qdrant}: Re-embed all 2{,}189 documents with
+        mxbai-embed-large into a fresh Qdrant collection.
+        \begin{itemize}
+          \item Script: \texttt{python -m scmetaintel embed}
+          \item Duration: $\sim$5--10 min
+          \item Validates: new documents are indexed; old index is replaced.
+        \end{itemize}
+  \item \textbf{Verify eval query GSEs}: Confirm all 227 expected GSEs
+        from the 90 queries exist in the ground truth and in Qdrant.
+\end{enumerate}
+
+\subsection{Phase 2: Embedding Re-Bench (bench 02)}
+
+\begin{enumerate}[leftmargin=2em]
+  \item Run \texttt{python benchmarks/02\_bench\_embeddings.py} on the
+        2{,}189-document corpus with 90 queries.
+  \item Expected: mxbai-embed-large likely still wins, but numbers will
+        shift (more documents $\to$ retrieval is harder).
+  \item Duration: $\sim$2--3 hours (16 models).
+\end{enumerate}
+
+\subsection{Phase 3: Retrieval Re-Bench (bench 03)}
+
+\begin{enumerate}[leftmargin=2em]
+  \item Run \texttt{python benchmarks/03\_bench\_retrieval.py} on the fresh
+        Qdrant index with 90 queries.
+  \item Compare 6 strategies on the expanded query set.
+  \item Special attention: new disease/modality queries may shift
+        hybrid+filter advantage.
+  \item Duration: $\sim$30 min.
+\end{enumerate}
+
+\subsection{Phase 4: LLM Re-Bench (bench 04)}
+
+\begin{enumerate}[leftmargin=2em]
+  \item Run \texttt{python benchmarks/04\_bench\_llm.py} on the cleaned
+        ground truth + 90 queries.
+  \item 21 configurations $\times$ 5 tasks $\times$ thinking ablation.
+  \item Critical: uses cleaned gold truth (diseases went from $\sim$9\%
+        $\to$ 45\% annotated), so extraction scores \textit{will} change.
+  \item Duration: $\sim$6--10 hours (GPU-bound, one model at a time).
+\end{enumerate}
+
+\subsection{Phase 5: Context \& E2E Re-Bench (bench 05/07)}
+
+\begin{enumerate}[leftmargin=2em]
+  \item Run \texttt{python benchmarks/05\_bench\_context.py} and
+        \texttt{07\_bench\_e2e.py}.
+  \item Validates optimal $k$ and end-to-end pipeline on expanded queries.
+  \item Duration: $\sim$1--2 hours.
+\end{enumerate}
+
+\subsection{Phase 6: Results Analysis \& Figure Generation}
+
+\begin{enumerate}[leftmargin=2em]
+  \item Load all re-bench JSON results.
+  \item Generate all figures (Figs~1--5) and tables (Tables~1--8).
+  \item Compute final composite scores and model rankings.
+  \item Write results prose based on actual re-bench numbers.
+\end{enumerate}
+
+\subsection{Re-Bench Schedule Estimate}
+
+\begin{tabular}{@{}lll@{}}
+\toprule
+Phase & Duration & Dependency \\
+\midrule
+1. Re-index Qdrant         & 10 min    & None \\
+2. Embedding bench (02)    & 2--3 hr   & Phase 1 \\
+3. Retrieval bench (03)    & 30 min    & Phase 1 \\
+4. LLM bench (04)          & 6--10 hr  & None (independent) \\
+5. Context \& E2E (05/07)  & 1--2 hr   & Phases 1, 3 \\
+6. Analysis \& figures     & 2--3 hr   & Phases 2--5 \\
+\midrule
+\textbf{Total}             & \textbf{$\sim$12--19 hr}  & Phases 2+3 parallelizable \\
+\bottomrule
+\end{tabular}
+
+\bigskip
+\noindent\textit{Phases 2+3 can run in parallel with Phase 4. Total wall-clock
+$\approx$ 10--14 hours if parallelized.}
+
+% ============================================================================
+\section{Risks and Mitigations}
+% ============================================================================
+
+\begin{longtable}{@{}p{5cm}p{3cm}p{5cm}@{}}
+\toprule
+Risk & Likelihood & Mitigation \\
+\midrule
+Re-bench results differ significantly from old results &
+  High (expected) &
+  Article uses only re-bench numbers; old results archived \\
+Retrieval R@50 drops with larger corpus &
+  Medium &
+  Expected (more distractors); hybrid+filter advantage should increase \\
+Extraction F1 changes due to cleaned gold &
+  High &
+  Cleaned gold is correct; old gold was polluted \\
+Some eval query GSEs missing from Qdrant after re-index &
+  Low &
+  Verification step in Phase~1 catches this \\
+GPU memory issues with 21 models &
+  Low &
+  \texttt{--include-spill} flag + \texttt{num\_ctx=4096} already proven \\
+\bottomrule
+\end{longtable}
+
+% ============================================================================
+\section{Current Project State Summary}
+% ============================================================================
+
+\begin{tabular}{@{}lr@{}}
+\toprule
+Metric & Value \\
+\midrule
+Ground truth GSE files       & 2{,}189 \\
+Eval queries                 & 90 \\
+Unique expected GSEs         & 227 \\
+Query categories             & 7 \\
+Organisms represented        & 43 \\
+Disease coverage (cleaned)   & 44.8\% \\
+Cell type coverage (cleaned) & 72.6\% \\
+Tissue coverage (cleaned)    & 83.8\% \\
+LLM configurations benched   & 21 \\
+Embedding models benched     & 16 \\
+Retrieval strategies benched & 6 \\
+\bottomrule
+\end{tabular}
+
+\end{document}
