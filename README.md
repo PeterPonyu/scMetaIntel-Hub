@@ -7,10 +7,10 @@ A unified project that merges:
 
 ## Why this merged project exists
 
-On this desktop there are two strong but separate codebases:
+This project integrates two previously separate codebases:
 
-- `/home/zeyufu/Desktop/GEO-DataHub`
-- `/home/zeyufu/Desktop/scMetaIntel`
+- **GEO-DataHub** — GEO acquisition backbone
+- **scMetaIntel** — metadata intelligence layer
 
 `scMetaIntel-Hub` is the integration layer that turns them into one coherent system.
 

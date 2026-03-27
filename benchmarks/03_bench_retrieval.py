@@ -20,9 +20,17 @@ Usage:
 import argparse
 import json
 import logging
+import random
 import sys
 import time
 from pathlib import Path
+
+import numpy as np
+
+# Reproducibility
+SEED = 42
+random.seed(SEED)
+np.random.seed(SEED)
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 

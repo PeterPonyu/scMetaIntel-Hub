@@ -25,9 +25,17 @@ Usage:
 import argparse
 import json
 import logging
+import random
 import sys
 import time
 from pathlib import Path
+
+import numpy as np
+
+# Reproducibility
+SEED = 42
+random.seed(SEED)
+np.random.seed(SEED)
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -82,11 +90,11 @@ def unload_ollama_models():
         logger.warning(f"  Failed to unload models: {e}")
 
 
-def task_a_query_parsing(model_key: str, queries: list, think: bool = False) -> dict:
+def task_a_query_parsing(model_key: str, queries: list, think: bool = False,
+                         max_queries: int = 0) -> dict:
     """Task A: Parse natural language queries into structured JSON."""
     from scmetaintel.evaluate import query_parsing_metrics
-    # Limit sample size for think mode: thinking chains are very long per call
-    sample = queries[:15] if think else queries
+    sample = queries[:max_queries] if max_queries > 0 else queries
     correct, total = 0, 0
     field_scores = {"organism": [], "tissue": [], "disease": [],
                     "assay": [], "cell_type": []}
@@ -111,7 +119,6 @@ def task_a_query_parsing(model_key: str, queries: list, think: bool = False) -> 
         if metrics["exact_match"] == 1.0:
             correct += 1
 
-    import numpy as np
     return {
         "exact_match": round(correct / total, 4) if total else 0,
         "field_accuracy": {f: round(np.mean(s), 4) if s else 0
@@ -120,10 +127,10 @@ def task_a_query_parsing(model_key: str, queries: list, think: bool = False) -> 
     }
 
 
-def task_b_metadata_extraction(model_key: str, docs: list, think: bool = False) -> dict:
+def task_b_metadata_extraction(model_key: str, docs: list, think: bool = False,
+                               max_docs: int = 50) -> dict:
     """Task B: Extract metadata from GEO title + summary."""
-    # Limit sample size for think mode: 15 docs instead of 50
-    limit = 15 if think else 50
+    limit = max_docs
     all_metrics = []
     for doc in docs[:limit]:
         # Build clean gold truth: text-presence filter + cell-line removal +
@@ -193,20 +200,13 @@ def task_e_speed(model_key: str, think: bool = False) -> dict:
     }
 
 
-# Ontology normalization system prompt (same as 06_bench_finetune.py)
-ONTOLOGY_SYSTEM = (
-    "You are a biomedical ontology normalizer. Given raw tissue, disease, or "
-    "cell type terms from GEO metadata, map them to standard ontology terms.\n"
-    "Use these ontologies:\n"
-    "- Tissues: UBERON (e.g., UBERON:0000955 for brain)\n"
-    "- Cell types: CL (e.g., CL:0000540 for neuron)\n"
-    "- Diseases: MONDO (e.g., MONDO:0005015 for diabetes)\n"
-    "Return JSON: {\"normalized\": [{\"raw\": str, \"ontology_id\": str, "
-    "\"ontology_label\": str, \"confidence\": float}]}"
-)
+# Use centralized prompts from config — single source of truth
+from scmetaintel.config import PROMPTS
+ONTOLOGY_SYSTEM = PROMPTS["ontology"]
 
 
-def task_c_ontology_normalization(model_key: str, docs: list, think: bool = False) -> dict:
+def task_c_ontology_normalization(model_key: str, docs: list, think: bool = False,
+                                  max_docs: int = 30) -> dict:
     """Task C: Ontology normalization — map raw biomedical terms to ontology IDs."""
     import re
 
@@ -246,7 +246,7 @@ def task_c_ontology_normalization(model_key: str, docs: list, think: bool = Fals
                             gold_lookup[syn] = (current_id, current_name)
 
     all_scores = []
-    test_docs = [d for d in docs if d.get("tissues") or d.get("cell_types")][:30]
+    test_docs = [d for d in docs if d.get("tissues") or d.get("cell_types")][:max_docs]
     for doc in test_docs:
         raw_terms = []
         gold_items = []
@@ -284,7 +284,6 @@ def task_c_ontology_normalization(model_key: str, docs: list, think: bool = Fals
     if not all_scores:
         return {"error": "no successful ontology normalizations"}
 
-    import numpy as np
     return {
         "accuracy": round(np.mean([s["accuracy"] for s in all_scores]), 4),
         "recall": round(np.mean([s["recall"] for s in all_scores]), 4),
@@ -293,12 +292,13 @@ def task_c_ontology_normalization(model_key: str, docs: list, think: bool = Fals
     }
 
 
-def task_d_answer_generation(model_key: str, queries: list, docs: list, think: bool = False) -> dict:
+def task_d_answer_generation(model_key: str, queries: list, docs: list,
+                             think: bool = False, max_queries: int = 15) -> dict:
     """Task D: Answer generation quality — evaluate cited answers."""
     doc_by_gse = {d["gse_id"]: d for d in docs}
     all_scores = []
 
-    for q in queries[:15]:  # limit for speed
+    for q in queries[:max_queries]:
         expected_gse = [g for g in q.get("expected_gse", []) if g in doc_by_gse]
         if not expected_gse:
             continue
@@ -338,7 +338,6 @@ def task_d_answer_generation(model_key: str, queries: list, docs: list, think: b
     if not all_scores:
         return {"error": "no successful answer generations"}
 
-    import numpy as np
     return {
         "citation_precision": round(np.mean([s["citation_precision"] for s in all_scores]), 4),
         "citation_recall": round(np.mean([s["citation_recall"] for s in all_scores]), 4),
@@ -356,6 +355,14 @@ def main():
                         help="Skip thinking-mode ablation (only test think=False)")
     parser.add_argument("--include-spill", action="store_true",
                         help="Include models marked cpu_spill=True (skipped by default)")
+    parser.add_argument("--max-parse-queries", type=int, default=0,
+                        help="Max queries for Task A parsing (0=all)")
+    parser.add_argument("--max-extract-docs", type=int, default=50,
+                        help="Max docs for Task B extraction")
+    parser.add_argument("--max-onto-docs", type=int, default=30,
+                        help="Max docs for Task C ontology normalization")
+    parser.add_argument("--max-answer-queries", type=int, default=15,
+                        help="Max queries for Task D answer generation")
     args = parser.parse_args()
 
     available = check_ollama()
@@ -440,16 +447,24 @@ def main():
         }
 
         logger.info("  Task A: Query parsing ...")
-        results["task_a_parsing"] = task_a_query_parsing(model_key, queries, think=think_mode)
+        results["task_a_parsing"] = task_a_query_parsing(
+            model_key, queries, think=think_mode,
+            max_queries=args.max_parse_queries)
 
         logger.info("  Task B: Metadata extraction ...")
-        results["task_b_extraction"] = task_b_metadata_extraction(model_key, docs, think=think_mode)
+        results["task_b_extraction"] = task_b_metadata_extraction(
+            model_key, docs, think=think_mode,
+            max_docs=args.max_extract_docs)
 
         logger.info("  Task C: Ontology normalization ...")
-        results["task_c_ontology"] = task_c_ontology_normalization(model_key, docs, think=think_mode)
+        results["task_c_ontology"] = task_c_ontology_normalization(
+            model_key, docs, think=think_mode,
+            max_docs=args.max_onto_docs)
 
         logger.info("  Task D: Answer generation ...")
-        results["task_d_answer"] = task_d_answer_generation(model_key, queries, docs, think=think_mode)
+        results["task_d_answer"] = task_d_answer_generation(
+            model_key, queries, docs, think=think_mode,
+            max_queries=args.max_answer_queries)
 
         logger.info("  Task E: Speed ...")
         results["task_e_speed"] = task_e_speed(model_key, think=think_mode)

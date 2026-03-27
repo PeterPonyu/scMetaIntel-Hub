@@ -3,6 +3,7 @@
 import json
 import time
 import sys
+from pathlib import Path
 import requests
 
 OLLAMA_BASE = "http://localhost:11434"
@@ -93,7 +94,7 @@ def main():
             print(f"  - {r['model']}: {r['status']} — {r['error']}")
 
     # Save results
-    out_path = "/home/zeyufu/Desktop/scMetaIntel-Hub/benchmarks/smoke_test_llms.json"
+    out_path = str(Path(__file__).resolve().parent.parent / "benchmarks" / "smoke_test_llms.json")
     with open(out_path, "w") as f:
         json.dump(results, f, indent=2)
     print(f"\nDetailed results saved to {out_path}")

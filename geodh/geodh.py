@@ -1026,7 +1026,7 @@ EXAMPLES:
     p_download.add_argument("--output-dir", type=str, default="./downloads",
                             help="Download directory (default: ./downloads)")
     p_download.add_argument("--existing-roots", nargs="+",
-                            default=["/home/zeyufu/Desktop/datasets", "/home/zeyufu/Desktop/iAODE-LAB", "./downloads"],
+                            default=["./downloads"],
                             help="Roots scanned for already downloaded GSEs")
     p_download.add_argument("--skip-existing-gse", action=argparse.BooleanOptionalAction, default=True,
                             help="Skip download if GSE already exists in existing-roots")
@@ -1056,7 +1056,7 @@ EXAMPLES:
     p_run.add_argument("--output-dir", type=str, default="./downloads")
     p_run.add_argument("--h5ad-dir", type=str, default="./h5ad_output")
     p_run.add_argument("--existing-roots", nargs="+",
-                       default=["/home/zeyufu/Desktop/datasets", "/home/zeyufu/Desktop/iAODE-LAB", "./downloads"],
+                       default=["./downloads"],
                        help="Roots scanned for already downloaded GSEs")
     p_run.add_argument("--skip-existing-gse", action=argparse.BooleanOptionalAction, default=True,
                        help="Skip download if GSE already exists in existing-roots")
@@ -1106,7 +1106,7 @@ EXAMPLES:
     p_gap.add_argument("--download-top-per-organ", type=int, default=0,
                        help="Serially download top-N candidates per missing organ")
     p_gap.add_argument("--existing-roots", nargs="+",
-                       default=["/home/zeyufu/Desktop/datasets", "/home/zeyufu/Desktop/iAODE-LAB", "./downloads"],
+                       default=["./downloads"],
                        help="Roots scanned for already downloaded GSEs")
     p_gap.add_argument("--skip-existing-gse", action=argparse.BooleanOptionalAction, default=True)
     p_gap.add_argument("--max-retries", type=int, default=3)

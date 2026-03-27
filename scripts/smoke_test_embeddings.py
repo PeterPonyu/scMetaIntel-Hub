@@ -245,7 +245,7 @@ def main():
             print(f"  - {r['model']}: {r['error'][:120]}")
 
     # Save results
-    out_path = "/home/zeyufu/Desktop/scMetaIntel-Hub/benchmarks/smoke_test_embeddings.json"
+    out_path = str(Path(__file__).resolve().parent.parent / "benchmarks" / "smoke_test_embeddings.json")
     with open(out_path, "w") as f:
         json.dump({"embeddings": embed_results, "rerankers": rerank_results}, f, indent=2)
     print(f"\nDetailed results saved to {out_path}")

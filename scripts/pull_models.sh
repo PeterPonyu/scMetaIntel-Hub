@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-# Pull all 17 LLM models for scMetaIntel-Hub benchmarking.
+# Pull all LLM models for scMetaIntel-Hub benchmarking.
 # All models are served via Ollama.
-# Usage: OLLAMA_HOME=/home/zeyufu/.ollama bash scripts/pull_models.sh
+# Usage: bash scripts/pull_models.sh
 set -e
 
-OLLAMA_BIN="${OLLAMA_BIN:-/home/zeyufu/miniconda3/envs/dl/bin/ollama}"
+OLLAMA_BIN="${OLLAMA_BIN:-$(command -v ollama 2>/dev/null || echo "ollama")}"
 
 if ! pgrep -f "ollama serve" >/dev/null 2>&1; then
   echo "Starting Ollama service..."
-  OLLAMA_HOME=/home/zeyufu/.ollama OLLAMA_FLASH_ATTENTION=1 "$OLLAMA_BIN" serve &
+  OLLAMA_FLASH_ATTENTION=1 "$OLLAMA_BIN" serve &
   sleep 5
 fi
 
@@ -36,17 +36,15 @@ MODELS=(
 
 for model in "${MODELS[@]}"; do
   echo "Pulling $model..."
-  OLLAMA_HOME=/home/zeyufu/.ollama "$OLLAMA_BIN" pull "$model" || echo "  WARN: Failed to pull $model"
+  "$OLLAMA_BIN" pull "$model" || echo "  WARN: Failed to pull $model"
 done
 
-echo "Done. $(OLLAMA_HOME=/home/zeyufu/.ollama "$OLLAMA_BIN" list | wc -l) models available."
+echo "Done. $("$OLLAMA_BIN" list | wc -l) models available."
 
 # ============================================================
-# HuggingFace models (embeddings + rerankers + finetune bases)
-# Delegates to the unified Python download manager.
+# HuggingFace models (embeddings + rerankers)
 # Usage:
 #   bash scripts/pull_models.sh --hf          # embeddings + rerankers
-#   bash scripts/pull_models.sh --hf-all      # embeddings + rerankers + finetune bases
 # For finer control, use the Python script directly:
 #   python scripts/download_models.py --check
 #   python scripts/download_models.py --phase all
@@ -59,14 +57,5 @@ if [ "$1" = "--hf" ]; then
   echo "=== Pulling HuggingFace embedding + reranker models ==="
   python3 "$SCRIPT_DIR/download_models.py" --category hf-embedding || true
   python3 "$SCRIPT_DIR/download_models.py" --category hf-reranker || true
-  echo "HuggingFace model downloads complete."
-fi
-
-if [ "$1" = "--hf-all" ]; then
-  echo ""
-  echo "=== Pulling ALL HuggingFace models (embeds + rerankers + finetune bases) ==="
-  python3 "$SCRIPT_DIR/download_models.py" --category hf-embedding || true
-  python3 "$SCRIPT_DIR/download_models.py" --category hf-reranker || true
-  python3 "$SCRIPT_DIR/download_models.py" --category hf-finetune || true
   echo "HuggingFace model downloads complete."
 fi

@@ -22,44 +22,13 @@ from .models import AnswerResponse, ParsedQuery, SearchResult
 logger = logging.getLogger(__name__)
 
 
-SYSTEM_PROMPT = """You are scMetaIntel, a single-cell genomics dataset intelligence assistant.
+# Import centralized prompts from config — single source of truth
+from .config import PROMPTS, DEFAULT_NUM_CTX
 
-Your role is to help researchers find, compare, and understand single-cell datasets.
-
-RULES:
-1. Answer ONLY based on the retrieved dataset metadata provided below.
-2. For each claim, cite the source GSE accession in brackets, e.g. [GSE185224].
-3. If the information is not in the retrieved data, say \"I don't have enough data to answer that.\"
-4. Never fabricate dataset details, cell types, or sample counts.
-5. Present results in a clear, structured format.
-6. When comparing datasets, highlight compatible platforms, shared cell types, and complementary coverage.
-7. Be concise but thorough."""
-
-ANSWER_SYSTEM = (
-    "You are a scientific dataset search assistant. Answer the user's query "
-    "about single-cell datasets based ONLY on the provided study information.\n\n"
-    "Rules:\n"
-    "1. Cite specific GSE accessions (e.g., GSE123456) for every claim\n"
-    "2. If the context doesn't contain relevant studies, say so\n"
-    "3. Be concise and factual\n"
-    "4. Never fabricate GSE IDs or study details\n"
-)
-
-PARSE_SYSTEM = (
-    "You are a biomedical search query parser. Extract structured constraints "
-    "from the user's natural language query about single-cell datasets.\n"
-    "Return ONLY valid JSON with these fields (use null or empty string if not mentioned):\n"
-    '{"organism": "", "tissue": "", "disease": "", '
-    '"cell_type": "", "assay": "", "treatment": "", "free_text": ""}'
-)
-
-EXTRACT_SYSTEM = (
-    "You are a biomedical metadata extractor. Given a GEO dataset title and "
-    "summary, extract structured metadata.\n"
-    "Return ONLY valid JSON with:\n"
-    '{"tissues": [str], "diseases": [str], "cell_types": [str], '
-    '"modalities": [str], "organism": str}'
-)
+SYSTEM_PROMPT = PROMPTS["chat"]
+ANSWER_SYSTEM = PROMPTS["answer"]
+PARSE_SYSTEM = PROMPTS["parse"]
+EXTRACT_SYSTEM = PROMPTS["extract"]
 
 ANSWER_PROMPT = """Based on the user's query and the retrieved dataset metadata below, provide a comprehensive answer.
 
@@ -141,7 +110,7 @@ def ollama_generate(
         "options": {
             "temperature": temperature,
             "num_predict": max_tokens,
-            "num_ctx": 4096,
+            "num_ctx": DEFAULT_NUM_CTX,
         },
     }
     if supports_think_api:
@@ -195,7 +164,7 @@ def ollama_generate_stream(
             "options": {
                 "temperature": temperature,
                 "num_predict": max_tokens,
-                "num_ctx": 4096,
+                "num_ctx": DEFAULT_NUM_CTX,
             },
         },
         timeout=timeout,

@@ -260,7 +260,7 @@ class OllamaDownloader:
         self.host = host
         self.ollama_bin = os.environ.get(
             "OLLAMA_BIN",
-            shutil.which("ollama") or "/home/zeyufu/miniconda3/envs/dl/bin/ollama",
+            shutil.which("ollama") or "ollama",
         )
         self._installed_cache: List[str] | None = None
 

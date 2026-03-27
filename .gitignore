@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.egg-info/
 
 # Virtual env
 venv/
@@ -16,12 +17,18 @@ data/downloads/
 data/h5ad_output/
 benchmarks/ground_truth/*.json
 benchmarks/results/*.json
+benchmarks/smoke_test_*.json
 reports/*.json
 logs/
 
-# IDE
+# Local-only indexes
+local_accession_index.json
+
+# IDE / OS
 .vscode/
 .idea/
+.DS_Store
+*.swp
 
 # Claude Code agent state
 .claude/
