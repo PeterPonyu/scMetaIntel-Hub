@@ -281,7 +281,8 @@ LLM_MODELS: Dict[str, dict] = {
         "family": "qwen",
         "think": True,
         "cpu_spill": True,
-        "note": "Recommended primary reasoning model. Minor 2.7GB CPU spill at default ctx.",
+        "enabled": False,
+        "note": "Excluded from benchmarks: CPU spill creates non-comparable hardware conditions.",
     },
     "qwen3.5-9b-q8": {
         "ollama_name": "qwen3.5:9b-q8_0",
@@ -424,7 +425,8 @@ LLM_MODELS: Dict[str, dict] = {
         "family": "command-r",
         "think": False,
         "cpu_spill": True,
-        "note": "Purpose-built for RAG + grounded generation. 7.1GB CPU spill at default ctx.",
+        "enabled": False,
+        "note": "Excluded from benchmarks: CPU spill creates non-comparable hardware conditions.",
     },
 
     # --- Q3_K_M requantized models (100% GPU at num_ctx=4096 on RTX 5090 Laptop) ---
@@ -444,7 +446,7 @@ LLM_MODELS: Dict[str, dict] = {
 }
 
 # Recommended frontier defaults (design intent)
-RECOMMENDED_LLM = "qwen3.5-27b"
+RECOMMENDED_LLM = "qwen3.5-9b-q8"
 RECOMMENDED_LLM_FAST = "qwen3.5-9b-q8"
 RECOMMENDED_EMBEDDING = "qwen3-embed-8b"
 RECOMMENDED_RERANKER = "qwen3-reranker-4b"

@@ -65,11 +65,11 @@ CONFIGS = {
         "context_k": 10,
     },
     "optimized_quality": {
-        "description": "Best quality — top embedding, hybrid+filter, large LLM, structured context",
+        "description": "Best quality — top embedding, hybrid+filter, best composite LLM",
         "embedding": "mxbai-embed-large",
         "strategy": "hybrid+filter",
         "reranker": False,
-        "llm": "qwen3.5-27b",
+        "llm": "qwen3-14b-q8",
         "parse_model": "llama3.1-8b",
         "context_format": "structured",
         "context_k": 3,

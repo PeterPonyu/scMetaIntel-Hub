@@ -152,7 +152,6 @@ def task_b_metadata_extraction(model_key: str, docs: list, think: bool = False,
     if not all_metrics:
         return {"error": "no successful extractions"}
 
-    import numpy as np
     avg = {}
     for field in ["tissues", "diseases", "cell_types"]:
         vals = [m[field] for m in all_metrics if field in m]
@@ -187,7 +186,6 @@ def task_e_speed(model_key: str, think: bool = False) -> dict:
         times.append(elapsed)
         tokens.append(result.get("eval_count", 0))
 
-    import numpy as np
     avg_time = np.mean(times)
     avg_tokens = np.mean(tokens)
     tok_per_sec = avg_tokens / avg_time if avg_time > 0 else 0
@@ -378,6 +376,9 @@ def main():
     for mk in model_keys:
         if mk in LLM_MODELS:
             cfg = LLM_MODELS[mk]
+            if not cfg.get("enabled", True) and not args.models:
+                logger.info(f"Skipping {mk} (disabled in config)")
+                continue
             if cfg.get("cpu_spill") and not args.include_spill and not args.models:
                 logger.info(f"Skipping {mk} (cpu_spill=True, use --include-spill to override)")
                 continue

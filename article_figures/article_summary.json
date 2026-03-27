@@ -14,7 +14,7 @@
     "best_r_at_50": 0.4778
   },
   "llm": {
-    "n_configs": 21,
+    "n_configs": 18,
     "top5": [
       {
         "model": "qwen3-14b-q8+think",

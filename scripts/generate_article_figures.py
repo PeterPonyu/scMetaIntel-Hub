@@ -34,6 +34,15 @@ QUERIES_PATH = ROOT / "benchmarks" / "eval_queries.json"
 OUT_DIR = ROOT / "article_figures"
 OUT_DIR.mkdir(exist_ok=True)
 
+sys.path.insert(0, str(ROOT))
+from scmetaintel.config import LLM_MODELS
+
+# Exclude models that run under non-comparable hardware conditions (CPU spill)
+EXCLUDED_MODELS = {
+    k for k, v in LLM_MODELS.items()
+    if v.get("cpu_spill", False) or not v.get("enabled", True)
+}
+
 # ── Color palette ──
 FAMILY_COLORS = {
     "qwen": "#2196F3",
@@ -300,6 +309,10 @@ def table_3_llm_comparison():
     rows = []
     for label, d in sorted(data.items()):
         if "error" in str(d):
+            continue
+        # Exclude CPU-spill models (non-comparable hardware conditions)
+        base_model = label.removesuffix("+think")
+        if base_model in EXCLUDED_MODELS:
             continue
         ta = d.get("task_a_parsing", {})
         tb = d.get("task_b_extraction", {})
