@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Project README
+    url: https://github.com/PeterPonyu/scMetaIntel-Hub/blob/main/README.md
+    about: Start here for setup, commands, and repository conventions.

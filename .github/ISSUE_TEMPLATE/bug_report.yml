@@ -1,0 +1,44 @@
+name: Bug report
+description: Report a reproducible defect in scMetaIntel-Hub
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened, and what did you expect instead?
+      placeholder: A clear and concise description of the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Include exact commands, inputs, or paths when possible.
+      placeholder: |
+        1. Run ...
+        2. Open ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Python version, model/runtime info, and any relevant hardware details.
+      placeholder: Linux, Python 3.11, Ollama ..., GPU ...
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or traceback
+      description: Paste relevant output. Redact secrets before submitting.
+      render: shell
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: What workflows are blocked or degraded?

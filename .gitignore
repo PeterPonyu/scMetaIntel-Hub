@@ -3,6 +3,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.egg-info/
+.pytest_cache/
+.mypy_cache/
+build/
+dist/
+htmlcov/
+coverage.xml
 
 # Virtual env
 venv/
@@ -13,13 +19,16 @@ ontologies/*.obo
 ontologies/*.owl
 enriched_metadata/*.json
 qdrant_data/
-data/downloads/
-data/h5ad_output/
+data/downloads/*
+!data/downloads/.gitkeep
+data/h5ad_output/*
+!data/h5ad_output/.gitkeep
 benchmarks/ground_truth/*.json
 benchmarks/results/*.json
 benchmarks/smoke_test_*.json
 reports/*.json
-logs/
+logs/*
+!logs/.gitkeep
 
 # Local-only indexes
 local_accession_index.json
@@ -35,3 +44,5 @@ local_accession_index.json
 
 # Local env
 .env
+.env.*
+!.env.example

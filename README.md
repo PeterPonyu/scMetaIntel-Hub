@@ -1,5 +1,8 @@
 # scMetaIntel-Hub
 
+[![Repo health](https://github.com/PeterPonyu/scMetaIntel-Hub/actions/workflows/repo-health.yml/badge.svg)](https://github.com/PeterPonyu/scMetaIntel-Hub/actions/workflows/repo-health.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
 A unified project that merges:
 
 - **GEO-DataHub** → acquisition backbone for GEO search, download, verification, conversion, and organization
@@ -50,6 +53,23 @@ scMetaIntel-Hub/
 └── logs/                 # runtime logs
 ```
 
+## Repository standards
+
+This repository is now structured for clean remote collaboration on GitHub:
+
+- **governance**: `LICENSE`, `CONTRIBUTING.md`, `CODEOWNERS`, issue forms, and a pull request template
+- **automation**: a lightweight GitHub Actions workflow at `.github/workflows/repo-health.yml`
+- **safe placeholders**: empty runtime/data folders are preserved with tracked `.gitkeep` files
+- **developer consistency**: `.editorconfig`, `.gitattributes`, `.env.example`, and `pyproject.toml`
+
+The intentionally preserved placeholder directories are:
+
+- `data/downloads/`
+- `data/h5ad_output/`
+- `enriched_metadata/`
+- `logs/`
+- `reports/`
+
 ## What is fully integrated now
 
 - unified `scmetaintel` package with:
@@ -74,45 +94,63 @@ The GEO acquisition CLI is exposed through `geodh/cli.py`, which currently deleg
 ### 1. Install dependencies
 
 ```bash
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
+python -m pip install -e . --no-deps
 ```
 
-### 2. Pull small local models first
+### 2. Create a local environment file
+
+```bash
+cp .env.example .env
+```
+
+### 3. Pull small local models first
 
 ```bash
 bash scripts/pull_models.sh
 ```
 
-### 3. Enrich studies
+### 4. Enrich studies
 
 ```bash
 python -m scmetaintel enrich --gse-list GSE185224 GSE175975
 ```
 
-### 4. Build ontology cache
+### 5. Build ontology cache
 
 ```bash
 python -m scmetaintel ontology --build-index
 ```
 
-### 5. Build vector index
+### 6. Build vector index
 
 ```bash
 python -m scmetaintel embed --input enriched_metadata
 ```
 
-### 6. Search or chat
+### 7. Search or chat
 
 ```bash
 python -m scmetaintel retrieve --query "human lung fibrosis scRNA-seq"
 python -m scmetaintel chat
 ```
 
-### 7. Use GEO acquisition from the merged project
+### 8. Use GEO acquisition from the merged project
 
 ```bash
 python -m scmetaintel geo search --query "lung cancer scRNA-seq" --organism human --max-results 10
 ```
+
+## Contributing and local validation
+
+Before opening a pull request, run the lightweight repository checks:
+
+```bash
+python -m compileall scmetaintel geodh benchmarks scripts tests
+python -m unittest discover -s tests -p 'test_repository_health.py' -v
+```
+
+For contribution expectations, see `CONTRIBUTING.md`.
 
 ## Model strategy
 
@@ -136,6 +174,6 @@ These defaults are chosen to work on the current machine without requiring the b
 
 1. Vendor the `geo_*.py` acquisition modules into `geodh/`
 2. Port the full benchmark script suite into this repo’s `benchmarks/`
-3. Add a proper `pyproject.toml`
-4. Add end-to-end smoke tests for acquisition → enrichment → retrieval → answer
+3. Add end-to-end smoke tests for acquisition → enrichment → retrieval → answer
+4. Add release/version automation for packaged installs
 5. Add a lightweight web UI on top of the chat and search APIs
