@@ -16,7 +16,18 @@ from typing import Dict, Iterable, List
 
 import requests
 
-from .config import LLM_MODELS, get_config
+# Regex to extract embedded <think>...</think> blocks from DeepSeek-R1 responses.
+_THINK_TAG_RE = re.compile(r"<think>(.*?)</think>\s*", re.DOTALL)
+
+from .config import (
+    LLM_MODELS,
+    family_always_thinks,
+    family_json_hint,
+    family_supports_think_api,
+    family_think_method,
+    resolve_model_family,
+    get_config,
+)
 from .models import AnswerResponse, ParsedQuery, SearchResult
 
 logger = logging.getLogger(__name__)
@@ -29,6 +40,69 @@ SYSTEM_PROMPT = PROMPTS["chat"]
 ANSWER_SYSTEM = PROMPTS["answer"]
 PARSE_SYSTEM = PROMPTS["parse"]
 EXTRACT_SYSTEM = PROMPTS["extract"]
+
+# Regex for stripping markdown code fences around JSON
+_MD_CODE_BLOCK_RE = re.compile(
+    r"```(?:json)?\s*\n?(.*?)\n?\s*```", re.DOTALL
+)
+
+
+def extract_json(text: str) -> dict | None:
+    """Robustly extract a JSON object from LLM output.
+
+    Handles:
+    - Raw JSON: ``{"key": "value"}``
+    - Markdown-wrapped: ````json\\n{...}\\n````  (Mistral, Falcon, GLM common)
+    - Preamble text before JSON  (Phi, Aya common)
+    - Trailing text after JSON
+    Returns None if no valid JSON object found.
+    """
+    # 1. Try markdown code block extraction first
+    md = _MD_CODE_BLOCK_RE.search(text)
+    if md:
+        try:
+            return json.loads(md.group(1).strip())
+        except json.JSONDecodeError:
+            pass
+
+    # 2. Find the outermost { ... } via brace counting (more robust than greedy regex)
+    start = text.find("{")
+    if start == -1:
+        return None
+    depth = 0
+    in_str = False
+    escape = False
+    for i in range(start, len(text)):
+        c = text[i]
+        if escape:
+            escape = False
+            continue
+        if c == "\\":
+            escape = True
+            continue
+        if c == '"':
+            in_str = not in_str
+            continue
+        if in_str:
+            continue
+        if c == "{":
+            depth += 1
+        elif c == "}":
+            depth -= 1
+            if depth == 0:
+                try:
+                    return json.loads(text[start:i + 1])
+                except json.JSONDecodeError:
+                    break  # Malformed — fall through
+
+    # 3. Last resort: greedy regex (original behavior)
+    m = re.search(r"\{.*\}", text, re.DOTALL)
+    if m:
+        try:
+            return json.loads(m.group())
+        except json.JSONDecodeError:
+            pass
+    return None
 
 ANSWER_PROMPT = """Based on the user's query and the retrieved dataset metadata below, provide a comprehensive answer.
 
@@ -89,14 +163,20 @@ def ollama_generate(
                     break
         think = LLM_MODELS.get(model_key, {}).get("think", False) if model_key else False
 
-    # Only Qwen models support the "think" API parameter in Ollama;
-    # Gemma3 and others reject it with 400 Bad Request.
+    # Resolve model family for think-mode dispatch.
+    # Family config in MODEL_FAMILY_CONFIG determines how thinking is triggered:
+    #   "api"      → Ollama "think" parameter (Qwen3+, Gemma3, Granite3.3)
+    #   "embedded" → CoT always in response as <think>...</think> (DeepSeek-R1)
+    #   None       → No native think mode (Llama, Mistral, Phi, Falcon, etc.)
     model_family = None
     for k, v in LLM_MODELS.items():
         if v.get("ollama_name") == model_name:
             model_family = v.get("family", "")
             break
-    supports_think_api = model_family in ("qwen", "qwen3", "qwen3.5")
+
+    supports_think = family_supports_think_api(model_family or "")
+    always_thinks = family_always_thinks(model_family or "")
+    think_method = family_think_method(model_family or "")
 
     messages = []
     if system:
@@ -113,7 +193,8 @@ def ollama_generate(
             "num_ctx": DEFAULT_NUM_CTX,
         },
     }
-    if supports_think_api:
+    # Send Ollama "think" API parameter for families that support it
+    if supports_think:
         payload["think"] = think
 
     resp = requests.post(
@@ -126,6 +207,18 @@ def ollama_generate(
     msg = data.get("message", {})
     response_text = msg.get("content", "")
     thinking_text = msg.get("thinking", "") or ""
+
+    # DeepSeek-R1 embeds <think>...</think> directly in the response text.
+    # Extract it so downstream code can handle it uniformly.
+    # Use .search() (not .match()) — response may have leading whitespace.
+    if think_method == "embedded" and not thinking_text:
+        think_match = _THINK_TAG_RE.search(response_text)
+        if think_match:
+            thinking_text = think_match.group(1).strip()
+            # Remove the entire <think>...</think> block from response
+            response_text = (response_text[:think_match.start()]
+                             + response_text[think_match.end():]).strip()
+
     return {
         "response": response_text,
         "thinking": thinking_text,
@@ -133,7 +226,7 @@ def ollama_generate(
         "eval_count": data.get("eval_count", 0),
         "prompt_eval_count": data.get("prompt_eval_count", 0),
         "model": model_name,
-        "think_enabled": think,
+        "think_enabled": think or always_thinks,
     }
 
 
@@ -191,17 +284,16 @@ def llm_call(prompt: str, model_key: str | None = None, system: str = "", **kwar
 def parse_query(query: str, model_key: str | None = None, think: bool | None = None) -> Dict:
     # Thinking models need more tokens since reasoning chain consumes budget
     max_tok = 4096 if think else 512
-    raw = llm_call(query, model_key=model_key, system=PARSE_SYSTEM, temperature=0.0,
+    # Append family-specific JSON hint to reduce markdown-wrapping / preamble
+    family = resolve_model_family(model_key or "")
+    system = PARSE_SYSTEM + "\n" + family_json_hint(family)
+    raw = llm_call(query, model_key=model_key, system=system, temperature=0.0,
                    max_tokens=max_tok, think=think, timeout=300)
-    try:
-        m = re.search(r"\{.*\}", raw, re.DOTALL)
-        if m:
-            data = json.loads(m.group())
-            if not data.get("free_text"):
-                data["free_text"] = query
-            return data
-    except json.JSONDecodeError:
-        pass
+    data = extract_json(raw)
+    if data:
+        if not data.get("free_text"):
+            data["free_text"] = query
+        return data
     logger.warning(f"Failed to parse query response: {raw[:200]}")
     return {"raw_query": query, "free_text": query}
 
@@ -209,14 +301,13 @@ def parse_query(query: str, model_key: str | None = None, think: bool | None = N
 def extract_metadata(title: str, summary: str, model_key: str | None = None, think: bool | None = None) -> Dict:
     prompt = f"Title: {title}\n\nSummary: {summary}"
     max_tok = 4096 if think else 768
-    raw = llm_call(prompt, model_key=model_key, system=EXTRACT_SYSTEM, temperature=0.0,
+    family = resolve_model_family(model_key or "")
+    system = EXTRACT_SYSTEM + "\n" + family_json_hint(family)
+    raw = llm_call(prompt, model_key=model_key, system=system, temperature=0.0,
                    max_tokens=max_tok, think=think, timeout=300)
-    try:
-        m = re.search(r"\{.*\}", raw, re.DOTALL)
-        if m:
-            return json.loads(m.group())
-    except json.JSONDecodeError:
-        pass
+    data = extract_json(raw)
+    if data:
+        return data
     return {"tissues": [], "diseases": [], "cell_types": [], "modalities": [], "organism": ""}
 
 

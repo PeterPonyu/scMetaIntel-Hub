@@ -162,87 +162,170 @@ def bench_speed(model_key: str, embedder: Embedder,
     }
 
 
+def _parse_obo_with_synonyms(obo_path: Path, prefix: str) -> dict:
+    """Parse an OBO file and return {canonical_name: {"id": str, "synonyms": [str]}}.
+
+    Extracts both the primary name and all synonym fields from each [Term].
+    Only EXACT and RELATED synonyms are included (BROAD/NARROW are too loose).
+    """
+    import re
+    terms = {}
+    current_id = current_name = None
+    current_synonyms = []
+    in_term = False
+    syn_re = re.compile(r'^synonym:\s+"([^"]+)"\s+(EXACT|RELATED)')
+
+    with open(obo_path, encoding="utf-8", errors="replace") as f:
+        for line in f:
+            line = line.rstrip("\n")
+            if line == "[Term]":
+                # Save previous term
+                if current_id and current_name:
+                    terms[current_name] = {
+                        "id": current_id,
+                        "synonyms": current_synonyms,
+                    }
+                in_term = True
+                current_id = current_name = None
+                current_synonyms = []
+                continue
+            if line.startswith("[") and line.endswith("]"):
+                if in_term and current_id and current_name:
+                    terms[current_name] = {
+                        "id": current_id,
+                        "synonyms": current_synonyms,
+                    }
+                in_term = False
+                continue
+            if not in_term:
+                continue
+            if line.startswith("id: ") and line[4:].strip().startswith(prefix + ":"):
+                current_id = line[4:].strip()
+            elif line.startswith("name: ") and current_id:
+                current_name = line[6:].strip()
+            elif line.startswith("synonym: ") and current_id:
+                m = syn_re.match(line)
+                if m:
+                    syn_text = m.group(1).strip()
+                    current_synonyms.append(syn_text)
+
+    # Save last term
+    if in_term and current_id and current_name:
+        terms[current_name] = {"id": current_id, "synonyms": current_synonyms}
+
+    return terms
+
+
 def bench_ontology_matching(model_key: str, docs: list, embedder: Embedder,
                             batch_size: int = 32) -> dict:
     """Task 3: Ontology term matching via embedding similarity.
 
-    Tests whether the embedding model can match raw tissue/cell_type terms
-    from GSE metadata to their canonical ontology names using vector similarity.
+    Tests whether the embedding model can match synonym/variant terms
+    to their canonical ontology names using vector similarity.
+    Uses real synonym pairs from OBO files for a challenging test.
     """
     ontology_dir = Path(__file__).resolve().parent.parent / "ontologies"
 
-    # Build ontology term bank (name -> ontology_id)
-    ont_terms = {}  # canonical_name -> ontology_id
+    # Build ontology term bank with synonyms
+    ont_terms = {}  # canonical_name -> {"id": str, "synonyms": [str]}
     for obo_file, prefix in [("cl.obo", "CL"), ("uberon-basic.obo", "UBERON")]:
         obo_path = ontology_dir / obo_file
         if not obo_path.exists():
             continue
-        current_id = current_name = None
-        in_term = False
-        with open(obo_path, encoding="utf-8", errors="replace") as f:
-            for line in f:
-                line = line.rstrip("\n")
-                if line == "[Term]":
-                    in_term = True
-                    current_id = current_name = None
-                    continue
-                if line.startswith("[") and line.endswith("]"):
-                    in_term = False
-                    continue
-                if not in_term:
-                    continue
-                if line.startswith("id: ") and line[4:].strip().startswith(prefix + ":"):
-                    current_id = line[4:].strip()
-                elif line.startswith("name: ") and current_id:
-                    current_name = line[6:].strip()
-                    ont_terms[current_name] = current_id
+        ont_terms.update(_parse_obo_with_synonyms(obo_path, prefix))
 
     if len(ont_terms) < 100:
         return {"error": "insufficient ontology terms loaded"}
 
-    # Sample 200 common ontology terms
-    term_names = list(ont_terms.keys())[:200]
-    term_vecs = embedder.encode(term_names, batch_size=batch_size)
-    term_norms = np.linalg.norm(term_vecs, axis=1, keepdims=True)
-    term_norms = np.where(term_norms == 0, 1, term_norms)
-    term_vecs = term_vecs / term_norms
+    # Build test pairs from synonym -> canonical name
+    # Only use terms that have at least one synonym different from the name
+    synonym_pairs = []  # (synonym_text, canonical_name)
+    for canonical, info in ont_terms.items():
+        for syn in info["synonyms"]:
+            if syn.lower().strip() != canonical.lower().strip() and len(syn) >= 3:
+                synonym_pairs.append((syn, canonical))
 
-    # Collect raw terms from docs that match ontology
-    test_pairs = []  # (raw_term, gold_ontology_name)
+    rng = np.random.RandomState(42)
+    if len(synonym_pairs) > 500:
+        idx = rng.choice(len(synonym_pairs), 500, replace=False)
+        synonym_pairs = [synonym_pairs[i] for i in idx]
+
+    # Also collect raw terms from docs that match ontology (metadata-based pairs)
+    canonical_lower = {n.lower(): n for n in ont_terms}
+    doc_pairs = []
     for d in docs:
         for field in ["tissues", "cell_types"]:
             for term in (d.get(field, []) or []):
-                if term and term.lower().strip() in {n.lower() for n in term_names}:
-                    # Find the matching canonical name
-                    for n in term_names:
-                        if n.lower() == term.lower().strip():
-                            test_pairs.append((term, n))
-                            break
-        if len(test_pairs) >= 100:
+                if not term or len(term.strip()) < 3:
+                    continue
+                t_lower = term.lower().strip()
+                if t_lower in canonical_lower:
+                    doc_pairs.append((term, canonical_lower[t_lower]))
+        if len(doc_pairs) >= 200:
             break
+    if len(doc_pairs) > 200:
+        idx = rng.choice(len(doc_pairs), 200, replace=False)
+        doc_pairs = [doc_pairs[i] for i in idx]
 
-    if len(test_pairs) < 5:
-        return {"error": "too few matching terms", "n_pairs": len(test_pairs)}
+    # Combine: synonym pairs (hard) + metadata pairs (easier)
+    test_pairs = synonym_pairs + doc_pairs
+    if len(test_pairs) < 10:
+        return {"error": "too few test pairs", "n_pairs": len(test_pairs)}
 
-    # For each raw term, embed it and find nearest ontology term
+    # Build search bank: all gold targets + distractors up to 1000 total
+    all_canonical = list(ont_terms.keys())
+    gold_names = set(gn for _, gn in test_pairs)
+    remaining = [n for n in all_canonical if n not in gold_names]
+    bank_size = 1000
+    n_extra = max(0, min(bank_size - len(gold_names), len(remaining)))
+    if n_extra > 0:
+        idx = rng.choice(len(remaining), n_extra, replace=False)
+        bank_names = sorted(gold_names) + [remaining[i] for i in idx]
+    else:
+        bank_names = sorted(gold_names)
+
+    bank_vecs = embedder.encode(bank_names, batch_size=batch_size)
+    bank_norms = np.linalg.norm(bank_vecs, axis=1, keepdims=True)
+    bank_norms = np.where(bank_norms == 0, 1, bank_norms)
+    bank_vecs = bank_vecs / bank_norms
+
+    # Evaluate: for each test pair, embed the query and find the gold name
     correct_at_1 = 0
     correct_at_5 = 0
-    for raw_term, gold_name in test_pairs:
-        q_vec = embedder.encode([raw_term])[0]
+    correct_at_10 = 0
+    mrr_sum = 0.0
+    for query_term, gold_name in test_pairs:
+        q_vec = embedder.encode([query_term])[0]
         q_vec = q_vec / (np.linalg.norm(q_vec) or 1)
-        sims = term_vecs @ q_vec
-        top_idx = np.argsort(-sims)[:5]
-        top_names = [term_names[i] for i in top_idx]
-        if top_names[0].lower() == gold_name.lower():
-            correct_at_1 += 1
-        if any(n.lower() == gold_name.lower() for n in top_names):
-            correct_at_5 += 1
+        sims = bank_vecs @ q_vec
+        top_idx = np.argsort(-sims)[:10]
+        top_names = [bank_names[i] for i in top_idx]
 
+        gold_lower = gold_name.lower()
+        if top_names[0].lower() == gold_lower:
+            correct_at_1 += 1
+        if any(n.lower() == gold_lower for n in top_names[:5]):
+            correct_at_5 += 1
+        if any(n.lower() == gold_lower for n in top_names):
+            correct_at_10 += 1
+        # MRR
+        for rank, n in enumerate(top_names, 1):
+            if n.lower() == gold_lower:
+                mrr_sum += 1.0 / rank
+                break
+
+    n = len(test_pairs)
+    n_syn = len(synonym_pairs)
+    n_doc = len(doc_pairs)
     return {
-        "recall_at_1": round(correct_at_1 / len(test_pairs), 4),
-        "recall_at_5": round(correct_at_5 / len(test_pairs), 4),
-        "n_test_pairs": len(test_pairs),
-        "n_ontology_terms": len(term_names),
+        "recall_at_1": round(correct_at_1 / n, 4),
+        "recall_at_5": round(correct_at_5 / n, 4),
+        "recall_at_10": round(correct_at_10 / n, 4),
+        "mrr": round(mrr_sum / n, 4),
+        "n_test_pairs": n,
+        "n_synonym_pairs": n_syn,
+        "n_metadata_pairs": n_doc,
+        "n_bank_terms": len(bank_names),
     }
 
 

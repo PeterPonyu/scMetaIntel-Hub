@@ -2,17 +2,20 @@
 """
 Benchmark 04 — LLM Comparison
 ==============================
-Compare all local LLMs on 5 tasks, with thinking-mode ablation:
-  A. Query parsing (structured extraction)
-  B. Metadata extraction (from GEO text)
-  C. Ontology normalization (term matching)
-  D. Answer generation quality
-  E. Inference speed
+Compare all local LLMs on 8 tasks, with thinking-mode ablation:
+  A. Query parsing (structured extraction from natural language)
+  B. Metadata extraction (tissues/diseases/cell_types from GEO text)
+  C. Ontology normalization (term → ontology ID mapping)
+  D. Answer generation (cited answers from retrieved studies)
+  E. Inference speed (diverse prompt types)
+  F. Relevance judgment (binary query-doc classification)
+  G. Domain classification (cancer/development/immunology/... from text)
+  H. Organism & modality extraction (binomial name + assay type)
 
-Thinking-capable models (Qwen3/3.5, Gemma3) are tested in two modes:
-  - think=True  (reasoning chain visible, higher quality expected)
-  - think=False (direct answer, faster)
-Non-thinking models are tested once (think=False).
+Think-mode handling per model family:
+  - API-triggered (Qwen3/3.5, Gemma3, Granite3.3): tested with think=True and think=False
+  - Always-on (DeepSeek-R1): tested once (CoT always embedded in response)
+  - No think mode (Llama, Mistral, Phi, Falcon, Aya, GLM): tested once (think=False)
 
 Requires Ollama server running with models pulled.
 
@@ -39,9 +42,11 @@ np.random.seed(SEED)
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from scmetaintel.config import LLM_MODELS, GROUND_TRUTH_DIR, BENCHMARK_DIR
+from scmetaintel.config import (
+    LLM_MODELS, GROUND_TRUTH_DIR, BENCHMARK_DIR, family_always_thinks,
+)
 from scmetaintel.answer import (
-    parse_query, extract_metadata, generate_answer, llm_call,
+    parse_query, extract_metadata, generate_answer, llm_call, extract_json,
 )
 from scmetaintel.evaluate import (
     field_f1, extraction_metrics, citation_accuracy,
@@ -128,9 +133,9 @@ def task_a_query_parsing(model_key: str, queries: list, think: bool = False,
 
 
 def task_b_metadata_extraction(model_key: str, docs: list, think: bool = False,
-                               max_docs: int = 50) -> dict:
+                               max_docs: int = 100) -> dict:
     """Task B: Extract metadata from GEO title + summary."""
-    limit = max_docs
+    limit = max_docs if max_docs > 0 else len(docs)
     all_metrics = []
     for doc in docs[:limit]:
         # Build clean gold truth: text-presence filter + cell-line removal +
@@ -164,30 +169,63 @@ def task_b_metadata_extraction(model_key: str, docs: list, think: bool = False,
     return {"average": avg, "n_docs": len(all_metrics)}
 
 
-def task_e_speed(model_key: str, think: bool = False) -> dict:
-    """Task E: Inference speed."""
-    prompt = "Extract the tissue type from: 'Single-cell RNA-seq of human lung fibrosis'"
+# Diverse speed-test prompts covering the 5 pipeline workload types.
+# Each prompt is representative of what the model actually does in production.
+SPEED_PROMPTS = [
+    # Short structured extraction (Task A-like)
+    'Extract structured constraints from this query: "human lung cancer scRNA-seq"\n'
+    'Return JSON: {"organism": "", "tissue": "", "disease": ""}',
+    # Medium extraction (Task B-like)
+    'Title: Single-cell RNA-seq reveals heterogeneity in pancreatic ductal adenocarcinoma\n'
+    'Summary: We performed scRNA-seq on surgically resected PDAC tumors and adjacent '
+    'normal pancreas from 5 patients to characterize the tumor microenvironment.\n'
+    'Return JSON: {"tissues": [], "diseases": [], "cell_types": [], "organism": ""}',
+    # Ontology mapping (Task C-like)
+    'Normalize these biomedical terms to ontology IDs:\n["brain", "T cells", "melanoma"]\n'
+    'Return JSON: {"normalized": [{"raw": "", "ontology_id": "", "ontology_label": ""}]}',
+    # Answer generation (Task D-like)
+    '[GSE175975] Single-cell RNA-seq of human melanoma\n  Organism: Homo sapiens\n'
+    '  Summary: scRNA-seq profiling of melanoma tumors and matched normal skin.\n\n'
+    'Query: What single-cell datasets study melanoma immune infiltration?\n'
+    'Provide a comprehensive answer citing GSE accessions.',
+    # Binary judgment (Task F-like)
+    'Query: mouse brain Alzheimer scRNA-seq\n'
+    'Dataset [GSE142858]: Single cell RNA-seq of microglia in 3XTg-AD mice\n'
+    '  Organism: Mus musculus\n  Summary: scRNA-seq of microglia from AD mouse model.\n'
+    'Is this dataset relevant? Return JSON: {"relevant": true/false}',
+]
 
-    # Warm up
+
+def task_e_speed(model_key: str, think: bool = False) -> dict:
+    """Task E: Inference speed across diverse prompt types."""
+    from scmetaintel.answer import ollama_generate
+
+    # Warm up with short prompt
     try:
-        llm_call(prompt, model_key=model_key, max_tokens=50)
+        llm_call(SPEED_PROMPTS[0], model_key=model_key, max_tokens=50)
     except Exception:
         return {"error": "model not available"}
 
-    # Timed runs
-    times, tokens = [], []
-    for _ in range(3):
+    cfg = LLM_MODELS[model_key]
+    all_times, all_tokens = [], []
+    per_type = []
+
+    for prompt in SPEED_PROMPTS:
         t0 = time.time()
-        from scmetaintel.answer import ollama_generate
-        cfg = LLM_MODELS[model_key]
         result = ollama_generate(prompt, model=cfg["ollama_name"],
                                  max_tokens=200, think=think)
         elapsed = time.time() - t0
-        times.append(elapsed)
-        tokens.append(result.get("eval_count", 0))
+        n_tok = result.get("eval_count", 0)
+        all_times.append(elapsed)
+        all_tokens.append(n_tok)
+        per_type.append({
+            "time_sec": round(elapsed, 3),
+            "tokens": n_tok,
+            "tok_per_sec": round(n_tok / elapsed, 1) if elapsed > 0 else 0,
+        })
 
-    avg_time = np.mean(times)
-    avg_tokens = np.mean(tokens)
+    avg_time = np.mean(all_times)
+    avg_tokens = np.mean(all_tokens)
     tok_per_sec = avg_tokens / avg_time if avg_time > 0 else 0
 
     return {
@@ -195,16 +233,20 @@ def task_e_speed(model_key: str, think: bool = False) -> dict:
         "avg_tokens": round(avg_tokens, 1),
         "tokens_per_sec": round(tok_per_sec, 1),
         "think_enabled": think,
+        "n_prompts": len(SPEED_PROMPTS),
+        "per_prompt": per_type,
     }
 
 
 # Use centralized prompts from config — single source of truth
-from scmetaintel.config import PROMPTS
+from scmetaintel.config import PROMPTS, family_json_hint, resolve_model_family
 ONTOLOGY_SYSTEM = PROMPTS["ontology"]
+ANSWER_BENCH_SYSTEM = PROMPTS["answer_bench"]
+RELEVANCE_SYSTEM_BASE = PROMPTS["relevance"]
 
 
 def task_c_ontology_normalization(model_key: str, docs: list, think: bool = False,
-                                  max_docs: int = 30) -> dict:
+                                  max_docs: int = 100) -> dict:
     """Task C: Ontology normalization — map raw biomedical terms to ontology IDs."""
     import re
 
@@ -243,8 +285,39 @@ def task_c_ontology_normalization(model_key: str, docs: list, think: bool = Fals
                         if syn not in gold_lookup:
                             gold_lookup[syn] = (current_id, current_name)
 
+    def _normalize_plural(term: str) -> str:
+        """Strip common English plurals and abbreviations for ontology matching."""
+        t = term.lower().strip()
+        # Common bio abbreviations
+        abbrevs = {"pbmcs": "peripheral blood mononuclear cell",
+                   "pbmc": "peripheral blood mononuclear cell",
+                   "hscs": "hematopoietic stem cell",
+                   "hsc": "hematopoietic stem cell",
+                   "mscs": "mesenchymal stem cell",
+                   "msc": "mesenchymal stem cell",
+                   "nk cells": "natural killer cell",
+                   "nk cell": "natural killer cell",
+                   "ipsc": "induced pluripotent stem cell",
+                   "ipscs": "induced pluripotent stem cell"}
+        if t in abbrevs:
+            return abbrevs[t]
+        # Strip plural suffixes
+        if t.endswith("s") and not t.endswith("ss"):
+            return t[:-1]
+        return t
+
+    def _lookup_term(key: str) -> tuple:
+        """Try exact match, then plural-normalised match."""
+        if key in gold_lookup:
+            return gold_lookup[key]
+        normed = _normalize_plural(key)
+        if normed in gold_lookup:
+            return gold_lookup[normed]
+        return None
+
     all_scores = []
-    test_docs = [d for d in docs if d.get("tissues") or d.get("cell_types")][:max_docs]
+    filtered = [d for d in docs if d.get("tissues") or d.get("cell_types")]
+    test_docs = filtered[:max_docs] if max_docs > 0 else filtered
     for doc in test_docs:
         raw_terms = []
         gold_items = []
@@ -252,8 +325,9 @@ def task_c_ontology_normalization(model_key: str, docs: list, think: bool = Fals
             for term in (doc.get(field, []) or [])[:3]:
                 if term and len(term) >= 3:
                     key = term.lower().strip()
-                    if key in gold_lookup:
-                        ont_id, ont_label = gold_lookup[key]
+                    result = _lookup_term(key)
+                    if result:
+                        ont_id, ont_label = result
                         raw_terms.append(term)
                         gold_items.append({
                             "raw": term,
@@ -266,11 +340,12 @@ def task_c_ontology_normalization(model_key: str, docs: list, think: bool = Fals
         prompt = f"Normalize these biomedical terms from {doc.get('gse_id', 'unknown')}:\n{json.dumps(raw_terms)}"
         try:
             max_tok = 4096 if think else 1024
-            raw = llm_call(prompt, model_key=model_key, system=ONTOLOGY_SYSTEM,
+            family = resolve_model_family(model_key)
+            onto_system = ONTOLOGY_SYSTEM + "\n" + family_json_hint(family)
+            raw = llm_call(prompt, model_key=model_key, system=onto_system,
                            temperature=0.0, max_tokens=max_tok, think=think, timeout=300)
-            m = re.search(r"\{.*\}", raw, re.DOTALL)
-            if m:
-                parsed = json.loads(m.group())
+            parsed = extract_json(raw)
+            if parsed:
                 pred_items = parsed.get("normalized", [])
             else:
                 pred_items = []
@@ -290,13 +365,98 @@ def task_c_ontology_normalization(model_key: str, docs: list, think: bool = Fals
     }
 
 
+def task_f_relevance_judgment(model_key: str, queries: list, docs: list,
+                              think: bool = False, max_pairs: int = 0) -> dict:
+    """Task F: Relevance judgment — binary classification of query-doc relevance.
+
+    For each query, tests positive pairs (expected_gse) and negative pairs
+    (random non-matching GSEs). Measures precision, recall, F1, and accuracy.
+    """
+    doc_by_gse = {d["gse_id"]: d for d in docs}
+    all_gse_ids = list(doc_by_gse.keys())
+
+    family = resolve_model_family(model_key)
+    system = RELEVANCE_SYSTEM_BASE + "\n" + family_json_hint(family)
+
+    tp, fp, tn, fn = 0, 0, 0, 0
+    n_tested = 0
+
+    for q in queries:
+        if max_pairs > 0 and n_tested >= max_pairs:
+            break
+        expected = set(q.get("expected_gse", []))
+        if not expected:
+            continue
+
+        # Positive pairs: expected GSEs that exist in corpus
+        positives = [g for g in expected if g in doc_by_gse]
+        # Negative pairs: random GSEs NOT in expected (same count as positives)
+        neg_pool = [g for g in all_gse_ids if g not in expected]
+        random.shuffle(neg_pool)
+        negatives = neg_pool[:len(positives)]
+
+        for gse_id, is_positive in (
+            [(g, True) for g in positives] + [(g, False) for g in negatives]
+        ):
+            if max_pairs > 0 and n_tested >= max_pairs:
+                break
+            n_tested += 1
+            d = doc_by_gse[gse_id]
+            prompt = (
+                f"Query: {q['query']}\n\n"
+                f"Dataset [{gse_id}]:\n"
+                f"  Title: {d.get('title', '')}\n"
+                f"  Organism: {d.get('organism', 'N/A')}\n"
+                f"  Summary: {d.get('summary', '')[:300]}\n\n"
+                f"Is this dataset relevant to the query?"
+            )
+            try:
+                max_tok = 4096 if think else 256
+                raw = llm_call(prompt, model_key=model_key, system=system,
+                               temperature=0.0, max_tokens=max_tok, think=think,
+                               timeout=120)
+                parsed = extract_json(raw)
+                predicted = parsed.get("relevant", False) if parsed else False
+
+                if is_positive and predicted:
+                    tp += 1
+                elif is_positive and not predicted:
+                    fn += 1
+                elif not is_positive and predicted:
+                    fp += 1
+                else:
+                    tn += 1
+            except Exception as e:
+                logger.warning(f"  Relevance failed for {gse_id}: {e}")
+                if is_positive:
+                    fn += 1
+                else:
+                    tn += 1
+
+    total = tp + fp + tn + fn
+    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+    f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0
+    accuracy = (tp + tn) / total if total > 0 else 0.0
+
+    return {
+        "accuracy": round(accuracy, 4),
+        "precision": round(precision, 4),
+        "recall": round(recall, 4),
+        "f1": round(f1, 4),
+        "tp": tp, "fp": fp, "tn": tn, "fn": fn,
+        "n_pairs": total,
+    }
+
+
 def task_d_answer_generation(model_key: str, queries: list, docs: list,
-                             think: bool = False, max_queries: int = 15) -> dict:
+                             think: bool = False, max_queries: int = 0) -> dict:
     """Task D: Answer generation quality — evaluate cited answers."""
     doc_by_gse = {d["gse_id"]: d for d in docs}
     all_scores = []
 
-    for q in queries[:max_queries]:
+    q_sample = queries[:max_queries] if max_queries > 0 else queries
+    for q in q_sample:
         expected_gse = [g for g in q.get("expected_gse", []) if g in doc_by_gse]
         if not expected_gse:
             continue
@@ -319,9 +479,7 @@ def task_d_answer_generation(model_key: str, queries: list, docs: list,
         try:
             max_tok = 4096 if think else 1024
             answer = llm_call(prompt, model_key=model_key,
-                              system="You are a scientific dataset search assistant. "
-                                     "Cite specific GSE accessions for every claim. "
-                                     "Be concise and factual.",
+                              system=ANSWER_BENCH_SYSTEM,
                               temperature=0.0, max_tokens=max_tok, think=think, timeout=300)
             # Extract cited GSE IDs
             import re
@@ -345,6 +503,137 @@ def task_d_answer_generation(model_key: str, queries: list, docs: list,
     }
 
 
+DOMAIN_SYSTEM = PROMPTS["classify_domain"]
+ORG_MOD_SYSTEM = PROMPTS["extract_organism_modality"]
+
+# Valid domain labels for Task G scoring
+VALID_DOMAINS = {"cancer", "development", "immunology", "neurodegeneration",
+                 "infectious_disease", "cardiovascular", "metabolic", "other"}
+
+
+def task_g_domain_classification(model_key: str, docs: list, think: bool = False,
+                                 max_docs: int = 0) -> dict:
+    """Task G: Classify research domain from title + summary.
+
+    Tests the model's ability to understand study context and assign the correct
+    research domain label. Uses ground truth 'domain' field (1649 docs have it).
+    """
+    family = resolve_model_family(model_key)
+    system = DOMAIN_SYSTEM + "\n" + family_json_hint(family)
+
+    filtered = [d for d in docs if d.get("domain") and d["domain"] in VALID_DOMAINS]
+    sample = filtered[:max_docs] if max_docs > 0 else filtered
+
+    correct, total, invalid = 0, 0, 0
+    per_domain = {}  # domain -> {"correct": n, "total": n}
+
+    for doc in sample:
+        gold = doc["domain"]
+        prompt = f"Title: {doc.get('title', '')}\n\nSummary: {doc.get('summary', '')[:500]}"
+        try:
+            max_tok = 4096 if think else 256
+            raw = llm_call(prompt, model_key=model_key, system=system,
+                           temperature=0.0, max_tokens=max_tok, think=think, timeout=120)
+            parsed = extract_json(raw)
+            pred = (parsed.get("domain", "") or "").lower().strip() if parsed else ""
+
+            if pred not in VALID_DOMAINS:
+                invalid += 1
+                pred = ""
+
+            total += 1
+            if gold not in per_domain:
+                per_domain[gold] = {"correct": 0, "total": 0}
+            per_domain[gold]["total"] += 1
+
+            if pred == gold:
+                correct += 1
+                per_domain[gold]["correct"] += 1
+        except Exception as e:
+            logger.warning(f"  Domain classify failed for {doc.get('gse_id')}: {e}")
+
+    accuracy = correct / total if total else 0.0
+    domain_acc = {d: round(v["correct"] / v["total"], 4) if v["total"] else 0
+                  for d, v in per_domain.items()}
+
+    return {
+        "accuracy": round(accuracy, 4),
+        "per_domain": domain_acc,
+        "n_docs": total,
+        "n_invalid": invalid,
+    }
+
+
+def task_h_organism_modality(model_key: str, docs: list, think: bool = False,
+                             max_docs: int = 0) -> dict:
+    """Task H: Extract organism and modality from title + summary.
+
+    Tests structured extraction of two fields that exist in ALL ground truth docs.
+    Organism: exact match after normalization. Modality: set F1 matching.
+    """
+    family = resolve_model_family(model_key)
+    system = ORG_MOD_SYSTEM + "\n" + family_json_hint(family)
+
+    filtered = [d for d in docs if d.get("organism") and d.get("modalities")]
+    sample = filtered[:max_docs] if max_docs > 0 else filtered
+
+    org_correct, org_total = 0, 0
+    mod_scores = []
+
+    for doc in sample:
+        gold_org = (doc["organism"] or "").lower().strip()
+        gold_mods = {m.lower() for m in doc["modalities"]}
+
+        prompt = f"Title: {doc.get('title', '')}\n\nSummary: {doc.get('summary', '')[:500]}"
+        try:
+            max_tok = 4096 if think else 256
+            raw = llm_call(prompt, model_key=model_key, system=system,
+                           temperature=0.0, max_tokens=max_tok, think=think, timeout=120)
+            parsed = extract_json(raw)
+            if not parsed:
+                continue
+
+            # Organism scoring: fuzzy match
+            pred_org = (parsed.get("organism", "") or "").lower().strip()
+            org_total += 1
+            if pred_org == gold_org or pred_org in gold_org or gold_org in pred_org:
+                org_correct += 1
+
+            # Modality scoring: set F1
+            pred_mods = parsed.get("modalities", [])
+            if isinstance(pred_mods, str):
+                pred_mods = [pred_mods]
+            pred_set = {m.lower().strip() for m in pred_mods if m}
+
+            if not pred_set and not gold_mods:
+                mod_scores.append({"precision": 1.0, "recall": 1.0, "f1": 1.0})
+            elif not pred_set or not gold_mods:
+                mod_scores.append({"precision": 0.0, "recall": 0.0, "f1": 0.0})
+            else:
+                tp = len(pred_set & gold_mods)
+                prec = tp / len(pred_set) if pred_set else 0
+                rec = tp / len(gold_mods) if gold_mods else 0
+                f1 = 2 * prec * rec / (prec + rec) if (prec + rec) else 0
+                mod_scores.append({"precision": prec, "recall": rec, "f1": f1})
+        except Exception as e:
+            logger.warning(f"  Org/mod failed for {doc.get('gse_id')}: {e}")
+
+    org_acc = org_correct / org_total if org_total else 0
+    avg_mod = {}
+    if mod_scores:
+        avg_mod = {
+            "precision": round(np.mean([s["precision"] for s in mod_scores]), 4),
+            "recall": round(np.mean([s["recall"] for s in mod_scores]), 4),
+            "f1": round(np.mean([s["f1"] for s in mod_scores]), 4),
+        }
+
+    return {
+        "organism_accuracy": round(org_acc, 4),
+        "modality": avg_mod,
+        "n_docs": org_total,
+    }
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--models", nargs="+", default=None,
@@ -355,12 +644,18 @@ def main():
                         help="Include models marked cpu_spill=True (skipped by default)")
     parser.add_argument("--max-parse-queries", type=int, default=0,
                         help="Max queries for Task A parsing (0=all)")
-    parser.add_argument("--max-extract-docs", type=int, default=50,
-                        help="Max docs for Task B extraction")
-    parser.add_argument("--max-onto-docs", type=int, default=30,
-                        help="Max docs for Task C ontology normalization")
-    parser.add_argument("--max-answer-queries", type=int, default=15,
-                        help="Max queries for Task D answer generation")
+    parser.add_argument("--max-extract-docs", type=int, default=0,
+                        help="Max docs for Task B extraction (0=all)")
+    parser.add_argument("--max-onto-docs", type=int, default=0,
+                        help="Max docs for Task C ontology normalization (0=all)")
+    parser.add_argument("--max-answer-queries", type=int, default=0,
+                        help="Max queries for Task D answer generation (0=all)")
+    parser.add_argument("--max-relevance-pairs", type=int, default=0,
+                        help="Max query-doc pairs for Task F relevance judgment (0=all)")
+    parser.add_argument("--max-classify-docs", type=int, default=0,
+                        help="Max docs for Task G domain classification (0=all)")
+    parser.add_argument("--max-orgmod-docs", type=int, default=0,
+                        help="Max docs for Task H organism/modality extraction (0=all)")
     args = parser.parse_args()
 
     available = check_ollama()
@@ -402,11 +697,19 @@ def main():
     runs = []
     for mk in active:
         can_think = LLM_MODELS[mk].get("think", False)
-        # Always test with think=False (direct answering)
-        runs.append((mk, False, mk))
-        # Also test with think=True if model supports it and ablation enabled
-        if can_think and not args.no_think_ablation:
+        model_family = LLM_MODELS[mk].get("family", "")
+        always_thinks = family_always_thinks(model_family)
+
+        if always_thinks:
+            # DeepSeek-R1 and similar: CoT is always embedded in response.
+            # Only test once — think is always on (no ablation possible).
             runs.append((mk, True, f"{mk}+think"))
+        else:
+            # Always test with think=False (direct answering)
+            runs.append((mk, False, mk))
+            # Also test with think=True if model supports it and ablation enabled
+            if can_think and not args.no_think_ablation:
+                runs.append((mk, True, f"{mk}+think"))
 
     logger.info(f"Testing {len(active)} models in {len(runs)} configurations")
     logger.info(f"  Thinking-capable: {[mk for mk in active if LLM_MODELS[mk].get('think')]}")
@@ -469,6 +772,21 @@ def main():
 
         logger.info("  Task E: Speed ...")
         results["task_e_speed"] = task_e_speed(model_key, think=think_mode)
+
+        logger.info("  Task F: Relevance judgment ...")
+        results["task_f_relevance"] = task_f_relevance_judgment(
+            model_key, queries, docs, think=think_mode,
+            max_pairs=args.max_relevance_pairs)
+
+        logger.info("  Task G: Domain classification ...")
+        results["task_g_domain"] = task_g_domain_classification(
+            model_key, docs, think=think_mode,
+            max_docs=args.max_classify_docs)
+
+        logger.info("  Task H: Organism & modality extraction ...")
+        results["task_h_org_modality"] = task_h_organism_modality(
+            model_key, docs, think=think_mode,
+            max_docs=args.max_orgmod_docs)
 
         all_results[run_label] = results
         logger.info(f"  Done: {run_label}")
