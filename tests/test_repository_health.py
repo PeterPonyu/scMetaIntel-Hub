@@ -26,12 +26,12 @@ class RepositoryHealthTests(unittest.TestCase):
                 self.assertTrue(path.exists(), f"Missing required repository file: {path}")
 
     def test_essential_directories_exist(self):
-        """Verify essential project directories exist (created at runtime if needed)."""
+        """Verify essential project directories tracked in git exist."""
         essential_dirs = [
-            ROOT / "benchmarks" / "ground_truth",
-            ROOT / "benchmarks" / "results",
             ROOT / "benchmarks" / "public_datasets",
+            ROOT / "benchmarks",
             ROOT / "scmetaintel",
+            ROOT / "scripts",
             ROOT / "tests",
         ]
         for path in essential_dirs:
