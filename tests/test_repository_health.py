@@ -25,27 +25,25 @@ class RepositoryHealthTests(unittest.TestCase):
             with self.subTest(path=path):
                 self.assertTrue(path.exists(), f"Missing required repository file: {path}")
 
-    def test_placeholder_directories_are_preserved(self):
-        placeholders = [
-            ROOT / "data" / "downloads" / ".gitkeep",
-            ROOT / "data" / "h5ad_output" / ".gitkeep",
-            ROOT / "enriched_metadata" / ".gitkeep",
-            ROOT / "logs" / ".gitkeep",
-            ROOT / "reports" / ".gitkeep",
+    def test_essential_directories_exist(self):
+        """Verify essential project directories exist (created at runtime if needed)."""
+        essential_dirs = [
+            ROOT / "benchmarks" / "ground_truth",
+            ROOT / "benchmarks" / "results",
+            ROOT / "benchmarks" / "public_datasets",
+            ROOT / "scmetaintel",
+            ROOT / "tests",
         ]
-        for path in placeholders:
+        for path in essential_dirs:
             with self.subTest(path=path):
-                self.assertTrue(path.exists(), f"Missing placeholder file: {path}")
+                self.assertTrue(path.exists(), f"Missing essential directory: {path}")
 
-    def test_gitignore_allows_runtime_placeholders(self):
+    def test_gitignore_covers_artifacts(self):
         gitignore = (ROOT / ".gitignore").read_text(encoding="utf-8")
         expected_rules = [
-            "data/downloads/*",
-            "!data/downloads/.gitkeep",
-            "data/h5ad_output/*",
-            "!data/h5ad_output/.gitkeep",
-            "logs/*",
-            "!logs/.gitkeep",
+            "benchmarks/ground_truth/*.json",
+            "benchmarks/results/*.json",
+            "qdrant_data/",
             "!.env.example",
         ]
         for rule in expected_rules:

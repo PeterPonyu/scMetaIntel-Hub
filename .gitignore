@@ -17,18 +17,9 @@ venv/
 # Data artifacts
 ontologies/*.obo
 ontologies/*.owl
-enriched_metadata/*.json
 qdrant_data/
-data/downloads/*
-!data/downloads/.gitkeep
-data/h5ad_output/*
-!data/h5ad_output/.gitkeep
 benchmarks/ground_truth/*.json
 benchmarks/results/*.json
-benchmarks/smoke_test_*.json
-reports/*.json
-logs/*
-!logs/.gitkeep
 
 # Local-only indexes
 local_accession_index.json
