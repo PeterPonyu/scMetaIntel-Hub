@@ -2,7 +2,7 @@
 
 ## Overview
 
-**51 models × 15 families × 35 evaluation tasks × 3 ablation dimensions**
+**51 models × 16 families × 35 evaluation tasks × 4 ablation dimensions**
 
 The benchmark has two layers:
 - **Layer 1: Domain-specific** — 8 tasks (A–H) on scMetaIntel ground truth (the paper's contribution)
@@ -16,9 +16,9 @@ All evaluation runs locally via Ollama on RTX 5090 Laptop (24.5 GB VRAM).
 
 | Task | What | Data | Input → Output | Metrics | Scale |
 |------|------|------|-----------------|---------|-------|
-| **A** Parse | NL query → structured JSON | eval_queries.json | query → `{organism, tissue, ...}` | **Exact match**, per-field accuracy | 163 queries |
-| **B** Extract | GEO text → metadata | ground_truth/*.json | title+summary → `{tissues[], diseases[], cell_types[]}` | **P/R/F1** per field | 2109 docs |
-| **C** Ontology | Terms → ontology IDs | ground_truth + OBO | raw terms → `{ontology_id, label}` | **Accuracy, Recall, F1** | 2109 docs |
+| **A** Parse | NL query → structured JSON | eval_queries.json | query → `{organism, tissue, ...}` | **Exact match**, per-field accuracy | 171 queries |
+| **B** Extract | GEO text → metadata | ground_truth/*.json | title+summary → `{tissues[], diseases[], cell_types[]}` | **P/R/F1** per field | 2189 docs |
+| **C** Ontology | Terms → ontology IDs | ground_truth + OBO | raw terms → `{ontology_id, label}` | **Accuracy, Recall, F1** | 2189 docs |
 | **D** Answer | Retrieved studies → cited answer | eval_queries.json | context+query → answer | **Citation P/R**, grounding rate | 171 queries |
 | **E** Speed | Throughput | 5 built-in prompts | prompt → response | **tok/s**, per-prompt breakdown | 5 prompts |
 | **F** Relevance | Query-doc binary classification | queries × ground_truth | query+doc → `{relevant: bool}` | **Accuracy, P/R/F1**, confusion matrix | ~1340 pairs |
@@ -103,17 +103,18 @@ All evaluation runs locally via Ollama on RTX 5090 Laptop (24.5 GB VRAM).
 
 ---
 
-## Ablation Dimensions (No Extra Downloads)
+## Ablation Dimensions
 
 ### Dimension 1: Think Mode
 
 | Condition | Models | How |
 |-----------|--------|-----|
 | think=False | All 51 models | Baseline direct answering |
-| think=True | 14 API-toggle models (Qwen3/3.5, Gemma3, Granite3.3) | Ollama `{"think": true}` |
+| think=True | 19 API-toggle models (Qwen3/3.5, Gemma3, Granite3.3) | Ollama `{"think": true}` |
 | always-think | 4 DeepSeek-R1 models | Cannot disable, `<think>` always in response |
 
 **Metric:** Δ accuracy (think=True − think=False) per task.
+**Total configs:** 66 (51 base + 15 +think variants; DeepSeek-R1 only stores +think).
 
 ### Dimension 2: Quantization
 
@@ -134,8 +135,20 @@ All evaluation runs locally via Ollama on RTX 5090 Laptop (24.5 GB VRAM).
 | q8_0 | `OLLAMA_KV_CACHE_TYPE=q8_0` | ~25% less KV VRAM |
 | q4_0 | `OLLAMA_KV_CACHE_TYPE=q4_0` | ~50% less KV VRAM |
 
-**Test on:** Top 5 models × 3 KV types × Tasks A/D/F (most context-sensitive).
+**Test on:** 5 models (qwen3-8b, llama3.1-8b, phi4-14b-q8, gemma3-12b-q8, qwen3.5-9b-q8) × 3 KV types × Tasks A/D/F (most context-sensitive).
 **Metric:** Δ accuracy across KV types, VRAM reduction measured.
+
+### Dimension 4: Context Length (runtime, no download)
+
+| Setting | Env Var | Effect |
+|---------|---------|--------|
+| 2048 | `SCMETA_NUM_CTX=2048` | Minimal context, fastest |
+| 4096 (default) | `SCMETA_NUM_CTX=4096` | Standard context |
+| 8192 | `SCMETA_NUM_CTX=8192` | Extended context |
+| 16384 | `SCMETA_NUM_CTX=16384` | Maximum tested context |
+
+**Test on:** Same 5 models × 4 context lengths × Tasks D/E (answer quality + speed).
+**Metric:** Throughput (tok/s) and answer quality vs context length.
 
 ---
 
@@ -160,30 +173,35 @@ All evaluation runs locally via Ollama on RTX 5090 Laptop (24.5 GB VRAM).
 
 ## Composite Scoring
 
-### Per-category composite (for radar charts):
+### Domain composite (implemented in `generate_article_figures.py`)
 
 ```
-general_score     = mean(mmlu_acc, hellaswag_acc, winogrande_acc, arc_acc)
-reasoning_score   = mean(gsm8k_acc, truthfulqa_acc, arc_easy_acc)
-biomedical_score  = mean(pubmedqa_acc, medqa_acc, medmcqa_acc, sciq_acc, mmlu_bio_avg)
-structured_score  = mean(ifeval_strict, json_schema_acc, squad_f1)
-tooluse_score     = mean(nexus_name_acc, glaive_parse_rate, toolace_parse_rate)
-commonsense_score = mean(siqa_acc, openbookqa_acc, boolq_acc)
-domain_score      = mean(task_a_em, task_b_f1, task_c_f1, task_d_cite_recall,
-                         task_f_f1, task_g_acc, task_h_org_acc)
-speed_score       = normalized(tok/s)
+parse_score   = task_a.exact_match
+extract_score = mean(task_b.tissues_f1, task_b.diseases_f1, task_b.cell_types_f1)
+onto_score    = task_c.f1
+answer_score  = mean(task_d.citation_recall, task_d.grounding_rate)
+speed_score   = min(task_e.tokens_per_sec / 100, 1.0)
+relev_score   = task_f.f1
+domain_score  = task_g.accuracy
+orgmod_score  = mean(task_h.organism_accuracy, task_h.modality_f1)
+
+composite = (0.15 × parse_score   +
+             0.15 × extract_score +
+             0.15 × onto_score    +
+             0.20 × answer_score  +
+             0.05 × speed_score   +
+             0.10 × relev_score   +
+             0.10 × domain_score  +
+             0.10 × orgmod_score)
 ```
 
-### Overall composite:
-```
-composite = weighted_mean(
-    domain_score     × 0.35,   # Our paper's contribution (most weight)
-    biomedical_score × 0.15,   # Domain-adjacent public benchmarks
-    general_score    × 0.10,   # General capability baseline
-    reasoning_score  × 0.10,   # Reasoning (important for think ablation)
-    structured_score × 0.10,   # JSON/structured output (core pipeline need)
-    tooluse_score    × 0.05,   # Function calling
-    commonsense_score× 0.05,   # Commonsense
-    speed_score      × 0.10,   # Practical deployment consideration
-)
+### Public benchmark categories (per-category averages, reported in Fig 7)
+
+```text
+general_score     = mean(mmlu, hellaswag, winogrande, arc_challenge)
+reasoning_score   = mean(gsm8k, truthfulqa, arc_easy)
+biomedical_score  = mean(pubmedqa, medqa, medmcqa, sciq, bioasq, 6×mmlu_bio)
+structured_score  = mean(ifeval, json_mode, squad_v2)
+tooluse_score     = mean(nexusraven, glaive, toolace)
+commonsense_score = mean(siqa, openbookqa, boolq)
 ```

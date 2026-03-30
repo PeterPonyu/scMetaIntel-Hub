@@ -7,20 +7,20 @@ The merged project unifies two previously separate responsibilities:
 - **data acquisition**: GEO search / scan / verify / download / convert / organize
 - **metadata intelligence**: enrich / normalize / embed / retrieve / rerank / answer / evaluate
 
-## Phase-1 integration design
+## Architecture overview
 
-### 1. Acquisition remains stable
+### 1. Acquisition (bridged)
 
-The existing GEO-DataHub codebase already provides a mature CLI and file-processing pipeline. Instead of copying every module prematurely, the merged project exposes it through an internal bridge:
+The existing GEO-DataHub codebase provides a mature CLI and file-processing pipeline. The merged project exposes it through an internal bridge:
 
 - `geodh/cli.py`
 - command path: `python -m scmetaintel geo ...`
 
-This preserves stability while letting the merged project become the new umbrella entrypoint.
+This preserves stability while letting the merged project serve as the umbrella entrypoint.
 
-### 2. Intelligence is first-class and local
+### 2. Intelligence (first-class)
 
-The `scmetaintel/` package in this repo is the canonical merged implementation.
+The `scmetaintel/` package is the canonical merged implementation.
 
 It combines:
 
@@ -49,20 +49,20 @@ Three-layer normalization:
 
 1. exact / synonym lookup
 2. embedding similarity with BioLORD-2023
-3. future LLM disambiguation hook
+3. LLM-based disambiguation (benchmarked as Task C across 51 models)
 
 Targets:
 
-- CL
-- UBERON
-- MONDO
+- CL (Cell Ontology)
+- UBERON (Anatomy)
+- MONDO (Disease)
 
 ### Embedding and indexing
 
 Two APIs coexist intentionally:
 
-- `Embedder` → benchmark-friendly low-level interface
-- `StudyEmbedder` → project-friendly high-level interface
+- `Embedder` — benchmark-friendly low-level interface
+- `StudyEmbedder` — project-friendly high-level interface
 
 Storage:
 
@@ -72,8 +72,8 @@ Storage:
 
 Two styles coexist intentionally:
 
-- `RetrievalPipeline` → benchmark-style dense / sparse / hybrid / rerank experiments
-- `HybridRetriever` → user-facing search and chat retrieval wrapper
+- `RetrievalPipeline` — benchmark-style dense / sparse / hybrid / rerank experiments
+- `HybridRetriever` — user-facing search and chat retrieval wrapper
 
 ### Answer generation
 
@@ -82,46 +82,72 @@ Two styles coexist intentionally:
 - helper functions (`generate_answer`, `parse_query`, `extract_metadata`)
 - class API (`AnswerGenerator`)
 
-This was deliberate to support both scripted evaluation and interactive usage.
+This supports both scripted evaluation and interactive usage.
 
 ## Model policy
 
-### Recommended models
+### Benchmark-validated recommendations (from completed benchmarks)
 
-These are the architectural targets for best quality:
+Based on benchmark results across all evaluation tasks:
 
-- LLM: `qwen3.5-27b`
-- fast LLM: `qwen3.5-9b`
-- embedding: `qwen3-embed-8b`
-- reranker: `qwen3-reranker-4b`
+- **LLM (best composite)**: `llama3.1-8b` — top domain composite score (0.776)
+- **LLM (best value)**: `qwen3-1.7b` — competitive quality at 1.7B parameters
+- **Embedding (best retrieval)**: `mxbai-embed-large` — best R@50 and nDCG@10
+- **Embedding (best ontology)**: `sapbert` — highest ontology recall@1
+- **Reranker**: `bge-reranker-v2-m3` — used in all hybrid+rerank strategies
 
-### Practical defaults
+### Practical defaults (for quick start)
 
-These are chosen to run immediately on the current desktop setup:
+- LLM: any Ollama model in the 51-model registry (`scmetaintel/config.py`)
+- Embedding: `BAAI/bge-m3` (good balance of speed and quality)
+- Ontology embedding: `FremyCompany/BioLORD-2023`
+- Reranker: `BAAI/bge-reranker-v2-m3`
 
-- LLM: `qwen2.5-1.5b`
-- embedding: `bge-m3`
-- ontology embedding: `biolord-2023`
-- reranker: `bge-reranker-v2-m3`
+### Frontier targets (not yet validated on this hardware)
 
-## Migration roadmap
+- LLM: `qwen3.5-27b` (disabled — exceeds 24.5 GB VRAM)
+- Dense embedding: `Qwen/Qwen3-Embedding-8B` (not yet benchmarked)
+- Reranker: `Qwen/Qwen3-Reranker-4B` (not yet benchmarked)
 
-### Phase 1 (done here)
+## Benchmark suite
 
-- create merged folder
-- unify config and model registry
-- merge core intelligence package
-- expose GEO CLI via bridge
-- add shared docs, config, scripts
+The complete benchmark covers 5 levels with 9 scripts:
 
-### Phase 2
+```text
+01_build_ground_truth.py   → 2189 enriched GSE JSONs
+02_bench_embeddings.py     → 14 embedding models
+03_bench_retrieval.py      → 6 retrieval strategies
+04_bench_llm.py            → 51 LLMs × 8 domain tasks (66 configs with think)
+05_bench_public.py         → 6 models × 27 public datasets
+06_bench_context.py        → context window optimisation curves
+07_bench_context_mgmt.py   → 15 context management strategies
+08_bench_ablation.py       → KV cache (3 types) + context length (4 sizes)
+09_bench_e2e.py            → end-to-end pipeline comparison
+```
 
-- vendor `geo_*.py` modules into `geodh/`
-- port benchmark scripts into this repo
-- standardize evaluation assets
+Article figures are generated by `scripts/generate_article_figures.py` (9 figures + 7 tables).
 
-### Phase 3
+See `benchmarks/BENCHMARK_DESIGN.md` for full task definitions and scoring.
 
-- add tests and packaging
-- add web/API layer
-- add CI and reproducible environment definitions
+## Migration status
+
+### Phase 1 (complete)
+
+- Created merged folder structure
+- Unified config and model registry (51 LLMs, 16 families)
+- Merged core intelligence package
+- Exposed GEO CLI via bridge
+- Added shared docs, config, scripts
+
+### Phase 2 (complete)
+
+- Ported all 9 benchmark scripts into this repo
+- Standardized evaluation assets (171 queries, 2189 ground truth docs)
+- Completed full benchmark runs across all levels
+
+### Phase 3 (in progress)
+
+- CI workflow exists (`repo-health.yml`)
+- Basic repository health tests exist
+- Web/API layer: not started
+- Release/version automation: not started
