@@ -219,6 +219,7 @@ class OntologyNormalizer:
     def build_embedding_indices(self, cache_path: Path | None = None):
         self._load_bio_encoder()
         cache_path = cache_path or (self.ontology_dir / "ontology_embeddings.pkl")
+        cache_path.parent.mkdir(parents=True, exist_ok=True)
         if cache_path.exists():
             logger.info(f"Loading cached ontology embeddings from {cache_path}")
             with open(cache_path, "rb") as f:

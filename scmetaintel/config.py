@@ -1252,6 +1252,12 @@ class PathConfig:
         return local
 
     def ensure_dirs(self):
+        """Create the conventional project/output directories on demand.
+
+        This helper is intentionally opt-in. Runtime code should prefer to
+        create directories immediately before writing files so importing the
+        config module does not leave empty folders behind.
+        """
         for d in [
             self.data_dir,
             self.downloads_dir,
@@ -1341,9 +1347,6 @@ class Config:
     embedding: EmbeddingRuntimeConfig = field(default_factory=EmbeddingRuntimeConfig)
     retrieval: RetrievalRuntimeConfig = field(default_factory=RetrievalRuntimeConfig)
     services: ServiceConfig = field(default_factory=ServiceConfig)
-
-    def __post_init__(self):
-        self.paths.ensure_dirs()
 
 
 _CONFIG: Config | None = None

@@ -1,16 +1,16 @@
 Category,Count
-disease,23
-basic,19
-multi_constraint,15
-cell_type,12
-natural_language,8
-modality,7
-organism,6
+basic,35
+disease,33
+multi_constraint,31
+cell_type,29
+modality,18
+natural_language,13
+organism,12
 
 Difficulty,Count
-easy,24
-hard,23
-medium,43
+easy,48
+hard,40
+medium,83
 
-Total queries,90
-Unique expected GSEs,227
+Total queries,171
+Unique expected GSEs,540

@@ -61,13 +61,35 @@ def _is_excluded(label: str) -> bool:
     return base in EXCLUDED_MODELS
 
 
-# ── Color palette ──
+def _short_strategy_label(label: str) -> str:
+    """Compact retrieval strategy labels for crowded axes."""
+    return (label.replace("hybrid+filter+rerank", "hyb+flt+rrk")
+            .replace("hybrid+rerank", "hyb+rrk")
+            .replace("hybrid+filter", "hyb+flt"))
+
+
+def _wrap_config_label(label: str) -> str:
+    """Wrap snake_case config names for x/y tick labels."""
+    return label.replace("_", "\n")
+
+
+# ── Color palette (15 model families) ──
 FAMILY_COLORS = {
     "qwen": "#2196F3",
     "gemma": "#FF9800",
     "mistral": "#9C27B0",
     "phi": "#4CAF50",
     "llama": "#F44336",
+    "deepseek": "#00BCD4",
+    "granite": "#795548",
+    "falcon": "#607D8B",
+    "aya": "#E91E63",
+    "glm": "#3F51B5",
+    "internlm": "#009688",
+    "yi": "#FF5722",
+    "solar": "#CDDC39",
+    "exaone": "#8BC34A",
+    "starcoder": "#FFC107",
 }
 
 
@@ -154,123 +176,250 @@ def table_2_query_distribution():
 # ═══════════════════════════════════════════════════════════════════════════
 # Figure 1: Study design diagram
 # ═══════════════════════════════════════════════════════════════════════════
+def _draw_box(ax, x, y, w, h, text, facecolor, edgecolor="none",
+              fontsize=13, fontweight="normal", text_color="#222222",
+              linewidth=0, boxstyle="round,pad=0.06"):
+    """Draw a rounded box with centered text and return the patch."""
+    rect = mpatches.FancyBboxPatch(
+        (x - w / 2, y - h / 2), w, h,
+        boxstyle=boxstyle, facecolor=facecolor,
+        edgecolor=edgecolor, linewidth=linewidth)
+    ax.add_patch(rect)
+    ax.text(x, y, text, ha="center", va="center",
+            fontsize=fontsize, fontweight=fontweight, color=text_color,
+            linespacing=1.4)
+    return rect
+
+
+def _draw_arrow(ax, x1, y1, x2, y2, color="#666666", lw=1.8):
+    """Draw a connecting arrow between two points."""
+    ax.annotate("", xy=(x2, y2), xytext=(x1, y1),
+                arrowprops=dict(arrowstyle="-|>", color=color, lw=lw,
+                                connectionstyle="arc3,rad=0"))
+
+
 def figure_1_study_design():
-    """Pipeline architecture diagram: tasks, benchmarks, methods, metrics, data."""
-    fig_w, fig_h = 14, 9
+    """Publication-ready study design overview with consistent typography."""
+    fig_w, fig_h = 16.4, 13.4
     fig = plt.figure(figsize=(fig_w, fig_h))
 
-    # Title
-    ax_title = fig.add_axes([0.0, 0.94, 1.0, 0.05])
-    ax_title.set_xlim(0, 1); ax_title.set_ylim(0, 1)
-    ax_title.axis("off")
-    ax_title.text(0.5, 0.5, "Figure 1: scMetaIntel-Hub Benchmarking Study Design",
-                  ha="center", va="center", fontsize=20)
-
-    # Main canvas
-    ax = fig.add_axes([0.02, 0.04, 0.96, 0.89])
-    ax.set_xlim(0, 7.0); ax.set_ylim(0, 6.5)
+    ax = fig.add_axes([0.02, 0.02, 0.96, 0.96])
+    ax.set_xlim(0, 16); ax.set_ylim(0, 13.4)
     ax.axis("off")
 
-    tasks = [
-        {
-            "label": "Task 1: Embedding Evaluation",
-            "data": "2189 GSE metadata docs\n90 eval queries\n700 synonym pairs",
-            "methods": "14 models\n(4 general, 10 biomedical)",
-            "metrics": "R@50, MRR, nDCG@10\nOnto-R@1, Onto-MRR, Speed",
-            "figure": "Fig 2",
-            "color": "#E3F2FD",
-        },
-        {
-            "label": "Task 2: Retrieval Strategy",
-            "data": "Best embedding model\n(mxbai-embed-large)\n90 queries",
-            "methods": "6 strategies:\ndense, sparse, hybrid\n+filter, +rerank",
-            "metrics": "P@5, P@10, R@50\nMRR, nDCG@10, Latency",
-            "figure": "Fig 3",
-            "color": "#FFF3E0",
-        },
-        {
-            "label": "Task 3: LLM Evaluation",
-            "data": "5 sub-tasks (A\u2013E)\n13 models\nacross 5 families",
-            "methods": "200 docs extraction\n200 docs ontology\n90 queries answer",
-            "metrics": "Parse-EM, Extract-F1\nOnto-F1, Cite-Recall\nGrounding, Tok/s",
-            "figure": "Fig 4",
-            "color": "#F3E5F5",
-        },
-        {
-            "label": "Task 4: Context Window",
-            "data": "k = {3,5,10,15,20}\n3 formats: full,\nstructured, minimal",
-            "methods": "15 k\u00d7format combos\n+ 3 system-prompt\nvariants",
-            "metrics": "Cite-Recall, Cite-Prec\nGrounding, Context-Tok\nDuration",
-            "figure": "Fig 5",
-            "color": "#E8F5E9",
-        },
-        {
-            "label": "Task 5: End-to-End Pipeline",
-            "data": "4 pipeline configs\nbaseline vs optimised\n18 queries",
-            "methods": "baseline, optimised_fast\noptimised_quality\nbalanced",
-            "metrics": "R@50, MRR, Cite-Recall\nGrounding, Halluc-Rate\nLatency",
-            "figure": "Fig 6",
-            "color": "#FFEBEE",
-        },
+    title_fs = 22
+    section_fs = 14.8
+    body_lg_fs = 13.7
+    body_md_fs = 12.8
+    body_sm_fs = 11.6
+    chip_fs = 9.3
+    stage_fs = 11.8
+    summary_fs = 11.4
+    callout_fs = 11.2
+
+    # ── Title ──
+    ax.text(8.0, 12.78, "scMetaIntel-Hub: Comprehensive Benchmarking of Local LLMs\n"
+            "for Single-Cell Genomics Metadata Intelligence",
+        ha="center", va="center", fontsize=title_fs, fontweight="normal",
+        color="#111111", linespacing=1.3)
+
+    # Thin separator line
+    ax.plot([1.4, 14.6], [12.08, 12.08], color="#D4D4D4", linewidth=0.9)
+
+    # ================================================================
+    # ROW 1 (y≈10.8): Data Foundation — two boxes
+    # ================================================================
+    data_y = 10.95
+    _draw_box(ax, 4.5, data_y, 6.2, 1.24,
+              "scRNA-seq Metadata Corpus\n"
+              "2,189 GEO series across 43 organisms\n"
+              "Curated tissue, disease & cell-type annotations",
+          "#E3F2FD", fontsize=body_lg_fs)
+    _draw_box(ax, 12.0, data_y, 5.4, 1.24,
+              "Evaluation Framework\n"
+              "171 hand-crafted queries (7 categories)\n"
+              "27 public benchmark datasets",
+          "#E3F2FD", fontsize=body_lg_fs)
+
+    # Left stage label
+    ax.text(0.55, data_y, "Data", ha="center", va="center",
+        fontsize=stage_fs, fontweight="normal", color="#8A8A8A")
+
+    # Arrows down
+    _draw_arrow(ax, 4.5, data_y - 0.62, 4.5, 9.7)
+    _draw_arrow(ax, 12.0, data_y - 0.62, 12.0, 9.7)
+
+    # ================================================================
+    # ROW 2 (y≈8.9): Embedding + Retrieval
+    # ================================================================
+    row2_y = 9.0
+    _draw_box(ax, 4.5, row2_y, 6.2, 1.02,
+              "Embedding Model Selection\n"
+              "19 models: general-purpose & biomedical\n"
+              "R@50, MRR, nDCG@10, ontology recall, speed",
+          "#BBDEFB", fontsize=body_lg_fs)
+
+    _draw_box(ax, 12.0, row2_y, 5.4, 1.02,
+              "Retrieval Strategy Comparison\n"
+              "Dense, sparse, hybrid, filtered, reranked\n"
+              "11 reranker models evaluated",
+          "#FFE0B2", fontsize=body_lg_fs)
+
+    ax.annotate("best embedding", xy=(9.1, row2_y), xytext=(7.5, row2_y),
+        fontsize=callout_fs, color="#1565C0", va="center",
+        fontweight="medium",
+            arrowprops=dict(arrowstyle="-|>", color="#1565C0", lw=1.3))
+
+    ax.text(0.55, row2_y, "Stage 1\nRepresentation\n& Retrieval",
+        ha="center", va="center", fontsize=stage_fs, fontweight="normal",
+        color="#8A8A8A", linespacing=1.25)
+
+    _draw_arrow(ax, 4.5, row2_y - 0.51, 8.0, 8.02)
+    _draw_arrow(ax, 12.0, row2_y - 0.51, 8.0, 8.02)
+
+    # ================================================================
+    # ROW 3 (y≈7.0): LLM Evaluation — two sub-sections
+    # ================================================================
+    llm_y = 6.95
+    llm_h = 2.0
+
+    # Outer LLM box
+    _draw_box(ax, 8.0, llm_y, 14.6, llm_h, "",
+              "#F3E5F5")
+    ax.text(8.0, llm_y + 0.72, "Large Language Model Evaluation  —  "
+            "51 models across 15 architectural families",
+        ha="center", va="center", fontsize=section_fs,
+        fontweight="normal", color="#4A148C")
+
+    # 8 domain-specific task chips in a 4×2 grid
+    all_tasks = [
+        ("Query\nParsing", "#CE93D8"), ("Metadata\nExtraction", "#BA68C8"),
+        ("Ontology\nMapping", "#AB47BC"), ("Answer\nGeneration", "#9C27B0"),
+        ("Inference\nSpeed", "#CE93D8"), ("Relevance\nJudgment", "#BA68C8"),
+        ("Domain\nClassification", "#AB47BC"), ("Organism &\nModality", "#9C27B0"),
     ]
+    chip_w2, chip_h2 = 1.6, 0.48
 
-    col_x = [0.65, 2.0, 3.3, 4.6, 5.95]
-    col_labels = ["Task", "Data", "Methods", "Metrics", "Figure"]
-    for cx, cl in zip(col_x, col_labels):
-        ax.text(cx, 6.2, cl, ha="center", va="center", fontsize=15,
-                color="#333333")
+    ax.text(5.3, llm_y + 0.28, "Domain-Specific Tasks",
+        ha="center", va="center", fontsize=body_sm_fs, color="#6A1B9A",
+        fontweight="normal")
+    xs_chip = [1.78, 3.46, 5.14, 6.82, 1.78, 3.46, 5.14, 6.82]
+    ys_chip = [llm_y - 0.12] * 4 + [llm_y - 0.64] * 4
+    for i, (label, color) in enumerate(all_tasks):
+        _draw_box(ax, xs_chip[i], ys_chip[i], chip_w2, chip_h2, label,
+          color, fontsize=chip_fs,
+          fontweight="normal", text_color="white")
 
-    ax.plot([0.0, 7.0], [6.0, 6.0], color="#999999", linewidth=0.8)
+    # Public benchmarks (right portion)
+    pub_x = 12.0
+    ax.text(pub_x, llm_y + 0.28, "Public Benchmarks (27 datasets)",
+        ha="center", va="center", fontsize=body_sm_fs, color="#6A1B9A",
+        fontweight="normal")
+    pub_items = [
+        ("General\nMMLU, HellaSwag\nARC, GSM8K", "#E1BEE7"),
+        ("Biomedical\nPubMedQA, MedQA\nBioASQ, SciQ", "#D1C4E9"),
+        ("Structured &\nTool-Use\nIFEval, NexusFC", "#EDE7F6"),
+    ]
+    for i, (label, color) in enumerate(pub_items):
+        px = pub_x - 1.9 + i * 1.9
+        _draw_box(ax, px, llm_y - 0.38, 1.8, 0.9, label,
+                  color, fontsize=9.4,
+                  text_color="#333333")
 
-    row_h = 1.05
-    for i, t in enumerate(tasks):
-        y_center = 6.0 - (i + 1) * row_h + row_h / 2
+    ax.text(0.55, llm_y, "Stage 2\nGeneration\n& Reasoning",
+        ha="center", va="center", fontsize=stage_fs, fontweight="normal",
+        color="#8A8A8A", linespacing=1.25)
 
-        # Task label box
-        rect = mpatches.FancyBboxPatch(
-            (0.02, y_center - 0.40), 1.30, 0.80,
-            boxstyle="round,pad=0.05", facecolor=t["color"],
-            edgecolor="#666666", linewidth=1.0)
-        ax.add_patch(rect)
-        ax.text(0.67, y_center, t["label"], ha="center", va="center",
-                fontsize=12, color="#333333")
+    # Arrows down — two paths
+    _draw_arrow(ax, 5.5, llm_y - llm_h / 2, 5.5, 5.3)
+    _draw_arrow(ax, 10.5, llm_y - llm_h / 2, 10.5, 5.3)
 
-        # Data / Methods / Metrics columns
-        ax.text(2.0, y_center, t["data"], ha="center", va="center",
-                fontsize=11, color="#333333", linespacing=1.3)
-        ax.text(3.3, y_center, t["methods"], ha="center", va="center",
-                fontsize=11, color="#333333", linespacing=1.3)
-        ax.text(4.6, y_center, t["metrics"], ha="center", va="center",
-                fontsize=11, color="#333333", linespacing=1.3)
+    # ================================================================
+    # ROW 4 (y≈4.7): Ablation Studies
+    # ================================================================
+    row4_y = 4.7
+    _draw_box(ax, 5.0, row4_y, 6.8, 1.06,
+              "Ablation Studies\n"
+              "Thinking mode on/off | Quantization Q4 vs Q8\n"
+              "KV-cache precision | Context window sweep",
+          "#C8E6C9", fontsize=body_lg_fs)
 
-        # Figure reference box
-        fig_rect = mpatches.FancyBboxPatch(
-            (5.6, y_center - 0.22), 0.7, 0.44,
-            boxstyle="round,pad=0.05", facecolor="#E0E0E0",
-            edgecolor="#999999", linewidth=0.8)
-        ax.add_patch(fig_rect)
-        ax.text(5.95, y_center, t["figure"], ha="center", va="center",
-                fontsize=13, color="#333333")
+    _draw_box(ax, 12.5, row4_y, 4.6, 1.06,
+              "End-to-End Pipeline\n"
+              "Full RAG: embed → retrieve →\n"
+              "rerank → generate → evaluate",
+          "#FFCDD2", fontsize=body_lg_fs)
 
-        # Arrow
-        ax.annotate("", xy=(5.6, y_center), xytext=(5.2, y_center),
-                    arrowprops=dict(arrowstyle="->", color="#999999", lw=1.2))
+    ax.annotate("optimal config", xy=(10.3, row4_y), xytext=(8.25, row4_y),
+        fontsize=callout_fs, color="#2E7D32", va="center",
+        fontweight="medium",
+            arrowprops=dict(arrowstyle="-|>", color="#2E7D32", lw=1.3))
 
-        if i < len(tasks) - 1:
-            sep_y = y_center - row_h / 2
-            ax.plot([0.0, 7.0], [sep_y, sep_y], color="#DDDDDD",
-                    linewidth=0.5, linestyle="--")
+    ax.text(0.55, row4_y, "Stage 3\nOptimization",
+        ha="center", va="center", fontsize=stage_fs, fontweight="normal",
+        color="#8A8A8A", linespacing=1.25)
 
-    # Composite summary box
-    comp_y = 6.0 - len(tasks) * row_h - 0.30
-    comp_rect = mpatches.FancyBboxPatch(
-        (0.3, comp_y - 0.28), 6.4, 0.56,
-        boxstyle="round,pad=0.08", facecolor="#FFF9C4",
-        edgecolor="#FBC02D", linewidth=1.5)
-    ax.add_patch(comp_rect)
-    ax.text(3.50, comp_y, "Fig 7: Composite Summary "
-            "(Parse 20% + Extract 20% + Onto 20% + Answer 30% + Speed 10%)",
-            ha="center", va="center", fontsize=12, color="#333333")
+    # Arrows down
+    _draw_arrow(ax, 5.0, row4_y - 0.53, 8.0, 3.58)
+    _draw_arrow(ax, 12.5, row4_y - 0.53, 8.0, 3.58)
+
+    # ================================================================
+    # ROW 5 (y≈3.0): Recommendations & Deployment
+    # ================================================================
+    out_y = 3.0
+    _draw_box(ax, 8.0, out_y, 14.6, 1.12,
+              "", "#FFF9C4")
+
+    ax.text(8.0, out_y + 0.24, "Recommendations for Local Deployment",
+        ha="center", va="center", fontsize=section_fs,
+        fontweight="normal", color="#E65100")
+
+    findings = [
+        "Compact models (4B–9B)\nmatch larger counterparts",
+        "Think mode improves\nreasoning but hurts\nstructured output",
+        "Q4 quantization retains\n>95% of Q8 accuracy",
+        "Fully local inference\nwith no cloud dependency",
+    ]
+    x_positions = [2.5, 6.2, 10.2, 13.8]
+    for fx, ftxt in zip(x_positions, findings):
+        ax.text(fx, out_y - 0.24, f"\u2022 {ftxt}",
+            ha="center", va="center", fontsize=body_sm_fs, color="#333333",
+            linespacing=1.15)
+
+    ax.text(0.55, out_y, "Output",
+        ha="center", va="center", fontsize=stage_fs, fontweight="normal",
+        color="#8A8A8A")
+
+    # ================================================================
+    # ROW 6 (y≈1.8): Scale summary bar
+    # ================================================================
+    sum_y = 1.62
+    summary_items = [
+        ("19\nEmbeddings", "#BBDEFB"),
+        ("11\nRerankers", "#FFE0B2"),
+        ("51\nLLMs", "#E1BEE7"),
+        ("15\nFamilies", "#E1BEE7"),
+        ("8 Domain\nTasks", "#D1C4E9"),
+        ("27 Public\nDatasets", "#D1C4E9"),
+        ("171\nQueries", "#B3E5FC"),
+        ("2,189\nGSE Series", "#B3E5FC"),
+    ]
+    n_items = len(summary_items)
+    total_w = 14.4
+    item_w = total_w / n_items
+    start_x = 8.0 - total_w / 2 + item_w / 2
+
+    for i, (label, color) in enumerate(summary_items):
+        ix = start_x + i * item_w
+        _draw_box(ax, ix, sum_y, item_w * 0.92, 0.8, label,
+                  color, fontsize=summary_fs,
+                  fontweight="normal")
+
+    # Thin line above summary
+    ax.plot([0.8, 15.2], [sum_y + 0.54, sum_y + 0.54],
+            color="#DDDDDD", linewidth=0.6)
+    ax.text(8.0, sum_y + 0.7, "Benchmark Scale",
+            ha="center", va="center", fontsize=body_sm_fs, color="#9B9B9B")
 
     fig.savefig(OUT_DIR / "fig1_study_design.png", dpi=300, bbox_inches="tight")
     fig.savefig(OUT_DIR / "fig1_study_design.pdf", bbox_inches="tight")
@@ -319,16 +468,18 @@ def figure_2_embedding_radar():
 
     fig_w, fig_h = 16, 10
     fig = plt.figure(figsize=(fig_w, fig_h))
-
-    # Title
-    ax_title = fig.add_axes([0.0, 0.94, 1.0, 0.05])
-    ax_title.axis("off")
-    ax_title.text(0.5, 0.5,
-                  "Figure 2: Embedding Model Evaluation (14 models, 90 queries)",
-                  ha="center", va="center", fontsize=20)
+    gs = fig.add_gridspec(
+        1, 2,
+        left=0.05, right=0.98, top=0.88, bottom=0.17,
+        width_ratios=[1.0, 1.15], wspace=0.48,
+    )
+    fig.suptitle(
+        f"Figure 2: Embedding Model Evaluation ({len(data)} models, 90 queries)",
+        fontsize=20, y=0.96,
+    )
 
     # ── Left panel: radar ──
-    ax_radar = fig.add_axes([0.01, 0.14, 0.42, 0.76], polar=True)
+    ax_radar = fig.add_subplot(gs[0, 0], polar=True)
     angles = np.linspace(0, 2 * np.pi, len(metric_names), endpoint=False).tolist()
     angles += angles[:1]
 
@@ -347,7 +498,7 @@ def figure_2_embedding_radar():
     ax_radar.tick_params(axis="y", labelsize=11)
     ax_radar.set_title("Category Comparison", fontsize=16, pad=22)
     ax_radar.legend(loc="upper center", bbox_to_anchor=(0.5, -0.08),
-                    fontsize=13, ncol=1, frameon=True, framealpha=0.9)
+                    fontsize=12.5, ncol=1, frameon=False)
 
     # ── Right panel: per-model horizontal bar chart ──
     models_sorted = sorted(data.keys(),
@@ -355,7 +506,7 @@ def figure_2_embedding_radar():
                            reverse=True)
 
     n_models = len(models_sorted)
-    ax_bars = fig.add_axes([0.54, 0.08, 0.45, 0.82])
+    ax_bars = fig.add_subplot(gs[0, 1])
 
     y_pos = np.arange(n_models)
     n_metrics = len(metric_defs)
@@ -375,8 +526,8 @@ def figure_2_embedding_radar():
     ax_bars.tick_params(axis="x", labelsize=12)
     ax_bars.grid(True, alpha=0.2, axis="x")
     ax_bars.invert_yaxis()
-    ax_bars.legend(fontsize=12, loc="upper center", bbox_to_anchor=(0.5, -0.06),
-                   ncol=6, frameon=True, framealpha=0.9)
+    ax_bars.legend(fontsize=11.5, loc="upper center", bbox_to_anchor=(0.5, -0.08),
+                   ncol=3, frameon=False)
 
     fig.savefig(OUT_DIR / "fig2_embedding_radar.png", dpi=300, bbox_inches="tight")
     fig.savefig(OUT_DIR / "fig2_embedding_radar.pdf", bbox_inches="tight")
@@ -434,16 +585,18 @@ def figure_3_retrieval():
 
     fig_w, fig_h = 16, 8
     fig = plt.figure(figsize=(fig_w, fig_h))
-
-    # Title
-    ax_title = fig.add_axes([0.0, 0.93, 1.0, 0.06])
-    ax_title.axis("off")
-    ax_title.text(0.5, 0.5,
-                  "Figure 3: Retrieval Strategy Comparison (mxbai-embed-large, 90 queries)",
-                  ha="center", va="center", fontsize=18)
+    gs = fig.add_gridspec(
+        1, 2,
+        left=0.06, right=0.98, top=0.86, bottom=0.18,
+        width_ratios=[1.02, 1.12], wspace=0.30,
+    )
+    fig.suptitle(
+        "Figure 3: Retrieval Strategy Comparison (mxbai-embed-large, 90 queries)",
+        fontsize=18, y=0.96,
+    )
 
     # ── Left panel: quality metrics grouped bars ──
-    ax_qual = fig.add_axes([0.06, 0.12, 0.42, 0.76])
+    ax_qual = fig.add_subplot(gs[0, 0])
 
     x = np.arange(len(strategies))
     n_metrics = len(quality_metrics)
@@ -453,32 +606,29 @@ def figure_3_retrieval():
     for j, (mlabel, mkey) in enumerate(quality_metrics):
         vals = [data[s]["average"].get(mkey, 0) for s in strategies]
         offset = (j - n_metrics / 2 + 0.5) * bar_w
-        bars = ax_qual.bar(x + offset, vals, bar_w * 0.9, label=mlabel,
-                           color=metric_colors[j], alpha=0.85)
+        ax_qual.bar(x + offset, vals, bar_w * 0.9, label=mlabel,
+                    color=metric_colors[j], alpha=0.85)
     ax_qual.set_xticks(x)
-    short_labels = [s.replace("hybrid+filter+rerank", "hyb+flt+rrk")
-                     .replace("hybrid+rerank", "hyb+rrk")
-                     .replace("hybrid+filter", "hyb+flt")
-                     for s in strategies]
-    ax_qual.set_xticklabels(short_labels, fontsize=13, rotation=25, ha="right")
+    short_labels = [_short_strategy_label(s) for s in strategies]
+    ax_qual.set_xticklabels(short_labels, fontsize=13, rotation=18, ha="right")
     ax_qual.set_ylabel("Score", fontsize=14)
     ax_qual.set_title("Quality Metrics", fontsize=15)
     ax_qual.tick_params(axis="y", labelsize=12)
     ax_qual.grid(True, alpha=0.2, axis="y")
     ax_qual.set_ylim(0, max(0.6, ax_qual.get_ylim()[1] * 1.15))
 
-    ax_qual.legend(fontsize=12, ncol=5, loc="upper center",
-                   bbox_to_anchor=(0.5, -0.08), frameon=True, framealpha=0.9)
+    ax_qual.legend(fontsize=11.5, ncol=3, loc="upper left",
+                   bbox_to_anchor=(-0.01, -0.16), frameon=False)
 
     # ── Right panel: latency bar ──
-    ax_lat = fig.add_axes([0.52, 0.12, 0.46, 0.76])
+    ax_lat = fig.add_subplot(gs[0, 1])
     latencies = [data[s]["average"].get("avg_latency_ms",
                  data[s]["average"].get("latency_ms", 0)) for s in strategies]
     max_lat = max(latencies) if latencies else 1
     bars_lat = ax_lat.barh(np.arange(len(strategies)), latencies, 0.6,
                            color="#F44336", alpha=0.8)
     ax_lat.set_yticks(np.arange(len(strategies)))
-    ax_lat.set_yticklabels(strategies, fontsize=13)
+    ax_lat.set_yticklabels(short_labels, fontsize=13)
     ax_lat.set_xlabel("Latency (ms)", fontsize=14)
     ax_lat.set_title("Avg Latency", fontsize=15)
     ax_lat.tick_params(axis="x", labelsize=12)
@@ -538,15 +688,19 @@ def _load_llm_rows():
 
     rows = []
     for label, d in sorted(data.items()):
-        if "error" in str(d):
-            continue
         if _is_excluded(label):
             continue
+        # Skip only if core tasks (A: parsing) completely failed
         ta = d.get("task_a_parsing", {})
+        if "error" in str(ta):
+            continue
         tb = d.get("task_b_extraction", {})
         tc = d.get("task_c_ontology", {})
         td = d.get("task_d_answer", {})
         te = d.get("task_e_speed", {})
+        tf = d.get("task_f_relevance", {})
+        tg = d.get("task_g_domain", {})
+        th = d.get("task_h_org_modality", {})
 
         eb = tb.get("average", {})
         f1s = [eb.get(f, {}).get("f1", 0) for f in ["tissues", "diseases", "cell_types"]]
@@ -557,14 +711,22 @@ def _load_llm_rows():
         disease_f1 = eb.get("diseases", {}).get("f1", 0)
         celltype_f1 = eb.get("cell_types", {}).get("f1", 0)
 
-        # Composite
+        # Tasks F-H scores
+        relevance_f1 = tf.get("f1", 0)
+        domain_acc = tg.get("accuracy", 0)
+        org_acc = th.get("organism_accuracy", 0)
+        mod_f1 = th.get("modality", {}).get("f1", 0) if isinstance(th.get("modality"), dict) else 0
+
+        # Composite (8 tasks, rebalanced weights)
         parse_score = ta.get("exact_match", 0)
         onto_score = tc.get("f1", 0)
         answer_score = (td.get("citation_recall", 0) + td.get("grounding_rate", 0)) / 2
         speed_raw = te.get("tokens_per_sec", 0)
         speed_score = min(speed_raw / 100, 1.0)
-        composite = (0.20 * parse_score + 0.20 * avg_f1 + 0.20 * onto_score
-                     + 0.30 * answer_score + 0.10 * speed_score)
+        composite = (0.15 * parse_score + 0.15 * avg_f1 + 0.15 * onto_score
+                     + 0.20 * answer_score + 0.05 * speed_score
+                     + 0.10 * relevance_f1 + 0.10 * domain_acc
+                     + 0.10 * (org_acc + mod_f1) / 2)
 
         rows.append({
             "model": label,
@@ -582,6 +744,10 @@ def _load_llm_rows():
             "cite_prec": td.get("citation_precision", 0),
             "grounding": td.get("grounding_rate", 0),
             "tok_s": speed_raw,
+            "relevance_f1": relevance_f1,
+            "domain_acc": domain_acc,
+            "org_acc": org_acc,
+            "mod_f1": mod_f1,
             "composite": composite,
         })
 
@@ -590,111 +756,112 @@ def _load_llm_rows():
 
 
 def figure_4_llm_heatmap(rows):
-    """Expanded heatmap: models × all sub-task metrics (not just 5 summary metrics)."""
+    """Domain-only heatmap + speed/composite + composite breakdown bars."""
     if not rows:
         print("Figure 4: SKIPPED — no LLM results")
         return
-
     sorted_rows = sorted(rows, key=lambda r: -r["composite"])
-
-    # 10 detailed columns covering all sub-tasks
-    task_keys = [
-        "parse_em", "tissue_f1", "disease_f1", "celltype_f1",
-        "onto_f1", "cite_recall", "cite_prec", "grounding",
-    ]
-    task_labels = [
-        "Parse\nEM", "Tissue\nF1", "Disease\nF1", "CellType\nF1",
-        "Onto\nF1", "Cite\nRecall", "Cite\nPrec", "Ground\nRate",
-    ]
-    task_groups = [
-        ("Task A: Parsing", 0, 1),
-        ("Task B: Extraction", 1, 4),
-        ("Task C: Ontology", 4, 5),
-        ("Task D: Answer Quality", 5, 8),
-    ]
-
+    task_keys = ["parse_em", "tissue_f1", "disease_f1", "celltype_f1",
+                 "onto_f1", "cite_recall", "cite_prec", "grounding",
+                 "relevance_f1", "domain_acc", "org_acc", "mod_f1"]
+    task_labels = ["Parse", "Tissue", "Disease", "Cell", "Onto",
+                   "CiteR", "CiteP", "Grnd", "Relev", "Domain", "OrgAc", "ModF1"]
+    task_groups = [("A", 0, 1), ("B: Extract", 1, 4), ("C", 4, 5),
+                   ("D: Answer", 5, 8), ("F", 8, 9), ("G", 9, 10), ("H", 10, 12)]
     model_names = [r["model"] for r in sorted_rows]
-    n_models = len(model_names)
-    n_cols = len(task_keys)
-
+    n = len(model_names); nc = len(task_keys)
     matrix = np.array([[r[k] for k in task_keys] for r in sorted_rows])
-
-    # Speed column (separate color scale)
     speed_vals = [r["tok_s"] for r in sorted_rows]
     composite_vals = [r["composite"] for r in sorted_rows]
-
-    fig_w = 16
-    fig_h = max(9, n_models * 0.50 + 3.0)
+    components = np.array([[
+        0.15 * r["parse_em"], 0.15 * r["extract_f1"], 0.15 * r["onto_f1"],
+        0.20 * (r["cite_recall"] + r["grounding"]) / 2,
+        0.05 * min(r["tok_s"] / 100, 1.0),
+        0.10 * r["relevance_f1"], 0.10 * r["domain_acc"],
+        0.10 * (r["org_acc"] + r["mod_f1"]) / 2,
+    ] for r in sorted_rows])
+    cl = ["Parse .15", "Extract .15", "Onto .15", "Answer .20",
+          "Speed .05", "Relev .10", "Domain .10", "Org+Mod .10"]
+    cc = ["#2196F3", "#FF9800", "#9C27B0", "#4CAF50", "#F44336",
+          "#00BCD4", "#795548", "#607D8B"]
+    row_h, brk_h, ttl_h, cb_h = 0.38, 1.2, 0.6, 0.5
+    fig_h = ttl_h + brk_h + n * row_h + cb_h; fig_w = 24
     fig = plt.figure(figsize=(fig_w, fig_h))
-
-    # Title
-    heatmap_bottom = 0.08
-    heatmap_height = 0.74
-    ax_title = fig.add_axes([0.0, 0.95, 1.0, 0.04])
-    ax_title.axis("off")
-    ax_title.text(0.5, 0.5,
-                  f"Figure 4: LLM Per-Task Performance ({n_models} configurations, 5 model families)",
-                  ha="center", va="center", fontsize=20)
-
-    # ── Main heatmap ──
-    ax_heat = fig.add_axes([0.14, heatmap_bottom, 0.52, heatmap_height])
-    im = ax_heat.imshow(matrix, cmap="YlOrRd", aspect="auto", vmin=0, vmax=1)
-
-    ax_heat.set_xticks(range(n_cols))
-    ax_heat.set_xticklabels(task_labels, fontsize=12, ha="center")
-    ax_heat.set_yticks(range(n_models))
-    ax_heat.set_yticklabels(model_names, fontsize=13)
-
-    for i in range(n_models):
-        for j in range(n_cols):
-            val = matrix[i, j]
-            color = "white" if val > 0.65 else "black"
-            ax_heat.text(j, i, f"{val:.2f}", ha="center", va="center",
-                         fontsize=11, color=color)
-
-    # Task group brackets on top
-    for glabel, gs, ge in task_groups:
-        mid = (gs + ge - 1) / 2
-        ax_heat.text(mid, -1.6, glabel, ha="center", va="center",
-                     fontsize=12, color="#333333")
-        ax_heat.plot([gs - 0.4, ge - 0.6], [-1.1, -1.1], color="#666666",
-                     linewidth=1.5, clip_on=False)
-
-    # Colorbar for heatmap
-    cbar_ax = fig.add_axes([0.14, heatmap_bottom - 0.05, 0.52, 0.012])
-    plt.colorbar(im, cax=cbar_ax, orientation="horizontal")
-    cbar_ax.set_xlabel("Score (0-1)", fontsize=12)
-    cbar_ax.tick_params(labelsize=10)
-
-    # ── Speed column ──
-    ax_speed = fig.add_axes([0.70, heatmap_bottom, 0.08, heatmap_height])
-    speed_arr = np.array(speed_vals).reshape(-1, 1)
-    im_spd = ax_speed.imshow(speed_arr, cmap="Blues", aspect="auto",
-                              vmin=0, vmax=max(speed_vals) * 1.1)
-    ax_speed.set_xticks([0])
-    ax_speed.set_xticklabels(["Tok/s"], fontsize=12)
-    ax_speed.set_yticks([])
+    tf = ttl_h / fig_h; bf = brk_h / fig_h; cf = cb_h / fig_h
+    hf = (n * row_h) / fig_h; hb = cf; ht = hb + hf
+    ax_t = fig.add_axes([0, 1 - tf, 1, tf]); ax_t.axis("off")
+    ax_t.text(0.5, 0.4, f"Domain-Specific LLM Performance & Composite "
+              f"Breakdown ({n} configs, 8 tasks)",
+              ha="center", va="center", fontsize=22, fontweight="bold")
+    # Heatmap
+    hl = 0.10; hw = 0.32
+    ax = fig.add_axes([hl, hb, hw, hf])
+    im = ax.imshow(matrix, cmap="YlOrRd", aspect="auto", vmin=0, vmax=1)
+    ax.set_xticks(range(nc))
+    ax.set_xticklabels(task_labels, fontsize=13, rotation=55, ha="left")
+    ax.xaxis.set_ticks_position("top"); ax.tick_params(axis="x", pad=1, length=2)
+    ax.set_yticks(range(n)); ax.set_yticklabels(model_names, fontsize=12)
+    for i in range(n):
+        for j in range(nc):
+            v = matrix[i, j]; c = "white" if v > 0.65 else "black"
+            ax.text(j, i, f"{v:.2f}", ha="center", va="center", fontsize=10, color=c)
+    ab = fig.add_axes([hl, ht, hw, bf])
+    ab.set_xlim(-0.5, nc - 0.5); ab.set_ylim(0, 1); ab.axis("off")
+    for gl, gs, ge in task_groups:
+        ab.text((gs + ge - 1) / 2, 0.88, gl, ha="center", va="center",
+                fontsize=13, color="#333333", fontweight="bold")
+        ab.plot([gs - 0.3, ge - 0.7], [0.72, 0.72], color="#666666", lw=1.5, clip_on=False)
+    cb = fig.add_axes([hl, hb - cf * 0.5, hw, cf * 0.15])
+    plt.colorbar(im, cax=cb, orientation="horizontal")
+    cb.set_xlabel("Score (0–1)", fontsize=12); cb.tick_params(labelsize=10)
+    # Speed + Composite
+    sl = hl + hw + 0.004; sw = 0.020
+    axs = fig.add_axes([sl, hb, sw, hf])
+    sa = np.array(speed_vals).reshape(-1, 1)
+    ms = max(speed_vals) if max(speed_vals) > 0 else 1
+    axs.imshow(sa, cmap="Blues", aspect="auto", vmin=0, vmax=ms * 1.1)
+    axs.set_xticks([0]); axs.set_xticklabels(["Tk/s"], fontsize=13)
+    axs.xaxis.set_ticks_position("top"); axs.set_yticks([])
     for i, v in enumerate(speed_vals):
-        ax_speed.text(0, i, f"{v:.0f}", ha="center", va="center",
-                      fontsize=11, color="white" if v > max(speed_vals) * 0.6 else "black")
-    ax_speed.text(0, -1.6, "Task E", ha="center", va="center",
-                  fontsize=12, color="#333333", clip_on=False)
-
-    # ── Composite column ──
-    ax_comp = fig.add_axes([0.82, heatmap_bottom, 0.08, heatmap_height])
-    comp_arr = np.array(composite_vals).reshape(-1, 1)
-    im_comp = ax_comp.imshow(comp_arr, cmap="RdYlGn", aspect="auto", vmin=0, vmax=1)
-    ax_comp.set_xticks([0])
-    ax_comp.set_xticklabels(["Composite"], fontsize=12)
-    ax_comp.set_yticks([])
+        axs.text(0, i, f"{v:.0f}", ha="center", va="center",
+                 fontsize=10, color="white" if v > ms * 0.55 else "black")
+    cpl = sl + sw + 0.003; cpw = 0.020
+    axc = fig.add_axes([cpl, hb, cpw, hf])
+    axc.imshow(np.array(composite_vals).reshape(-1, 1), cmap="RdYlGn",
+               aspect="auto", vmin=0, vmax=1)
+    axc.set_xticks([0]); axc.set_xticklabels(["Comp"], fontsize=13)
+    axc.xaxis.set_ticks_position("top"); axc.set_yticks([])
     for i, v in enumerate(composite_vals):
-        ax_comp.text(0, i, f"{v:.3f}", ha="center", va="center",
-                     fontsize=11, color="white" if v > 0.6 else "black")
-
+        axc.text(0, i, f"{v:.2f}", ha="center", va="center",
+                 fontsize=10, color="white" if v > 0.55 else "black")
+    # Stacked bars
+    bl = cpl + cpw + 0.03; bw = 1.0 - bl - 0.005
+    axb = fig.add_axes([bl, hb, bw, hf])
+    yp = np.arange(n); la = np.zeros(n)
+    for j in range(8):
+        axb.barh(yp, components[:, j], 0.75, left=la, label=cl[j], color=cc[j], alpha=0.85)
+        for i in range(n):
+            sw2 = components[i, j]
+            if sw2 > 0.035:
+                axb.text(la[i] + sw2 / 2, i, f"{sw2:.2f}", ha="center", va="center",
+                         fontsize=9, color="white")
+        la += components[:, j]
+    for i in range(n):
+        axb.text(la[i] + 0.005, i, f"{la[i]:.3f}", ha="left", va="center",
+                 fontsize=11, color="#333333")
+    axb.set_yticks([]); axb.set_ylim(-0.5, n - 0.5)
+    max_total = max(la)
+    axb.set_xlabel("Composite Score", fontsize=14); axb.set_xlim(0, max_total + 0.08)
+    axb.tick_params(labelsize=12); axb.invert_yaxis()
+    axb.grid(True, alpha=0.15, axis="x")
+    al = fig.add_axes([bl, ht, bw, bf]); al.axis("off")
+    from matplotlib.patches import Patch
+    al.legend(handles=[Patch(facecolor=cc[j], label=cl[j], alpha=0.85) for j in range(8)],
+              fontsize=12, ncol=4, loc="center", frameon=False)
     fig.savefig(OUT_DIR / "fig4_llm_heatmap.png", dpi=300, bbox_inches="tight")
     fig.savefig(OUT_DIR / "fig4_llm_heatmap.pdf", bbox_inches="tight")
     plt.close(fig)
-    print(f"Figure 4: LLM heatmap saved ({n_models} model configs)")
+    print(f"Figure 4: LLM domain heatmap + composite saved ({n} model configs)")
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -731,27 +898,30 @@ def figure_5_context_curve():
         print("Figure 5: No valid context configs found")
         return
 
-    fig_w, fig_h = 16, 8
+    fig_w, fig_h = 17, 6.4
     fig = plt.figure(figsize=(fig_w, fig_h))
-
-    ax_title = fig.add_axes([0.0, 0.93, 1.0, 0.06])
-    ax_title.axis("off")
-    ax_title.text(0.5, 0.5,
-                  "Figure 5: Context Window Optimisation (k x format, 15 queries)",
-                  ha="center", va="center", fontsize=20)
+    gs = fig.add_gridspec(
+        1, 4,
+        left=0.06, right=0.98, top=0.78, bottom=0.12,
+        width_ratios=[1.0, 1.0, 1.0, 0.88], wspace=0.34,
+    )
+    fig.suptitle(
+        "Figure 5: Context Window Optimisation (k × format, 15 queries)",
+        fontsize=20, y=0.97,
+    )
 
     colors = {"full": "#2196F3", "structured": "#FF9800", "minimal": "#4CAF50"}
     markers = {"full": "o", "structured": "s", "minimal": "^"}
 
     axes_specs = [
-        ([0.07, 0.10, 0.19, 0.78], "Cite Recall vs. k", "recall", "Score"),
-        ([0.32, 0.10, 0.19, 0.78], "Cite Precision vs. k", "precision", "Score"),
-        ([0.57, 0.10, 0.19, 0.78], "Grounding vs. k", "grounding", "Score"),
-        ([0.82, 0.10, 0.16, 0.78], "Context Tokens vs. k", "tokens", "Tokens"),
+        ("Cite Recall vs. k", "recall", "Score"),
+        ("Cite Precision vs. k", "precision", "Score"),
+        ("Grounding vs. k", "grounding", "Score"),
+        ("Context Tokens vs. k", "tokens", "Tokens"),
     ]
+    axes = [fig.add_subplot(gs[0, i]) for i in range(4)]
 
-    for spec, (pos, title, metric_key, ylabel) in enumerate(axes_specs):
-        ax = fig.add_axes(pos)
+    for ax, (title, metric_key, ylabel) in zip(axes, axes_specs):
         for fmt, d in configs.items():
             order = np.argsort(d["k"])
             ks = [d["k"][i] for i in order]
@@ -767,8 +937,10 @@ def figure_5_context_curve():
         ax.grid(True, alpha=0.2)
         if metric_key != "tokens":
             ax.set_ylim(0, 1.05)
-        if spec == 0:
-            ax.legend(fontsize=13, loc="lower left")
+
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig.legend(handles, labels, fontsize=12.5, loc="upper center",
+               ncol=len(handles), bbox_to_anchor=(0.5, 0.91), frameon=False)
 
     fig.savefig(OUT_DIR / "fig5_context_curve.png", dpi=300, bbox_inches="tight")
     fig.savefig(OUT_DIR / "fig5_context_curve.pdf", bbox_inches="tight")
@@ -810,19 +982,24 @@ def figure_6_e2e_comparison():
         return
 
     names = [c["name"] for c in configs]
+    wrapped_names = [_wrap_config_label(name) for name in names]
     n = len(names)
 
-    fig_w, fig_h = 16, 10
+    fig_w, fig_h = 16, 10.5
     fig = plt.figure(figsize=(fig_w, fig_h))
-
-    ax_title = fig.add_axes([0.0, 0.94, 1.0, 0.05])
-    ax_title.axis("off")
-    ax_title.text(0.5, 0.5,
-                  "Figure 6: End-to-End Pipeline Comparison (4 configurations, 18 queries)",
-                  ha="center", va="center", fontsize=20)
+    gs = fig.add_gridspec(
+        2, 2,
+        left=0.05, right=0.98, top=0.88, bottom=0.06,
+        height_ratios=[1.0, 0.90], width_ratios=[1.65, 0.95],
+        hspace=0.26, wspace=0.20,
+    )
+    fig.suptitle(
+        f"Figure 6: End-to-End Pipeline Comparison ({n} configurations, 18 queries)",
+        fontsize=20, y=0.96,
+    )
 
     # ── Top-left: quality metrics grouped bars ──
-    ax_qual = fig.add_axes([0.06, 0.52, 0.52, 0.38])
+    ax_qual = fig.add_subplot(gs[0, 0])
     x = np.arange(n)
     qual_metrics = [
         ("Cite Recall", "cite_recall", "#4CAF50"),
@@ -841,59 +1018,76 @@ def figure_6_e2e_comparison():
                          f"{v:.3f}", ha="center", va="bottom", fontsize=11)
 
     ax_qual.set_xticks(x)
-    ax_qual.set_xticklabels(names, fontsize=14, rotation=12, ha="right")
+    ax_qual.set_xticklabels(wrapped_names, fontsize=13)
     ax_qual.set_ylabel("Score", fontsize=15)
     ax_qual.set_title("Quality Metrics", fontsize=16)
     ax_qual.tick_params(labelsize=13)
-    ax_qual.legend(fontsize=12, ncol=2, loc="upper right", frameon=True, framealpha=0.9)
+    max_score = max(c[mk] for c in configs for _, mk, _ in qual_metrics if c[mk] is not None)
+    ax_qual.set_ylim(0, min(1.15, max_score + 0.08))
+    ax_qual.legend(fontsize=12, ncol=2, loc="upper left", frameon=False)
     ax_qual.grid(True, alpha=0.2, axis="y")
 
     # ── Top-right: latency ──
-    ax_lat = fig.add_axes([0.66, 0.52, 0.30, 0.38])
+    ax_lat = fig.add_subplot(gs[0, 1])
     lat_vals = [c["latency_s"] for c in configs]
+    max_lat = max(lat_vals) if max(lat_vals) > 0 else 1
     bar_colors = ["#2196F3", "#4CAF50", "#F44336", "#FF9800"]
-    bars = ax_lat.bar(np.arange(n), lat_vals, 0.6,
-                      color=bar_colors[:n], alpha=0.85)
-    ax_lat.set_xticks(np.arange(n))
-    ax_lat.set_xticklabels(names, fontsize=12, rotation=15, ha="right")
-    ax_lat.set_ylabel("Seconds", fontsize=14)
+    bars = ax_lat.barh(np.arange(n), lat_vals, 0.65,
+                       color=bar_colors[:n], alpha=0.85)
+    ax_lat.set_yticks(np.arange(n))
+    ax_lat.set_yticklabels(wrapped_names, fontsize=12)
+    ax_lat.set_xlabel("Seconds", fontsize=14)
     ax_lat.set_title("End-to-End Latency", fontsize=15)
-    ax_lat.tick_params(labelsize=12)
-    ax_lat.grid(True, alpha=0.2, axis="y")
+    ax_lat.tick_params(axis="x", labelsize=12)
+    ax_lat.set_xlim(0, max_lat * 1.18)
+    ax_lat.grid(True, alpha=0.2, axis="x")
+    ax_lat.invert_yaxis()
     for bar, v in zip(bars, lat_vals):
-        ax_lat.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.3,
-                    f"{v:.1f}s", ha="center", va="bottom", fontsize=12)
+        ax_lat.text(v + max_lat * 0.02,
+                    bar.get_y() + bar.get_height() / 2,
+                    f"{v:.1f}s", va="center", fontsize=12)
 
     # ── Bottom: config details table ──
-    ax_table = fig.add_axes([0.06, 0.04, 0.90, 0.42])
+    ax_table = fig.add_subplot(gs[1, :])
     ax_table.axis("off")
     ax_table.text(0.0, 1.0, "Pipeline Configuration Details:",
                   fontsize=14, va="top", transform=ax_table.transAxes)
 
     col_headers = ["Config", "Embedding", "Strategy", "LLM", "Parse Model",
                    "Context Fmt", "Context k"]
-    col_x = [0.0, 0.14, 0.30, 0.44, 0.58, 0.72, 0.87]
-
-    for j, h in enumerate(col_headers):
-        ax_table.text(col_x[j], 0.85, h, fontsize=12,
-                      va="top", transform=ax_table.transAxes,
-                      color="#333333")
-
-    for i, c in enumerate(configs):
+    table_rows = []
+    for c in configs:
         cfg = c["config"]
-        vals = [
+        table_rows.append([
             c["name"],
             cfg.get("embedding", "?"),
             cfg.get("strategy", "?"),
             cfg.get("llm", "?"),
-            str(cfg.get("parse_model", "none")),
+            str(cfg.get("parse_model", "None")),
             cfg.get("context_format", "?"),
             str(cfg.get("context_k", "?")),
-        ]
-        y = 0.70 - i * 0.15
-        for j, v in enumerate(vals):
-            ax_table.text(col_x[j], y, v, fontsize=11, va="top",
-                          transform=ax_table.transAxes)
+        ])
+
+    table = ax_table.table(
+        cellText=table_rows,
+        colLabels=col_headers,
+        cellLoc="left",
+        colLoc="left",
+        loc="upper center",
+        bbox=[0.0, 0.0, 1.0, 0.88],
+    )
+    table.auto_set_font_size(False)
+    table.set_fontsize(11)
+    table.scale(1.0, 1.55)
+
+    for (row, col), cell in table.get_celld().items():
+        cell.set_edgecolor("#DDDDDD")
+        cell.set_linewidth(0.8 if row == 0 else 0.5)
+        if row == 0:
+            cell.set_facecolor("#F5F5F5")
+            cell.set_text_props(color="#333333", fontweight="semibold")
+        else:
+            cell.set_facecolor("#FFFFFF" if row % 2 else "#FAFAFA")
 
     fig.savefig(OUT_DIR / "fig6_e2e_comparison.png", dpi=300, bbox_inches="tight")
     fig.savefig(OUT_DIR / "fig6_e2e_comparison.pdf", bbox_inches="tight")
@@ -904,80 +1098,451 @@ def figure_6_e2e_comparison():
 # ═══════════════════════════════════════════════════════════════════════════
 # Figure 7: Composite summary (stacked breakdown)
 # ═══════════════════════════════════════════════════════════════════════════
-def figure_7_composite_summary(rows):
-    """Horizontal stacked bar: composite score decomposed into 5 weighted components."""
-    if not rows:
-        print("Figure 7: SKIPPED — no LLM results")
+def figure_7_public_benchmarks():
+    """Heatmap of public benchmark results: models × individual datasets, grouped by category."""
+    pub_path = RESULTS_DIR / "public_bench.json"
+    if not pub_path.exists():
+        print("Figure 7: SKIPPED — public_bench.json not found")
+        return
+    pub_data = load_json(pub_path)
+    if not pub_data:
+        print("Figure 7: SKIPPED — no public benchmark results")
         return
 
-    sorted_rows = sorted(rows, key=lambda r: -r["composite"])
+    # Dataset columns grouped by category
+    dataset_groups = [
+        ("General", ["mmlu", "hellaswag", "winogrande", "arc_challenge",
+                     "arc_easy", "gsm8k", "truthfulqa"]),
+        ("Biomedical", ["pubmedqa", "medqa", "medmcqa", "sciq", "bioasq_mini",
+                        "mmlu_anatomy", "mmlu_clinical_knowledge",
+                        "mmlu_college_biology", "mmlu_college_medicine",
+                        "mmlu_medical_genetics", "mmlu_professional_medicine"]),
+        ("Structured", ["ifeval", "json_mode_eval"]),
+        ("Tool-Use", ["nexus_fc", "glaive_fc", "toolace"]),
+        ("Commonsense", ["siqa", "openbookqa", "boolq"]),
+        ("Other", ["squad_v2"]),
+    ]
 
-    model_names = [r["model"] for r in sorted_rows]
-    n = len(model_names)
+    # Short labels for column headers
+    short_labels = {
+        "mmlu": "MMLU", "hellaswag": "Hella", "winogrande": "Wino",
+        "arc_challenge": "ARC-C", "arc_easy": "ARC-E", "gsm8k": "GSM8K",
+        "truthfulqa": "TQA", "pubmedqa": "PubMd", "medqa": "MedQA",
+        "medmcqa": "MedMC", "sciq": "SciQ", "bioasq_mini": "BioAQ",
+        "mmlu_anatomy": "Anat", "mmlu_clinical_knowledge": "ClinK",
+        "mmlu_college_biology": "ColBi", "mmlu_college_medicine": "ColMd",
+        "mmlu_medical_genetics": "MedGn", "mmlu_professional_medicine": "ProMd",
+        "ifeval": "IFEval", "json_mode_eval": "JSON",
+        "nexus_fc": "NexFC", "glaive_fc": "GlaFC", "toolace": "ToolA",
+        "siqa": "SIQA", "openbookqa": "OBQA", "boolq": "BoolQ",
+        "squad_v2": "SQuAD",
+    }
 
-    # Compute weighted components
-    components = []
-    for r in sorted_rows:
-        parse_w = 0.20 * r["parse_em"]
-        extract_w = 0.20 * r["extract_f1"]
-        onto_w = 0.20 * r["onto_f1"]
-        answer_w = 0.30 * (r["cite_recall"] + r["grounding"]) / 2
-        speed_w = 0.10 * min(r["tok_s"] / 100, 1.0)
-        components.append([parse_w, extract_w, onto_w, answer_w, speed_w])
+    # Flatten dataset list and build group bracket info
+    all_ds = []
+    group_brackets = []
+    for gname, ds_list in dataset_groups:
+        start = len(all_ds)
+        all_ds.extend(ds_list)
+        group_brackets.append((gname, start, len(all_ds)))
 
-    components = np.array(components)
-    comp_labels = ["Parse (0.20)", "Extract (0.20)", "Ontology (0.20)",
-                   "Answer (0.30)", "Speed (0.10)"]
-    comp_colors = ["#2196F3", "#FF9800", "#9C27B0", "#4CAF50", "#F44336"]
+    # Sort models by average score across available datasets
+    model_keys = list(pub_data.keys())
+    model_avgs = []
+    for mk in model_keys:
+        scores = []
+        for ds in all_ds:
+            entry = pub_data[mk].get(ds, {})
+            acc = entry.get("accuracy", entry.get("avg_score", np.nan))
+            if not np.isnan(acc):
+                scores.append(acc)
+        model_avgs.append((mk, np.mean(scores) if scores else 0))
+    model_avgs.sort(key=lambda x: -x[1])
+    sorted_models = [m[0] for m in model_avgs]
 
-    fig_w = 16
-    fig_h = max(9, n * 0.50 + 2.5)
+    n = len(sorted_models)
+    nd = len(all_ds)
+
+    # Build matrix
+    matrix = np.full((n, nd), np.nan)
+    for i, mk in enumerate(sorted_models):
+        for j, ds in enumerate(all_ds):
+            entry = pub_data[mk].get(ds, {})
+            matrix[i, j] = entry.get("accuracy", entry.get("avg_score", np.nan))
+
+    # Category composite column
+    cat_keys = ["general", "reasoning", "biomedical", "structured",
+                "tool_use", "commonsense"]
+    cat_labels = ["Gen", "Reas", "Bio", "Str", "Tool", "Com"]
+    cat_matrix = np.full((n, len(cat_keys)), np.nan)
+    for i, mk in enumerate(sorted_models):
+        composites = pub_data[mk].get("composites", {})
+        for j, ck in enumerate(cat_keys):
+            cat_matrix[i, j] = composites.get(ck, np.nan)
+
+    # Layout
+    row_h = 0.42
+    bracket_h = 1.2
+    title_h = 0.6
+    cbar_h = 0.5
+    fig_h = title_h + bracket_h + n * row_h + cbar_h
+    fig_w = max(16, nd * 0.50 + 6)
     fig = plt.figure(figsize=(fig_w, fig_h))
 
-    ax_title = fig.add_axes([0.0, 1.0 - 1.0 / fig_h, 1.0, 1.0 / fig_h])
-    ax_title.axis("off")
-    ax_title.text(0.5, 0.5,
-                  "Figure 7: LLM Composite Score Breakdown",
-                  ha="center", va="center", fontsize=20)
+    tf = title_h / fig_h; bf = bracket_h / fig_h
+    cf = cbar_h / fig_h; hf = (n * row_h) / fig_h
+    hb = cf; ht = hb + hf
 
-    bar_bottom = 1.5 / fig_h
-    bar_height = 1.0 - bar_bottom - 1.6 / fig_h
+    ax_t = fig.add_axes([0, 1 - tf, 1, tf]); ax_t.axis("off")
+    ax_t.text(0.5, 0.4,
+              f"Public Benchmark Performance ({n} models, {nd} datasets)",
+              ha="center", va="center", fontsize=20, fontweight="bold")
 
-    ax = fig.add_axes([0.16, bar_bottom, 0.74, bar_height])
-    y_pos = np.arange(n)
+    # Main heatmap
+    hl = 0.10; hw = 0.60
+    ax = fig.add_axes([hl, hb, hw, hf])
+    disp = np.where(np.isnan(matrix), -0.1, matrix)
+    im = ax.imshow(disp, cmap="YlGnBu", aspect="auto", vmin=0, vmax=1)
+    col_labels = [short_labels.get(ds, ds[:6]) for ds in all_ds]
+    ax.set_xticks(range(nd))
+    ax.set_xticklabels(col_labels, fontsize=12, rotation=65, ha="left")
+    ax.xaxis.set_ticks_position("top")
+    ax.tick_params(axis="x", pad=1, length=2)
+    ax.set_yticks(range(n))
 
-    left = np.zeros(n)
-    for j in range(5):
-        ax.barh(y_pos, components[:, j], 0.7, left=left,
-                label=comp_labels[j], color=comp_colors[j], alpha=0.85)
-        for i in range(n):
-            seg_w = components[i, j]
-            if seg_w > 0.03:
-                ax.text(left[i] + seg_w / 2, i, f"{seg_w:.2f}",
-                        ha="center", va="center", fontsize=11, color="white")
-        left += components[:, j]
+    # Model labels with family info
+    model_labels = []
+    for mk in sorted_models:
+        fam = pub_data[mk].get("family", "")
+        size = pub_data[mk].get("size_b", "")
+        model_labels.append(f"{mk}")
+    ax.set_yticklabels(model_labels, fontsize=13)
 
     for i in range(n):
-        total = components[i].sum()
-        ax.text(total + 0.01, i, f"{total:.3f}",
-                ha="left", va="center", fontsize=13)
+        for j in range(nd):
+            v = matrix[i, j]
+            if np.isnan(v):
+                ax.text(j, i, "—", ha="center", va="center",
+                        fontsize=10, color="#AAAAAA")
+            else:
+                c = "white" if v > 0.55 else "black"
+                ax.text(j, i, f"{v:.2f}", ha="center", va="center",
+                        fontsize=10, color=c)
 
-    ax.set_yticks(y_pos)
-    ax.set_yticklabels(model_names, fontsize=14)
-    ax.set_xlabel("Composite Score", fontsize=16)
-    ax.set_xlim(0, 1.0)
-    ax.tick_params(labelsize=13)
-    ax.legend(fontsize=13, ncol=5, loc="upper center", bbox_to_anchor=(0.5, 1.06))
-    ax.grid(True, alpha=0.2, axis="x")
-    ax.invert_yaxis()
+    # Brackets
+    ab = fig.add_axes([hl, ht, hw, bf])
+    ab.set_xlim(-0.5, nd - 0.5); ab.set_ylim(0, 1); ab.axis("off")
+    for gname, gs, ge in group_brackets:
+        mid = (gs + ge - 1) / 2
+        ab.text(mid, 0.88, gname, ha="center", va="center",
+                fontsize=13, color="#333333", fontweight="bold")
+        ab.plot([gs - 0.3, ge - 0.7], [0.72, 0.72], color="#666666",
+                linewidth=1.5, clip_on=False)
 
-    fig.savefig(OUT_DIR / "fig7_composite_summary.png", dpi=300, bbox_inches="tight")
-    fig.savefig(OUT_DIR / "fig7_composite_summary.pdf", bbox_inches="tight")
+    # Colorbar
+    cbar_ax = fig.add_axes([hl, hb - cf * 0.5, hw, cf * 0.15])
+    plt.colorbar(im, cax=cbar_ax, orientation="horizontal")
+    cbar_ax.set_xlabel("Accuracy (0–1)", fontsize=14)
+    cbar_ax.tick_params(labelsize=12)
+
+    # Category summary columns
+    cat_left = hl + hw + 0.015; cat_w = 0.14
+    axc = fig.add_axes([cat_left, hb, cat_w, hf])
+    cat_disp = np.where(np.isnan(cat_matrix), -0.1, cat_matrix)
+    axc.imshow(cat_disp, cmap="RdYlGn", aspect="auto", vmin=0, vmax=1)
+    axc.set_xticks(range(len(cat_labels)))
+    axc.set_xticklabels(cat_labels, fontsize=12, rotation=55, ha="left")
+    axc.xaxis.set_ticks_position("top")
+    axc.tick_params(axis="x", pad=1, length=2)
+    axc.set_yticks([])
+    for i in range(n):
+        for j in range(len(cat_keys)):
+            v = cat_matrix[i, j]
+            if np.isnan(v):
+                axc.text(j, i, "—", ha="center", va="center",
+                         fontsize=10, color="#AAAAAA")
+            else:
+                c = "white" if v > 0.55 else "black"
+                axc.text(j, i, f"{v:.2f}", ha="center", va="center",
+                         fontsize=10, color=c)
+
+    # Label above category columns
+    ac = fig.add_axes([cat_left, ht, cat_w, bf])
+    ac.set_xlim(-0.5, len(cat_keys) - 0.5); ac.set_ylim(0, 1); ac.axis("off")
+    ac.text((len(cat_keys) - 1) / 2, 0.55, "Category Avg",
+            ha="center", va="center", fontsize=13,
+            color="#333333", fontweight="bold")
+
+    fig.savefig(OUT_DIR / "fig7_public_benchmarks.png", dpi=300, bbox_inches="tight")
+    fig.savefig(OUT_DIR / "fig7_public_benchmarks.pdf", bbox_inches="tight")
     plt.close(fig)
-    print(f"Figure 7: Composite summary saved ({n} models)")
+    print(f"Figure 7: Public benchmarks saved ({n} models, {nd} datasets)")
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+# Figure S1: Context management strategies comparison
+# ═══════════════════════════════════════════════════════════════════════════
+def figure_s1_context_management():
+    """Grouped bar chart: 15 context management strategies across 5 categories."""
+    path = RESULTS_DIR / "context_management_bench.json"
+    if not path.exists():
+        print("Figure S1: SKIPPED — context_management_bench.json not found")
+        return
+    data = load_json(path)
+    summary = data.get("summary", {})
+    if not summary:
+        print("Figure S1: SKIPPED — no summary data")
+        return
+
+    # Group strategies by category (prefix before first _)
+    categories = {}
+    for s, v in sorted(summary.items()):
+        parts = s.split("_", 1)
+        cat = parts[0].capitalize()
+        label = parts[1] if len(parts) > 1 else s
+        if cat not in categories:
+            categories[cat] = []
+        categories[cat].append((label, v))
+
+    metrics = [
+        ("avg_grounding_rate", "Grounding", "#4CAF50"),
+        ("avg_citation_precision", "Cite Precision", "#2196F3"),
+        ("avg_citation_recall", "Cite Recall", "#FF9800"),
+    ]
+
+    # Two rows: 3 per row
+    cat_list = list(categories.items())
+    n_cats = len(cat_list)
+    ncols = 3
+    nrows = (n_cats + ncols - 1) // ncols
+    fig, all_axes = plt.subplots(nrows, ncols, figsize=(6.0 * ncols, 5.5 * nrows),
+                                 sharey=True)
+    all_axes = all_axes.flatten() if nrows > 1 else (
+        all_axes if n_cats > 1 else [all_axes])
+
+    fig.suptitle("Context Management Strategy Comparison (15 strategies)",
+                 fontsize=20, fontweight="bold", y=0.98)
+
+    for ax_idx in range(nrows * ncols):
+        ax = all_axes[ax_idx]
+        if ax_idx >= n_cats:
+            ax.axis("off")
+            continue
+        cat, strats = cat_list[ax_idx]
+        n_strats = len(strats)
+        n_metrics = len(metrics)
+        bar_w = 0.25
+        x = np.arange(n_strats)
+
+        for m_idx, (mkey, mlabel, mcolor) in enumerate(metrics):
+            vals = [s[1].get(mkey, 0) for s in strats]
+            offset = (m_idx - n_metrics / 2 + 0.5) * bar_w
+            bars = ax.bar(x + offset, vals, bar_w, label=mlabel,
+                          color=mcolor, alpha=0.85)
+            for bar, v in zip(bars, vals):
+                if v > 0:
+                    ax.text(bar.get_x() + bar.get_width() / 2, v + 0.01,
+                            f"{v:.2f}", ha="center", va="bottom",
+                            fontsize=9, rotation=90)
+
+        labels = [s[0].replace("_", "\n") for s in strats]
+        ax.set_xticks(x)
+        ax.set_xticklabels(labels, fontsize=11, ha="center")
+        ax.set_title(cat, fontsize=16, fontweight="bold")
+        ax.set_ylim(0, 1.18)
+        ax.grid(True, alpha=0.15, axis="y")
+        ax.tick_params(labelsize=11)
+        if ax_idx % ncols == 0:
+            ax.set_ylabel("Score", fontsize=14)
+        if ax_idx == 0:
+            ax.legend(fontsize=11, loc="lower left")
+
+    plt.tight_layout(rect=[0, 0, 1, 0.95])
+    fig.savefig(OUT_DIR / "fig_s1_context_management.png", dpi=300,
+                bbox_inches="tight")
+    fig.savefig(OUT_DIR / "fig_s1_context_management.pdf",
+                bbox_inches="tight")
+    plt.close(fig)
+    print(f"Figure S1: Context management saved ({len(summary)} strategies)")
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# ═══════════════════════════════════════════════════════════════════════════
+# Figure S2 — Runtime Ablation Studies
+# ═══════════════════════════════════════════════════════════════════════════
+def figure_s2_ablation():
+    path = RESULTS_DIR / "ablation_bench.json"
+    if not path.exists():
+        print("Fig S2 (ablation): SKIPPED — no ablation_bench.json")
+        return
+
+    with open(path) as f:
+        abl = json.load(f)
+
+    kv_data = abl.get("kv_cache", {})
+    ctx_data = abl.get("context_length", {})
+    if not kv_data and not ctx_data:
+        print("Fig S2 (ablation): SKIPPED — empty data")
+        return
+
+    MODELS = ["qwen3-8b", "llama3.1-8b", "phi4-14b-q8", "gemma3-12b-q8", "qwen3.5-9b-q8"]
+    MODEL_SHORT = ["Qwen3-8B", "Llama3.1-8B", "Phi4-14B", "Gemma3-12B", "Qwen3.5-9B"]
+    KV_TYPES = ["f16", "q8_0", "q4_0"]
+    KV_COLORS = ["#4393c3", "#74c476", "#fd8d3c"]
+    CTX_LENGTHS = [2048, 4096, 8192, 16384]
+    CTX_COLORS = ["#9ecae1", "#4292c6", "#08519c", "#08306b"]
+    CTX_MARKERS = ["o", "s", "^", "D"]
+
+    # ── Layout: 2 rows
+    # Row 1: KV cache ablation — 3 metric sub-panels (A, D, F) side by side + VRAM
+    # Row 2: Context length ablation — speed (tok/s) and answer quality (D)
+    fig_w, fig_h = 22, 12
+    fig = plt.figure(figsize=(fig_w, fig_h))
+    fig.patch.set_facecolor("white")
+
+    # Row positions (bottom of row from top)
+    row1_b = 0.55   # KV cache row
+    row2_b = 0.06   # Context row
+    row_h = 0.36
+
+    # ── ROW 1: KV cache ──
+    # 4 sub-panels: Task A, Task D, Task F, VRAM
+    kv_metrics = [
+        ("task_a", "exact_match", "Parse Accuracy (Task A)"),
+        ("task_d", "cite_recall",  "Citation Recall (Task D)"),
+        ("task_f", "accuracy",     "Relevance Accuracy (Task F)"),
+    ]
+    n_m = len(MODELS)
+    bar_w = 0.22
+    group_w = bar_w * len(KV_TYPES) + 0.15
+    total_w = n_m * group_w
+
+    panel_w = 0.19
+    panel_gap = 0.025
+    vram_w = 0.16
+    left_margin = 0.06
+
+    for pi, (task_key, metric_key, panel_title) in enumerate(kv_metrics):
+        pl = left_margin + pi * (panel_w + panel_gap)
+        ax = fig.add_axes([pl, row1_b, panel_w, row_h])
+
+        for mi, mk in enumerate(MODELS):
+            vals = []
+            for kv in KV_TYPES:
+                key = f"{mk}@kv={kv}"
+                v = kv_data.get(key, {}).get(task_key, {}).get(metric_key, np.nan)
+                vals.append(float(v) if v is not None else np.nan)
+            xs = [mi * group_w + ki * bar_w for ki in range(len(KV_TYPES))]
+            for xi, (v, c) in enumerate(zip(vals, KV_COLORS)):
+                ax.bar(xs[xi], v, width=bar_w * 0.9, color=c, edgecolor="white", lw=0.5)
+
+        ax.set_xticks([mi * group_w + bar_w for mi in range(n_m)])
+        ax.set_xticklabels(MODEL_SHORT, rotation=35, ha="right", fontsize=9)
+        ax.set_ylim(0, 1.12)
+        ax.set_ylabel("Score", fontsize=10)
+        ax.set_title(panel_title, fontsize=11, fontweight="bold", pad=6)
+        ax.yaxis.grid(True, alpha=0.3, lw=0.5)
+        ax.set_axisbelow(True)
+        for spine in ["top", "right"]:
+            ax.spines[spine].set_visible(False)
+
+    # VRAM panel
+    vram_l = left_margin + len(kv_metrics) * (panel_w + panel_gap)
+    ax_v = fig.add_axes([vram_l, row1_b, vram_w, row_h])
+    for mi, mk in enumerate(MODELS):
+        vrams = []
+        for kv in KV_TYPES:
+            key = f"{mk}@kv={kv}"
+            v = kv_data.get(key, {}).get("vram_mb", np.nan)
+            vrams.append(float(v) / 1024 if v else np.nan)  # convert to GB
+        xs = [mi * group_w + ki * bar_w for ki in range(len(KV_TYPES))]
+        for xi, (v, c) in enumerate(zip(vrams, KV_COLORS)):
+            ax_v.bar(xs[xi], v, width=bar_w * 0.9, color=c, edgecolor="white", lw=0.5, alpha=0.85)
+    ax_v.set_xticks([mi * group_w + bar_w for mi in range(n_m)])
+    ax_v.set_xticklabels(MODEL_SHORT, rotation=35, ha="right", fontsize=9)
+    ax_v.set_ylabel("VRAM (GB)", fontsize=10)
+    ax_v.set_title("VRAM Usage", fontsize=11, fontweight="bold", pad=6)
+    ax_v.yaxis.grid(True, alpha=0.3, lw=0.5)
+    ax_v.set_axisbelow(True)
+    for spine in ["top", "right"]:
+        ax_v.spines[spine].set_visible(False)
+
+    # KV legend
+    handles_kv = [mpatches.Patch(color=c, label=kv) for c, kv in zip(KV_COLORS, KV_TYPES)]
+    fig.legend(handles=handles_kv, loc="upper center",
+               bbox_to_anchor=(0.50, 0.98), ncol=3, fontsize=10,
+               title="KV Cache Type", title_fontsize=10, frameon=False)
+
+    # Row 1 section label
+    fig.text(0.02, row1_b + row_h / 2, "A: KV Cache\nAblation",
+             va="center", ha="center", fontsize=11, fontweight="bold",
+             rotation=90, color="#333333")
+
+    # ── ROW 2: Context length ──
+    # Left: tok/s vs ctx, Right: Task D vs ctx
+    ctx_panel_w = 0.38
+    ctx_gap = 0.08
+    ctx_l1 = left_margin + 0.05
+    ctx_l2 = ctx_l1 + ctx_panel_w + ctx_gap
+
+    ax_spd = fig.add_axes([ctx_l1, row2_b, ctx_panel_w, row_h])
+    ax_qa  = fig.add_axes([ctx_l2, row2_b, ctx_panel_w, row_h])
+
+    for mi, (mk, mshort) in enumerate(zip(MODELS, MODEL_SHORT)):
+        spd_vals, qa_vals = [], []
+        for ctx in CTX_LENGTHS:
+            key = f"{mk}@ctx={ctx}"
+            entry = ctx_data.get(key, {})
+            spd = entry.get("task_e", {}).get("tok_per_sec", np.nan)
+            qa  = entry.get("task_d", {}).get("cite_recall", np.nan)
+            spd_vals.append(float(spd) if spd and spd == spd else np.nan)
+            qa_vals.append(float(qa)  if qa  and qa  == qa  else np.nan)
+
+        # Only plot ctx lengths that have data
+        xs_spd = [CTX_LENGTHS[i] for i, v in enumerate(spd_vals) if not np.isnan(v)]
+        ys_spd = [v for v in spd_vals if not np.isnan(v)]
+        xs_qa  = [CTX_LENGTHS[i] for i, v in enumerate(qa_vals) if not np.isnan(v)]
+        ys_qa  = [v for v in qa_vals if not np.isnan(v)]
+
+        col = f"C{mi}"
+        if xs_spd:
+            ax_spd.plot(xs_spd, ys_spd, marker="o", color=col, lw=1.8, ms=6, label=mshort)
+        if xs_qa:
+            ax_qa.plot(xs_qa, ys_qa, marker="o", color=col, lw=1.8, ms=6, label=mshort)
+
+    for ax, title, ylabel in [
+        (ax_spd, "Throughput vs Context Length (Task E)", "Tokens / Second"),
+        (ax_qa,  "Answer Quality vs Context Length (Task D)", "Citation Recall"),
+    ]:
+        ax.set_xlabel("Context Length (tokens)", fontsize=10)
+        ax.set_ylabel(ylabel, fontsize=10)
+        ax.set_title(title, fontsize=11, fontweight="bold", pad=6)
+        ax.set_xticks(CTX_LENGTHS)
+        ax.set_xticklabels([str(c) for c in CTX_LENGTHS], fontsize=9)
+        ax.yaxis.grid(True, alpha=0.3, lw=0.5)
+        ax.set_axisbelow(True)
+        for spine in ["top", "right"]:
+            ax.spines[spine].set_visible(False)
+        ax.legend(fontsize=8, frameon=False, loc="best")
+
+    ax_qa.set_ylim(0, 1.08)
+
+    # Row 2 section label
+    fig.text(0.02, row2_b + row_h / 2, "B: Context\nLength\nAblation",
+             va="center", ha="center", fontsize=11, fontweight="bold",
+             rotation=90, color="#333333")
+
+    fig.suptitle("Figure S2 — Runtime Ablation Studies\n"
+                 "(KV cache quantization and context length effects on quality, speed, and memory)",
+                 y=0.995, fontsize=13, fontweight="bold", va="top")
+
+    for ext in ("pdf", "png"):
+        out = OUT_DIR / f"fig_s2_ablation.{ext}"
+        fig.savefig(out, dpi=150, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    print(f"Fig S2 (ablation): saved → {OUT_DIR}/fig_s2_ablation.pdf")
+
+
 # Tables 3, 5, S2
 # ═══════════════════════════════════════════════════════════════════════════
 def table_3_llm_comparison(rows):
@@ -987,14 +1552,16 @@ def table_3_llm_comparison(rows):
     with open(OUT_DIR / "table3_llm_comparison.csv", "w") as f:
         f.write("Model,Family,Size(B),Quant,Think,Parse_EM,Tissue_F1,Disease_F1,"
                 "CellType_F1,Extract_F1_avg,Onto_F1,Cite_Recall,Cite_Prec,"
-                "Grounding,Tok/s,Composite\n")
+                "Grounding,Relev_F1,Domain_Acc,Org_Acc,Mod_F1,Tok/s,Composite\n")
         for r in rows:
             f.write(
                 f"{r['model']},{r['family']},{r['size_b']},{r['quant']},"
                 f"{r['think']},{r['parse_em']:.4f},{r['tissue_f1']:.4f},"
                 f"{r['disease_f1']:.4f},{r['celltype_f1']:.4f},{r['extract_f1']:.4f},"
                 f"{r['onto_f1']:.4f},{r['cite_recall']:.4f},{r['cite_prec']:.4f},"
-                f"{r['grounding']:.4f},{r['tok_s']:.1f},{r['composite']:.4f}\n"
+                f"{r['grounding']:.4f},{r['relevance_f1']:.4f},{r['domain_acc']:.4f},"
+                f"{r['org_acc']:.4f},{r['mod_f1']:.4f},{r['tok_s']:.1f},"
+                f"{r['composite']:.4f}\n"
             )
     print(f"Table 3: {len(rows)} model configurations")
 
@@ -1006,12 +1573,13 @@ def table_5_top5(rows):
     top5 = sorted(rows, key=lambda r: -r["composite"])[:5]
     with open(OUT_DIR / "table5_top5.csv", "w") as f:
         f.write("Rank,Model,Family,Size(B),Composite,Parse_EM,Extract_F1,"
-                "Onto_F1,Cite_Recall,Grounding,Tok/s\n")
+                "Onto_F1,Cite_Recall,Grounding,Relev_F1,Domain_Acc,Org_Acc,Tok/s\n")
         for i, r in enumerate(top5, 1):
             f.write(
                 f"{i},{r['model']},{r['family']},{r['size_b']},"
                 f"{r['composite']:.4f},{r['parse_em']:.4f},{r['extract_f1']:.4f},"
                 f"{r['onto_f1']:.4f},{r['cite_recall']:.4f},{r['grounding']:.4f},"
+                f"{r['relevance_f1']:.4f},{r['domain_acc']:.4f},{r['org_acc']:.4f},"
                 f"{r['tok_s']:.1f}\n"
             )
     print("Table 5: Top 5 models")
@@ -1119,6 +1687,7 @@ def main():
 
     # Figure 5 (context)
     figure_5_context_curve()
+    figure_s1_context_management()
     table_s2_context_management()
     print()
 
@@ -1126,10 +1695,13 @@ def main():
     figure_6_e2e_comparison()
     print()
 
-    # Figure 7 (composite summary)
-    if llm_rows:
-        figure_7_composite_summary(llm_rows)
-        print()
+    # Figure 7 (public benchmarks)
+    figure_7_public_benchmarks()
+    print()
+
+    # Figure S2 (ablation)
+    figure_s2_ablation()
+    print()
 
     # Summary JSON
     write_summary_json(corpus_stats, query_dist, llm_rows)

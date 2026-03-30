@@ -205,7 +205,9 @@ class StudyEmbedder:
 
 def get_qdrant_client(path: Optional[Path] = None) -> QdrantClient:
     cfg = get_config()
-    return QdrantClient(path=str(path or cfg.paths.qdrant_dir))
+    qdrant_path = Path(path or cfg.paths.qdrant_dir)
+    qdrant_path.mkdir(parents=True, exist_ok=True)
+    return QdrantClient(path=str(qdrant_path))
 
 
 def create_collection(client: QdrantClient, name: str, dim: int, recreate: bool = False):

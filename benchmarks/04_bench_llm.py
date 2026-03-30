@@ -200,11 +200,15 @@ def task_e_speed(model_key: str, think: bool = False) -> dict:
     """Task E: Inference speed across diverse prompt types."""
     from scmetaintel.answer import ollama_generate
 
-    # Warm up with short prompt
-    try:
-        llm_call(SPEED_PROMPTS[0], model_key=model_key, max_tokens=50)
-    except Exception:
-        return {"error": "model not available"}
+    # Warm up with short prompt (retry once on failure)
+    for attempt in range(2):
+        try:
+            llm_call(SPEED_PROMPTS[0], model_key=model_key, max_tokens=50,
+                     timeout=180)
+            break
+        except Exception as e:
+            if attempt == 1:
+                return {"error": f"model not available: {e}"}
 
     cfg = LLM_MODELS[model_key]
     all_times, all_tokens = [], []
