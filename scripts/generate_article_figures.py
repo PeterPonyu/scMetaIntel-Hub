@@ -316,7 +316,7 @@ def figure_1_study_design():
         ha="center", va="center", fontsize=body_sm_fs, color="#6A1B9A",
         fontweight="normal")
     pub_items = [
-        ("General\nMMLU, HellaSwag\nARC, GSM8K", "#E1BEE7"),
+        ("General & Reasoning\nMMLU, HellaSwag\nGSM8K, TruthfulQA", "#E1BEE7"),
         ("Biomedical\nPubMedQA, MedQA\nBioASQ, SciQ", "#D1C4E9"),
         ("Structured &\nTool-Use\nIFEval, NexusFC", "#EDE7F6"),
     ]
@@ -1163,8 +1163,8 @@ def figure_7_public_benchmarks():
 
     # Dataset columns grouped by category
     dataset_groups = [
-        ("General", ["mmlu", "hellaswag", "winogrande", "arc_challenge",
-                     "arc_easy", "gsm8k", "truthfulqa"]),
+        ("General", ["mmlu", "hellaswag", "winogrande", "arc_challenge"]),
+        ("Reasoning", ["arc_easy", "gsm8k", "truthfulqa"]),
         ("Biomedical", ["pubmedqa", "medqa", "medmcqa", "sciq", "bioasq_mini",
                         "mmlu_anatomy", "mmlu_clinical_knowledge",
                         "mmlu_college_biology", "mmlu_college_medicine",

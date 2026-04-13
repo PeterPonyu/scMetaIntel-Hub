@@ -7,6 +7,7 @@
 \documentclass[sn-nature]{sn-jnl}
 
 \usepackage{graphicx}
+\graphicspath{{../article_figures/}}
 \usepackage{multirow}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{booktabs}
@@ -39,16 +40,15 @@ over single-cell metadata. The system requires no cloud API access and
 operates exclusively on GEO metadata and PubMed abstracts. We benchmark 51
 local LLMs from 16 architectural families (66 configurations including
 chain-of-thought ablation) across eight domain-specific tasks on a curated
-corpus of 2{,}189 GEO studies and 171 evaluation queries. An 8B-parameter
-model (llama3.1-8b-q4, composite score 0.776) ranks first, outperforming
-14B--32B alternatives. Hybrid retrieval with organism filtering matches or
-exceeds neural reranking at half the latency. Quantisation from 8-bit to
-4-bit incurs negligible quality loss (mean $\Delta$composite $< 0.01$) while
-yielding $1.4\times$ throughput gain. The corpus, queries, and all benchmark
+corpus of 2{,}189 GEO studies and 171 evaluation queries. A 32B model (aya-expanse-32b, composite 0.779) and a 4B model
+(qwen3.5-4b, composite 0.779) are statistically tied at first rank, both
+outperforming 14B alternatives. Hybrid retrieval with organism filtering
+matches or exceeds neural reranking at half the latency. Quantisation from
+8-bit to 4-bit incurs negligible quality loss with 1.4x throughput gain. The corpus, queries, and all benchmark
 code are publicly available.}
 
-\keywords{single-cell genomics \and large language models \and metadata
-  intelligence \and benchmark \and retrieval-augmented generation \and
+\keywords{single-cell genomics, large language models, metadata
+  intelligence, benchmark, retrieval-augmented generation,
   local inference}
 
 \maketitle
@@ -110,9 +110,9 @@ We present scMetaIntel-Hub with four contributions:
     enriched GEO studies and 171 evaluation queries.
 
   \item An \textbf{empirically validated pipeline recipe}: hybrid retrieval
-    with organism filtering outperforms neural reranking; an 8B model matches
-    or exceeds larger alternatives; 4-bit quantisation incurs negligible
-    quality loss.
+    with organism filtering outperforms neural reranking; a 4B model
+    statistically ties the top 32B model; 4-bit quantisation incurs
+    negligible quality loss.
 
   \item A \textbf{curated evaluation resource}: 2{,}189 enriched GSE
     metadata files, 171 queries across seven categories and three difficulty
@@ -145,7 +145,7 @@ entries (Table~\ref{tab:corpus}).
 \begin{table}[t]
 \caption{Corpus composition. Annotation coverage is computed after the
   cleaning pipeline.}\label{tab:corpus}
-\begin{tabular*}{\textwidth}{@{\extracolsep\fill}lr}
+\begin{tabular}{lr}
 \toprule
 Metric & Value \\
 \midrule
@@ -157,7 +157,7 @@ Cell-type annotations  & 1{,}590 (72.6\%) \\
 PubMed linked          & 1{,}510 (69.0\%) \\
 Document text          & 2{,}189 (100\%) \\
 \bottomrule
-\end{tabular*}
+\end{tabular}
 \end{table}
 
 \subsection{Pipeline architecture}\label{sec:pipeline}
@@ -294,7 +294,7 @@ corpora.
 \begin{table}[t]
 \caption{Retrieval strategy comparison ($n = 90$ queries). Bold marks best
   in column.}\label{tab:retrieval}
-\begin{tabular*}{\textwidth}{@{\extracolsep\fill}lcccccc}
+\begin{tabular}{lcccccc}
 \toprule
 Strategy & P@5 & P@10 & R@50 & MRR & nDCG@10 & Latency (ms) \\
 \midrule
@@ -305,42 +305,43 @@ Hybrid + filter     & 0.073 & 0.060 & \textbf{0.478} & 0.209 & 0.148 & 86.2 \\
 Hybrid + rerank     & 0.078 & 0.072 & 0.448 & 0.202 & 0.159 & 160.2 \\
 Hybrid + filter + rerank & \textbf{0.082} & \textbf{0.071} & \textbf{0.478} & \textbf{0.211} & \textbf{0.163} & 166.5 \\
 \bottomrule
-\end{tabular*}
+\end{tabular}
 \end{table}
 
 \subsection{LLM benchmark results}\label{sec:llm-results}
 
 \textbf{Overall rankings.} Figure~\ref{fig:heatmap} shows per-task
-performance for all 66 configurations. Composite scores range from 0.057 to
-0.776 (spread\,=\,0.719), confirming strong discriminative power. The
-top-ranked model is llama3.1-8b-q4 (composite 0.776), followed by
-llama3.1-8b (0.768) and aya-expanse-8b (0.767). The top five includes two
-Llama~3.1 variants, one Aya, one Qwen~3.5, and one Qwen~3 with thinking
-mode (Table~\ref{tab:top5}).
+performance for all 51 base configurations. Composite scores range from
+0.057 to 0.779 (spread\,=\,0.722), confirming strong discriminative power.
+The top-ranked model is aya-expanse-32b (composite 0.779), statistically
+tied with qwen3.5-4b (0.779), followed by qwen3.5-9b-q8 (0.754),
+llama3.1-8b (0.751), and mistral-7b-q4 (0.749). The top five spans four
+families and three size classes (Table~\ref{tab:top5}).
 
 \begin{table}[t]
-\caption{Top-5 model configurations by composite score. Size is in billions
-  of parameters; Tok/s measured on RTX~5090.}\label{tab:top5}
-\begin{tabular*}{\textwidth}{@{\extracolsep\fill}clcccccc}
+\caption{Top-5 model configurations by composite score with 95\% bootstrap
+  confidence intervals (CI). Size in billions of parameters.}\label{tab:top5}
+\begin{tabular}{lccccccc}
 \toprule
-Rank & Model & Family & Size & Parse & Cite Recall & Onto F1 & Composite \\
+Model & Family & Size & Parse & Cite Rec. & Onto F1 & Composite & 95\% CI \\
 \midrule
-1 & llama3.1-8b-q4   & Llama & 8B  & 0.967 & 0.883 & 0.760 & 0.776 \\
-2 & llama3.1-8b      & Llama & 8B  & 0.833 & 0.933 & 0.813 & 0.768 \\
-3 & aya-expanse-8b   & Aya   & 8B  & 1.000 & 0.950 & 0.688 & 0.767 \\
-4 & qwen3.5-4b       & Qwen  & 4B  & 0.633 & 1.000 & 0.875 & 0.756 \\
-5 & qwen3-1.7b+think & Qwen  & 1.7B & 0.700 & 0.917 & 0.781 & 0.755 \\
+aya-expanse-32b  & Aya     & 32B & 0.890 & 0.874 & 1.000 & 0.779 & {[}0.764, 0.792{]} \\
+qwen3.5-4b       & Qwen    & 4B  & 0.804 & 0.985 & 0.833 & 0.779 & {[}0.764, 0.791{]} \\
+qwen3.5-9b-q8    & Qwen    & 9B  & 0.810 & 0.983 & 0.865 & 0.754 & {[}0.739, 0.766{]} \\
+llama3.1-8b      & Llama   & 8B  & 0.840 & 0.821 & 0.779 & 0.751 & {[}0.736, 0.765{]} \\
+mistral-7b-q4    & Mistral & 7B  & 0.883 & 0.741 & 0.848 & 0.749 & {[}0.735, 0.764{]} \\
 \bottomrule
-\end{tabular*}
+\end{tabular}
 \end{table}
 
-\textbf{Scale does not predict performance.} The principal finding is that
-an 8B-parameter model achieves the highest composite score, surpassing 14B
-and 32B alternatives. Among the top~10, model sizes range from 1.7B to
-32B, with no monotonic size--quality relationship. The Spearman correlation
-between parameter count and composite score across all 66 configurations is
-weakly negative ($\rho = -0.08$), confirming that architectural design and
-instruction tuning outweigh raw scale for these metadata-centric tasks
+\textbf{Scale does not predict performance.} A 4B model (qwen3.5-4b)
+achieves a composite score statistically indistinguishable from the top 32B
+model (aya-expanse-32b), both at 0.779 with overlapping 95\% confidence
+intervals. Among the top~10, model sizes range from 4B to 32B with no
+monotonic size--quality relationship. The Spearman correlation between
+parameter count and composite score across all 51 configurations is weakly
+negative ($\rho \approx -0.08$), confirming that architectural design and
+instruction tuning outweigh raw scale for metadata-centric tasks
 (Fig.~\ref{fig:scaling}).
 
 \textbf{Task-specific variation.} No single model dominates all tasks.
@@ -379,15 +380,24 @@ recall, while minimal formatting degraded grounding rate.
 
 \subsection{End-to-end pipeline comparison}\label{sec:e2e-results}
 
-Four pipeline configurations were compared end to end on 90 queries
+We compared four pipeline configurations end to end on 90 queries
 (Fig.~\ref{fig:e2e}). The optimised-fast configuration (mxbai-embed-large +
 hybrid+filter + qwen2.5-1.5b) achieved the best citation recall (0.075) and
 grounding rate (0.985) at 1.7\,s latency---matching or exceeding the
 baseline (bge-m3 + dense + qwen2.5-1.5b, recall 0.073, 1.9\,s) while using
-the validated embedding and retrieval components. The quality-optimised
-configuration (qwen3.5-27b) showed lower grounding (0.441), suggesting that
-larger models in the answer-generation role are more prone to generating
-text beyond the provided context.
+the validated embedding and retrieval components.
+
+Replacing the small answer-generation model with larger alternatives
+degraded performance. The quality-optimised pipeline (qwen3.5-27b) suffered
+a 55\% drop in grounding rate (0.441 vs 0.982) and a 33\% drop in citation
+recall (0.049 vs 0.073) while increasing latency 49-fold (93\,s vs 1.9\,s).
+The balanced pipeline (qwen3.5-9b-q8) showed an even larger collapse:
+citation recall fell to 0.010 and grounding to 0.311. Both larger models
+generated substantial text beyond the provided context, diluting citation
+density. These results reinforce the finding from the per-task benchmark
+that model size does not predict answer-grounding quality, and that small
+models with strong instruction following outperform larger alternatives
+on citation-centric tasks.
 
 %% ====================================================================
 \section{Discussion}\label{sec:discussion}
@@ -396,9 +406,9 @@ text beyond the provided context.
 \textbf{Task-specific model routing.} The absence of a single dominant model
 across all eight tasks argues for task-specific routing in production
 deployments. Instruction-tuned models with strong structured-output training
-(aya-expanse-8b, llama3.1-8b) excel at parsing and domain classification,
-while models with deeper reasoning chains (qwen3-32b+think) lead on ontology
-normalisation. Citation generation, the most practically important task,
+(aya-expanse-32b, llama3.1-8b) excel at parsing and domain classification,
+while models with deeper reasoning chains lead on ontology normalisation
+(aya-expanse-32b achieves perfect ontology F1). Citation generation, the most practically important task,
 favours models that adhere closely to provided context without
 hallucination---a property not reliably predicted by model size or general
 benchmark performance.
@@ -443,10 +453,10 @@ queries; results are not directly comparable across these stages.
 We have presented scMetaIntel-Hub, a local pipeline for privacy-preserving
 single-cell dataset discovery, accompanied by a systematic benchmark of 51
 LLMs from 16 families on eight domain-specific tasks. The benchmark reveals
-that mid-size models (4--8B parameters) achieve optimal performance on
-metadata intelligence tasks, hybrid retrieval with organism filtering
-outperforms neural reranking at lower latency, and 4-bit quantisation
-incurs negligible quality loss. We release the corpus of 2{,}189 enriched
+that a 4B model statistically ties the top-ranked 32B model, mid-size
+models (4--9B) consistently appear in the top~5, hybrid retrieval with
+organism filtering outperforms neural reranking at lower latency, and
+4-bit quantisation incurs negligible quality loss. We release the corpus of 2{,}189 enriched
 GSE metadata files, 171 evaluation queries, and all benchmark scripts to
 support reproducible research in biomedical metadata intelligence.
 

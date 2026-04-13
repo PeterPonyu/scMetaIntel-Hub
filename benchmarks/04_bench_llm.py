@@ -172,7 +172,9 @@ def task_e_speed(model_key: str, think: bool = False) -> dict:
     """Task E: Inference speed across diverse prompt types."""
     from scmetaintel.answer import ollama_generate
 
-    # Warm up with short prompt (retry once on failure)
+    # Warm up with short prompt (non-fatal — model may already be loaded
+    # from prior tasks; Gemma3/Granite can fail warmup via /api/chat but
+    # still produce valid speed measurements via ollama_generate).
     for attempt in range(2):
         try:
             llm_call(SPEED_PROMPTS[0], model_key=model_key, max_tokens=50,
@@ -180,7 +182,8 @@ def task_e_speed(model_key: str, think: bool = False) -> dict:
             break
         except Exception as e:
             if attempt == 1:
-                return {"error": f"model not available: {e}"}
+                logger.warning(f"Speed warmup failed for {model_key}: {e}. "
+                               "Proceeding with measurement anyway.")
 
     cfg = LLM_MODELS[model_key]
     all_times, all_tokens = [], []
