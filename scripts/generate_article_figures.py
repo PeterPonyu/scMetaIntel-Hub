@@ -718,11 +718,15 @@ def _load_llm_rows():
         mod_f1 = th.get("modality", {}).get("f1", 0) if isinstance(th.get("modality"), dict) else 0
 
         # Composite (8 tasks, rebalanced weights)
+        # answer_score uses cite_recall + cite_prec (not grounding, which is
+        # near-duplicate — see STATUS_REPORT for the fix that separated them).
         parse_score = ta.get("exact_match", 0)
         onto_score = tc.get("f1", 0)
-        answer_score = (td.get("citation_recall", 0) + td.get("grounding_rate", 0)) / 2
+        cite_r = td.get("citation_recall", 0)
+        cite_p = td.get("citation_precision", 0)
+        answer_score = (cite_r + cite_p) / 2
         speed_raw = te.get("tokens_per_sec", 0)
-        speed_score = min(speed_raw / 100, 1.0)
+        speed_score = min(speed_raw / 150, 1.0)  # cap at 150 tok/s (was 100)
         composite = (0.15 * parse_score + 0.15 * avg_f1 + 0.15 * onto_score
                      + 0.20 * answer_score + 0.05 * speed_score
                      + 0.10 * relevance_f1 + 0.10 * domain_acc
@@ -761,13 +765,15 @@ def figure_4_llm_heatmap(rows):
         print("Figure 4: SKIPPED — no LLM results")
         return
     sorted_rows = sorted(rows, key=lambda r: -r["composite"])
+    # Heatmap columns: dropped grounding (ceiling effect, ~60% at 1.0)
+    # and kept cite_prec which now differs from grounding after the fix.
     task_keys = ["parse_em", "tissue_f1", "disease_f1", "celltype_f1",
-                 "onto_f1", "cite_recall", "cite_prec", "grounding",
+                 "onto_f1", "cite_recall", "cite_prec",
                  "relevance_f1", "domain_acc", "org_acc", "mod_f1"]
     task_labels = ["Parse", "Tissue", "Disease", "Cell", "Onto",
-                   "CiteR", "CiteP", "Grnd", "Relev", "Domain", "OrgAc", "ModF1"]
+                   "CiteR", "CiteP", "Relev", "Domain", "OrgAc", "ModF1"]
     task_groups = [("A", 0, 1), ("B: Extract", 1, 4), ("C", 4, 5),
-                   ("D: Answer", 5, 8), ("F", 8, 9), ("G", 9, 10), ("H", 10, 12)]
+                   ("D: Answer", 5, 7), ("F", 7, 8), ("G", 8, 9), ("H", 9, 11)]
     model_names = [r["model"] for r in sorted_rows]
     n = len(model_names); nc = len(task_keys)
     matrix = np.array([[r[k] for k in task_keys] for r in sorted_rows])
@@ -775,8 +781,8 @@ def figure_4_llm_heatmap(rows):
     composite_vals = [r["composite"] for r in sorted_rows]
     components = np.array([[
         0.15 * r["parse_em"], 0.15 * r["extract_f1"], 0.15 * r["onto_f1"],
-        0.20 * (r["cite_recall"] + r["grounding"]) / 2,
-        0.05 * min(r["tok_s"] / 100, 1.0),
+        0.20 * (r["cite_recall"] + r["cite_prec"]) / 2,
+        0.05 * min(r["tok_s"] / 150, 1.0),
         0.10 * r["relevance_f1"], 0.10 * r["domain_acc"],
         0.10 * (r["org_acc"] + r["mod_f1"]) / 2,
     ] for r in sorted_rows])
@@ -800,10 +806,19 @@ def figure_4_llm_heatmap(rows):
     ax.set_xticks(range(nc))
     ax.set_xticklabels(task_labels, fontsize=13, rotation=55, ha="left")
     ax.xaxis.set_ticks_position("top"); ax.tick_params(axis="x", pad=1, length=2)
-    ax.set_yticks(range(n)); ax.set_yticklabels(model_names, fontsize=12)
+    ax.set_yticks(range(n))
+    # Color model names by family for visual grouping
+    ax.set_yticklabels(model_names, fontsize=12)
+    for i, label in enumerate(ax.get_yticklabels()):
+        fam = sorted_rows[i].get("family", "")
+        label.set_color(FAMILY_COLORS.get(fam, "#333333"))
+        if sorted_rows[i].get("think"):
+            label.set_style("italic")
     for i in range(n):
         for j in range(nc):
-            v = matrix[i, j]; c = "white" if v > 0.65 else "black"
+            v = matrix[i, j]
+            # Adaptive threshold: white text on dark cells
+            c = "white" if v > 0.55 else "black"
             ax.text(j, i, f"{v:.2f}", ha="center", va="center", fontsize=10, color=c)
     ab = fig.add_axes([hl, ht, hw, bf])
     ab.set_xlim(-0.5, nc - 0.5); ab.set_ylim(0, 1); ab.axis("off")
@@ -858,10 +873,47 @@ def figure_4_llm_heatmap(rows):
     from matplotlib.patches import Patch
     al.legend(handles=[Patch(facecolor=cc[j], label=cl[j], alpha=0.85) for j in range(8)],
               fontsize=12, ncol=4, loc="center", frameon=False)
+    # Add family legend at bottom
+    from matplotlib.patches import Patch as FamPatch
+    fam_in_data = sorted({r["family"] for r in sorted_rows if r["family"] in FAMILY_COLORS})
+    fam_patches = [FamPatch(facecolor=FAMILY_COLORS[f], label=f.capitalize()) for f in fam_in_data]
+    fig.legend(handles=fam_patches, fontsize=10, ncol=min(len(fam_patches), 8),
+               loc="lower center", frameon=False, bbox_to_anchor=(0.25, 0.0))
     fig.savefig(OUT_DIR / "fig4_llm_heatmap.png", dpi=300, bbox_inches="tight")
     fig.savefig(OUT_DIR / "fig4_llm_heatmap.pdf", bbox_inches="tight")
     plt.close(fig)
     print(f"Figure 4: LLM domain heatmap + composite saved ({n} model configs)")
+
+    # Think-mode delta table: compare +think vs base for all ablation pairs
+    _generate_think_delta_table(rows)
+
+
+def _generate_think_delta_table(rows):
+    """Generate CSV showing think-mode impact (delta) for each ablation pair."""
+    by_label = {r["model"]: r for r in rows}
+    delta_metrics = ["parse_em", "extract_f1", "onto_f1", "cite_recall",
+                     "relevance_f1", "domain_acc", "org_acc", "mod_f1", "composite"]
+    lines = ["Model,Family,Size(B)," + ",".join(f"Δ_{m}" for m in delta_metrics)]
+
+    for label, r in sorted(by_label.items()):
+        if not label.endswith("+think"):
+            continue
+        base_label = label.removesuffix("+think")
+        base = by_label.get(base_label)
+        if not base:
+            continue
+        deltas = []
+        for m in delta_metrics:
+            d = r.get(m, 0) - base.get(m, 0)
+            deltas.append(f"{d:+.4f}")
+        lines.append(f"{base_label},{r['family']},{r['size_b']}," + ",".join(deltas))
+
+    if len(lines) > 1:
+        out = OUT_DIR / "table_s3_think_delta.csv"
+        out.write_text("\n".join(lines) + "\n")
+        print(f"Table S3: Think-mode deltas saved ({len(lines)-1} pairs)")
+    else:
+        print("Table S3: SKIPPED — no think ablation pairs found")
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -1210,13 +1262,11 @@ def figure_7_public_benchmarks():
     ax.tick_params(axis="x", pad=1, length=2)
     ax.set_yticks(range(n))
 
-    # Model labels with family info
-    model_labels = []
-    for mk in sorted_models:
-        fam = pub_data[mk].get("family", "")
-        size = pub_data[mk].get("size_b", "")
-        model_labels.append(f"{mk}")
-    ax.set_yticklabels(model_labels, fontsize=13)
+    # Model labels colored by family for visual grouping
+    ax.set_yticklabels(sorted_models, fontsize=13)
+    for i, label in enumerate(ax.get_yticklabels()):
+        fam = pub_data[sorted_models[i]].get("family", "")
+        label.set_color(FAMILY_COLORS.get(fam, "#333333"))
 
     for i in range(n):
         for j in range(nd):
@@ -1573,12 +1623,12 @@ def table_5_top5(rows):
     top5 = sorted(rows, key=lambda r: -r["composite"])[:5]
     with open(OUT_DIR / "table5_top5.csv", "w") as f:
         f.write("Rank,Model,Family,Size(B),Composite,Parse_EM,Extract_F1,"
-                "Onto_F1,Cite_Recall,Grounding,Relev_F1,Domain_Acc,Org_Acc,Tok/s\n")
+                "Onto_F1,Cite_Recall,Cite_Prec,Relev_F1,Domain_Acc,Org_Acc,Tok/s\n")
         for i, r in enumerate(top5, 1):
             f.write(
                 f"{i},{r['model']},{r['family']},{r['size_b']},"
                 f"{r['composite']:.4f},{r['parse_em']:.4f},{r['extract_f1']:.4f},"
-                f"{r['onto_f1']:.4f},{r['cite_recall']:.4f},{r['grounding']:.4f},"
+                f"{r['onto_f1']:.4f},{r['cite_recall']:.4f},{r['cite_prec']:.4f},"
                 f"{r['relevance_f1']:.4f},{r['domain_acc']:.4f},{r['org_acc']:.4f},"
                 f"{r['tok_s']:.1f}\n"
             )

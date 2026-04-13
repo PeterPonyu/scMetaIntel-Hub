@@ -34,6 +34,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from scmetaintel.config import (
     GROUND_TRUTH_DIR, BENCHMARK_DIR, QDRANT_DIR,
     EMBEDDING_MODELS, LLM_MODELS,
+    OLLAMA_API_TAGS, TIMEOUT_OLLAMA_CHECK,
 )
 from scmetaintel.embed import Embedder, build_index_from_ground_truth, get_qdrant_client
 from scmetaintel.retrieve import RetrievalPipeline, Reranker
@@ -100,7 +101,7 @@ CONFIGS = {
 def get_pulled_ollama_models() -> set[str]:
     """Return currently pulled Ollama model tags."""
     try:
-        resp = requests.get("http://localhost:11434/api/tags", timeout=5)
+        resp = requests.get(OLLAMA_API_TAGS, timeout=TIMEOUT_OLLAMA_CHECK)
         resp.raise_for_status()
         return {m["name"] for m in resp.json().get("models", [])}
     except Exception:

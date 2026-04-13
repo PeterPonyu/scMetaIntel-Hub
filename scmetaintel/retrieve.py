@@ -21,7 +21,7 @@ import numpy as np
 from qdrant_client.models import Filter, FieldCondition, MatchValue
 
 from .answer import parse_query as llm_parse_query
-from .config import QDRANT_COLLECTION, RERANKER_MODELS, get_config
+from .config import QDRANT_COLLECTION, RERANKER_MODELS, FIELD_TO_ONTOLOGY, get_config
 from .embed import Embedder, get_qdrant_client, get_safe_device, resolve_load_name, search_dense
 from .models import CharacteristicsSummary, EnrichedStudy, ParsedQuery, SearchResult
 
@@ -265,12 +265,7 @@ def expand_query_ontology(
         max_synonyms: Max synonyms to add per matched term.
     """
     expansions = []
-    field_to_ontology = {
-        "tissue": ["UBERON"],
-        "disease": ["MONDO"],
-        "cell_type": ["CL"],
-    }
-    for field, prefixes in field_to_ontology.items():
+    for field, prefixes in FIELD_TO_ONTOLOGY.items():
         value = parsed.get(field, "")
         if not value:
             continue

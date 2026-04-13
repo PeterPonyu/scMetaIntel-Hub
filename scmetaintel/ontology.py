@@ -19,7 +19,7 @@ from pathlib import Path
 
 import numpy as np
 
-from .config import get_config
+from .config import get_config, FIELD_TO_ONTOLOGY, ONTOLOGY_FILES
 from .embed import resolve_load_name
 from .models import EnrichedStudy, OntologyMapping
 
@@ -186,12 +186,7 @@ class OntologyNormalizer:
         self._cache: dict[str, OntologyMapping] = {}
 
     def load_ontologies(self):
-        obo_files = {
-            "CL": "cl.obo",
-            "UBERON": "uberon-basic.obo",
-            "MONDO": "mondo.obo",
-        }
-        for name, filename in obo_files.items():
+        for name, filename in ONTOLOGY_FILES.items():
             path = self.ontology_dir / filename
             if path.exists():
                 try:
@@ -251,7 +246,7 @@ class OntologyNormalizer:
         cache_key = f"{category}:{text.lower().strip()}"
         if cache_key in self._cache:
             return self._cache[cache_key]
-        ontology_names = {"cell_type": ["CL"], "tissue": ["UBERON"], "disease": ["MONDO"]}.get(category, list(self.indices.keys()))
+        ontology_names = FIELD_TO_ONTOLOGY.get(category, list(self.indices.keys()))
         for onto_name in ontology_names:
             if onto_name not in self.indices:
                 continue

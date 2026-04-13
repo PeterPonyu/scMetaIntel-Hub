@@ -49,6 +49,70 @@ OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
 
 
 # ---------------------------------------------------------------------------
+# Centralized constants — single source of truth for values used across files
+# ---------------------------------------------------------------------------
+
+# --- Ollama API endpoints (derived from OLLAMA_HOST) ---
+OLLAMA_API_TAGS = f"{OLLAMA_HOST}/api/tags"
+OLLAMA_API_CHAT = f"{OLLAMA_HOST}/api/chat"
+OLLAMA_API_GENERATE = f"{OLLAMA_HOST}/api/generate"
+OLLAMA_API_PS = f"{OLLAMA_HOST}/api/ps"
+
+# --- Timeouts (seconds) ---
+TIMEOUT_LLM_DEFAULT = 120          # Standard LLM call
+TIMEOUT_LLM_LONG = 300             # Complex tasks (ontology, answer gen, extraction)
+TIMEOUT_LLM_WARMUP = 180           # Model warmup / first-load
+TIMEOUT_GEO_API = 60               # GEO SOFT / eUtils API
+TIMEOUT_QDRANT = 30                # Qdrant vector DB
+TIMEOUT_OLLAMA_MGMT = 30           # Ollama management ops (load/unload)
+TIMEOUT_OLLAMA_CHECK = 5           # Ollama health check
+
+# --- Text truncation limits ---
+TRUNCATE_SUMMARY = 500             # Summary text in prompts
+TRUNCATE_SUMMARY_SHORT = 300       # Summary in compact contexts (relevance, answer)
+TRUNCATE_DESIGN = 300              # Overall design text
+TRUNCATE_TITLE = 200               # Title text
+TRUNCATE_DOCUMENT = 2000           # Full document text for embedding
+
+# --- Benchmark temperatures ---
+BENCH_TEMPERATURE = 0.0            # Structured/JSON tasks always use 0.0
+
+# --- Ontology configuration ---
+ONTOLOGY_FILES = {
+    "CL": "cl.obo",               # Cell Ontology
+    "UBERON": "uberon-basic.obo",  # Anatomy/tissue ontology
+    "MONDO": "mondo.obo",          # Disease ontology
+}
+
+# Category → ontology prefix mapping (used by retrieval and normalization)
+FIELD_TO_ONTOLOGY = {
+    "cell_type": ["CL"],
+    "tissue": ["UBERON"],
+    "disease": ["MONDO"],
+}
+
+# Ontology similarity thresholds
+ONTOLOGY_SIMILARITY_THRESHOLD = 0.7     # Embedding-based matching
+ONTOLOGY_SIMILARITY_THRESHOLD_LLM = 0.65  # LLM fallback (lower bar)
+
+# --- Domain classification labels ---
+VALID_DOMAINS = frozenset({
+    "cancer", "development", "immunology", "neurodegeneration",
+    "infectious_disease", "cardiovascular", "metabolic", "other",
+})
+
+# --- Metadata extraction fields ---
+EXTRACTION_FIELDS = ("tissues", "diseases", "cell_types")
+EXTRACTION_FIELDS_FULL = ("tissues", "diseases", "cell_types", "modalities")
+
+# --- GSE pattern ---
+GSE_PATTERN = r"GSE\d+"
+
+# --- Ollama keep_alive for benchmark VRAM management ---
+OLLAMA_KEEP_ALIVE_UNLOAD = 0       # Immediately unload after use
+
+
+# ---------------------------------------------------------------------------
 # Model registries
 # ---------------------------------------------------------------------------
 
@@ -323,6 +387,7 @@ MODEL_FAMILY_CONFIG: Dict[str, dict] = {
         "think_method": None,
         "multimodal": False,
         "generations": ["0.3", "nemo", "small"],
+        "output_quirks": {"markdown_wrap"},
         # Inference: Mistral often wraps JSON in ```json``` markdown blocks.
         # The json_hint tells it not to; extract_json() handles it if it does.
         "json_hint": "Output raw JSON only. Do NOT wrap in markdown code blocks.",
@@ -343,6 +408,8 @@ MODEL_FAMILY_CONFIG: Dict[str, dict] = {
         "always_thinks": True,       # Cannot disable thinking
         "multimodal": False,
         "generations": ["r1"],
+        "output_quirks": {"verbose_think"},
+        "think_token_overhead": 6144,  # R1 chains are longer than API-think
         # Inference: R1 models always produce <think>...</think> before answer.
         # Token budget must be large enough for both reasoning + final answer.
         # answer.py extracts think text automatically.
@@ -365,6 +432,7 @@ MODEL_FAMILY_CONFIG: Dict[str, dict] = {
         "think_method": None,
         "multimodal": False,
         "generations": ["3"],
+        "output_quirks": {"preamble", "markdown_wrap"},
         # Inference: Falcon may add preamble before JSON.
         "json_hint": "Output raw JSON only. No preamble, no markdown code blocks.",
         "note": "TII Falcon3. Trained on curated web+code data.",
@@ -391,6 +459,7 @@ MODEL_FAMILY_CONFIG: Dict[str, dict] = {
         "think_method": None,
         "multimodal": False,
         "generations": ["4"],
+        "output_quirks": {"language_mix", "markdown_wrap"},
         "json_hint": "Output raw JSON only. No markdown code blocks. No Chinese.",
         "note": "Zhipu GLM4. Chinese-English bilingual, strong reasoning.",
     },
@@ -423,6 +492,7 @@ MODEL_FAMILY_CONFIG: Dict[str, dict] = {
         "think_method": None,
         "multimodal": False,
         "generations": ["3.5"],
+        "output_quirks": {"language_mix"},
         "json_hint": "Output raw JSON only. No markdown. No Korean.",
         "note": "LG AI Research EXAONE. Korean+English bilingual.",
     },
@@ -437,31 +507,80 @@ MODEL_FAMILY_CONFIG: Dict[str, dict] = {
 }
 
 
+# ---------------------------------------------------------------------------
+# Family capability defaults — new families inherit these unless overridden.
+# When adding a new family, you only need to set the fields that differ.
+# ---------------------------------------------------------------------------
+_FAMILY_DEFAULTS: dict = {
+    "think_api": False,
+    "think_method": None,       # "api" | "embedded" | None
+    "always_thinks": False,
+    "multimodal": False,
+    "json_hint": "Return ONLY the JSON object.",
+    "think_token_overhead": 4096,  # Extra token budget for reasoning chain
+    "output_quirks": set(),     # Known output quirks this family exhibits
+    #   "markdown_wrap"  — tends to wrap JSON in ```json``` blocks
+    #   "preamble"       — adds explanatory text before JSON
+    #   "language_mix"   — may mix non-English in output
+    #   "verbose_think"  — think chain is very long, may exhaust budget
+}
+
+
+def get_family_config(family: str) -> dict:
+    """Get the full config for a family, with defaults filled in.
+
+    Returns a copy with all fields guaranteed present.  New families
+    only need to override what differs from ``_FAMILY_DEFAULTS``.
+    """
+    raw = MODEL_FAMILY_CONFIG.get(family, {})
+    merged = {**_FAMILY_DEFAULTS, **raw}
+    # Ensure output_quirks is always a set
+    quirks = merged.get("output_quirks", set())
+    merged["output_quirks"] = set(quirks) if not isinstance(quirks, set) else quirks
+    return merged
+
+
 def family_supports_think_api(family: str) -> bool:
     """Check if a model family supports the Ollama 'think' API parameter."""
-    return MODEL_FAMILY_CONFIG.get(family, {}).get("think_api", False)
+    return get_family_config(family)["think_api"]
 
 
 def family_always_thinks(family: str) -> bool:
     """Check if a model family always produces CoT (e.g. DeepSeek-R1)."""
-    return MODEL_FAMILY_CONFIG.get(family, {}).get("always_thinks", False)
+    return get_family_config(family)["always_thinks"]
 
 
 def family_think_method(family: str) -> str | None:
     """Return how thinking is triggered: 'api', 'embedded', or None."""
-    return MODEL_FAMILY_CONFIG.get(family, {}).get("think_method")
+    return get_family_config(family)["think_method"]
 
 
 def family_json_hint(family: str) -> str:
     """Return family-specific JSON formatting instruction to append to prompts."""
-    return MODEL_FAMILY_CONFIG.get(family, {}).get(
-        "json_hint", "Return ONLY the JSON object."
-    )
+    return get_family_config(family)["json_hint"]
 
 
 def resolve_model_family(model_key: str) -> str:
     """Look up the family name for a given model key."""
     return LLM_MODELS.get(model_key, {}).get("family", "")
+
+
+def think_token_budget(base_tokens: int, think: bool, family: str = "") -> int:
+    """Compute max_tokens accounting for think-mode overhead.
+
+    When think mode is on, the model needs extra token budget for its
+    reasoning chain before producing the final answer.  The overhead
+    is set per-family (default 4096).
+
+    Usage in benchmark tasks and answer.py::
+
+        max_tok = think_token_budget(256, think, family)
+        # → 256 when think=False, 4096 when think=True (default overhead)
+    """
+    if not think:
+        return base_tokens
+    overhead = get_family_config(family).get("think_token_overhead", 4096)
+    return max(base_tokens, overhead)
 
 
 LLM_MODELS: Dict[str, dict] = {
@@ -1109,6 +1228,24 @@ LLM_MODELS: Dict[str, dict] = {
     # GLM4: only 9B exists in Ollama. No other GLM4 size available.
     # Already at 1 model — accept this limitation.
 }
+
+# ---------------------------------------------------------------------------
+# Reverse index: ollama_name → model_key  (O(1) lookup, built once)
+# ---------------------------------------------------------------------------
+# Eliminates repeated O(n) scans of LLM_MODELS in ollama_generate().
+_OLLAMA_NAME_INDEX: Dict[str, str] = {}
+for _mk, _mcfg in LLM_MODELS.items():
+    _oname = _mcfg.get("ollama_name", "")
+    if _oname and _oname not in _OLLAMA_NAME_INDEX:
+        _OLLAMA_NAME_INDEX[_oname] = _mk
+
+
+def resolve_model_key(ollama_name: str) -> str | None:
+    """Look up the model_key for an Ollama model name.  O(1) via index."""
+    return _OLLAMA_NAME_INDEX.get(ollama_name) or _OLLAMA_NAME_INDEX.get(
+        ollama_name.removesuffix(":latest")
+    )
+
 
 # Recommended frontier defaults (design intent)
 RECOMMENDED_LLM = "qwen3.5-9b-q8"

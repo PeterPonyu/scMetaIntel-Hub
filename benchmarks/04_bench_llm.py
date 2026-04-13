@@ -44,6 +44,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from scmetaintel.config import (
     LLM_MODELS, GROUND_TRUTH_DIR, BENCHMARK_DIR, family_always_thinks,
+    think_token_budget,
+    BENCH_TEMPERATURE, TIMEOUT_LLM_DEFAULT, TIMEOUT_LLM_LONG, TIMEOUT_LLM_WARMUP,
+    TRUNCATE_SUMMARY_SHORT, TRUNCATE_SUMMARY, GSE_PATTERN, VALID_DOMAINS,
+    EXTRACTION_FIELDS,
 )
 from scmetaintel.answer import (
     parse_query, extract_metadata, generate_answer, llm_call, extract_json,
@@ -54,45 +58,13 @@ from scmetaintel.evaluate import (
     load_eval_queries, save_results,
     clean_extraction_gold,
 )
+from bench_utils import check_ollama, unload_ollama_models
 
 logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s [%(name)s] %(levelname)s: %(message)s")
 logger = logging.getLogger("04_bench_llm")
 
 
-def check_ollama():
-    """Check if Ollama server is running."""
-    import requests
-    try:
-        resp = requests.get("http://localhost:11434/api/tags", timeout=5)
-        models = [m["name"] for m in resp.json().get("models", [])]
-        logger.info(f"Ollama models available: {models}")
-        return models
-    except Exception:
-        logger.error("Ollama server not running. Start with: ollama serve")
-        return []
-
-
-def unload_ollama_models():
-    """Unload all models from Ollama VRAM to free GPU memory between runs."""
-    import requests
-    try:
-        resp = requests.get("http://localhost:11434/api/ps", timeout=5)
-        loaded = resp.json().get("models", [])
-        for m in loaded:
-            name = m["name"]
-            logger.info(f"  Unloading {name} from VRAM ...")
-            requests.post(
-                "http://localhost:11434/api/generate",
-                json={"model": name, "keep_alive": 0},
-                timeout=30,
-            )
-        if loaded:
-            import time
-            time.sleep(2)  # brief pause for VRAM release
-            logger.info(f"  Unloaded {len(loaded)} model(s)")
-    except Exception as e:
-        logger.warning(f"  Failed to unload models: {e}")
 
 
 def task_a_query_parsing(model_key: str, queries: list, think: bool = False,
@@ -148,7 +120,7 @@ def task_b_metadata_extraction(model_key: str, docs: list, think: bool = False,
                 doc.get("title", ""), doc.get("summary", ""),
                 model_key=model_key, think=think)
             metrics = extraction_metrics(pred, gold,
-                                         fields=["tissues", "diseases", "cell_types"])
+                                         fields=list(EXTRACTION_FIELDS))
             all_metrics.append(metrics)
         except Exception as e:
             logger.warning(f"  Extract failed for {doc.get('gse_id')}: {e}")
@@ -204,7 +176,7 @@ def task_e_speed(model_key: str, think: bool = False) -> dict:
     for attempt in range(2):
         try:
             llm_call(SPEED_PROMPTS[0], model_key=model_key, max_tokens=50,
-                     timeout=180)
+                     timeout=TIMEOUT_LLM_WARMUP)
             break
         except Exception as e:
             if attempt == 1:
@@ -258,7 +230,8 @@ def task_c_ontology_normalization(model_key: str, docs: list, think: bool = Fals
     ontology_dir = Path(__file__).resolve().parent.parent / "ontologies"
     # Build gold_lookup: map lowercased name -> (ontology_id, canonical_name)
     gold_lookup = {}
-    for obo_file, prefix in [("cl.obo", "CL"), ("uberon-basic.obo", "UBERON"), ("mondo.obo", "MONDO")]:
+    from scmetaintel.config import ONTOLOGY_FILES
+    for prefix, obo_file in ONTOLOGY_FILES.items():
         obo_path = ontology_dir / obo_file
         if not obo_path.exists():
             continue
@@ -343,11 +316,11 @@ def task_c_ontology_normalization(model_key: str, docs: list, think: bool = Fals
 
         prompt = f"Normalize these biomedical terms from {doc.get('gse_id', 'unknown')}:\n{json.dumps(raw_terms)}"
         try:
-            max_tok = 4096 if think else 1024
             family = resolve_model_family(model_key)
+            max_tok = think_token_budget(1024, think, family)
             onto_system = ONTOLOGY_SYSTEM + "\n" + family_json_hint(family)
             raw = llm_call(prompt, model_key=model_key, system=onto_system,
-                           temperature=0.0, max_tokens=max_tok, think=think, timeout=300)
+                           temperature=BENCH_TEMPERATURE, max_tokens=max_tok, think=think, timeout=TIMEOUT_LLM_LONG)
             parsed = extract_json(raw)
             if parsed:
                 pred_items = parsed.get("normalized", [])
@@ -411,11 +384,11 @@ def task_f_relevance_judgment(model_key: str, queries: list, docs: list,
                 f"Dataset [{gse_id}]:\n"
                 f"  Title: {d.get('title', '')}\n"
                 f"  Organism: {d.get('organism', 'N/A')}\n"
-                f"  Summary: {d.get('summary', '')[:300]}\n\n"
+                f"  Summary: {d.get('summary', '')[:TRUNCATE_SUMMARY_SHORT]}\n\n"
                 f"Is this dataset relevant to the query?"
             )
             try:
-                max_tok = 4096 if think else 256
+                max_tok = think_token_budget(256, think, family)
                 raw = llm_call(prompt, model_key=model_key, system=system,
                                temperature=0.0, max_tokens=max_tok, think=think,
                                timeout=120)
@@ -472,7 +445,7 @@ def task_d_answer_generation(model_key: str, queries: list, docs: list,
             context_parts.append(
                 f"[{gse_id}] {d.get('title', '')}\n"
                 f"  Organism: {d.get('organism', 'N/A')}\n"
-                f"  Summary: {d.get('summary', '')[:300]}"
+                f"  Summary: {d.get('summary', '')[:TRUNCATE_SUMMARY_SHORT]}"
             )
         context = "\n\n".join(context_parts)
         prompt = (
@@ -481,15 +454,21 @@ def task_d_answer_generation(model_key: str, queries: list, docs: list,
             f"Provide a comprehensive answer citing relevant GSE accessions."
         )
         try:
-            max_tok = 4096 if think else 1024
+            family = resolve_model_family(model_key)
+            max_tok = think_token_budget(1024, think, family)
             answer = llm_call(prompt, model_key=model_key,
                               system=ANSWER_BENCH_SYSTEM,
-                              temperature=0.0, max_tokens=max_tok, think=think, timeout=300)
+                              temperature=BENCH_TEMPERATURE, max_tokens=max_tok, think=think, timeout=TIMEOUT_LLM_LONG)
             # Extract cited GSE IDs
             import re
-            cited = re.findall(r"GSE\d+", answer)
+            cited = re.findall(GSE_PATTERN, answer)
             cited = list(dict.fromkeys(cited))  # deduplicate preserving order
-            metrics = citation_accuracy(cited, set(expected_gse), expected_gse)
+            # relevant_gse = all expected GSEs for this query (may include ones
+            # not in the context).  retrieved_gse = only those fed as context.
+            # This makes citation_precision != grounding_rate when some expected
+            # GSEs are not in the corpus (doc_by_gse).
+            all_expected = set(q.get("expected_gse", []))
+            metrics = citation_accuracy(cited, all_expected, expected_gse)
             metrics["n_cited"] = len(cited)
             all_scores.append(metrics)
         except Exception as e:
@@ -510,9 +489,7 @@ def task_d_answer_generation(model_key: str, queries: list, docs: list,
 DOMAIN_SYSTEM = PROMPTS["classify_domain"]
 ORG_MOD_SYSTEM = PROMPTS["extract_organism_modality"]
 
-# Valid domain labels for Task G scoring
-VALID_DOMAINS = {"cancer", "development", "immunology", "neurodegeneration",
-                 "infectious_disease", "cardiovascular", "metabolic", "other"}
+# Valid domain labels imported from config (single source of truth)
 
 
 def task_g_domain_classification(model_key: str, docs: list, think: bool = False,
@@ -533,11 +510,11 @@ def task_g_domain_classification(model_key: str, docs: list, think: bool = False
 
     for doc in sample:
         gold = doc["domain"]
-        prompt = f"Title: {doc.get('title', '')}\n\nSummary: {doc.get('summary', '')[:500]}"
+        prompt = f"Title: {doc.get('title', '')}\n\nSummary: {doc.get('summary', '')[:TRUNCATE_SUMMARY]}"
         try:
-            max_tok = 4096 if think else 256
+            max_tok = think_token_budget(256, think, family)
             raw = llm_call(prompt, model_key=model_key, system=system,
-                           temperature=0.0, max_tokens=max_tok, think=think, timeout=120)
+                           temperature=BENCH_TEMPERATURE, max_tokens=max_tok, think=think, timeout=TIMEOUT_LLM_DEFAULT)
             parsed = extract_json(raw)
             pred = (parsed.get("domain", "") or "").lower().strip() if parsed else ""
 
@@ -588,11 +565,11 @@ def task_h_organism_modality(model_key: str, docs: list, think: bool = False,
         gold_org = (doc["organism"] or "").lower().strip()
         gold_mods = {m.lower() for m in doc["modalities"]}
 
-        prompt = f"Title: {doc.get('title', '')}\n\nSummary: {doc.get('summary', '')[:500]}"
+        prompt = f"Title: {doc.get('title', '')}\n\nSummary: {doc.get('summary', '')[:TRUNCATE_SUMMARY]}"
         try:
-            max_tok = 4096 if think else 256
+            max_tok = think_token_budget(256, think, family)
             raw = llm_call(prompt, model_key=model_key, system=system,
-                           temperature=0.0, max_tokens=max_tok, think=think, timeout=120)
+                           temperature=BENCH_TEMPERATURE, max_tokens=max_tok, think=think, timeout=TIMEOUT_LLM_DEFAULT)
             parsed = extract_json(raw)
             if not parsed:
                 continue
@@ -728,11 +705,68 @@ def main():
             all_results = json.load(f)
         logger.info(f"Loaded {len(all_results)} existing results from {results_path}")
 
+    # Think-mode auto-caps: doc-heavy tasks (B/C/G/H) are capped for think
+    # variants because think chains are ~10-40x slower per doc.
+    # Full-scale (all docs) for base configs; 200 docs for think ablation.
+    # This keeps total think bench time at ~2-3h per config (vs ~60h uncapped).
+    THINK_DOC_CAP = 200
+    THINK_PAIR_CAP = 200
+
+    # Task definitions for per-task checkpoint/resume.
+    # Each entry: (task_key_in_results, log_name, callable)
+    def _task_defs(model_key, think_mode):
+        # Apply think caps only when no explicit --max-* args given
+        def _cap(user_val, think_cap):
+            if user_val > 0:
+                return user_val  # User override takes priority
+            if think_mode:
+                return think_cap
+            return 0  # 0 = all (full scale)
+
+        return [
+            ("task_a_parsing", "Task A: Query parsing",
+             lambda: task_a_query_parsing(
+                 model_key, queries, think=think_mode,
+                 max_queries=args.max_parse_queries)),  # queries are fast, no cap
+            ("task_b_extraction", "Task B: Metadata extraction",
+             lambda: task_b_metadata_extraction(
+                 model_key, docs, think=think_mode,
+                 max_docs=_cap(args.max_extract_docs, THINK_DOC_CAP))),
+            ("task_c_ontology", "Task C: Ontology normalization",
+             lambda: task_c_ontology_normalization(
+                 model_key, docs, think=think_mode,
+                 max_docs=_cap(args.max_onto_docs, THINK_DOC_CAP))),
+            ("task_d_answer", "Task D: Answer generation",
+             lambda: task_d_answer_generation(
+                 model_key, queries, docs, think=think_mode,
+                 max_queries=args.max_answer_queries)),  # queries are fast
+            ("task_e_speed", "Task E: Speed",
+             lambda: task_e_speed(model_key, think=think_mode)),
+            ("task_f_relevance", "Task F: Relevance judgment",
+             lambda: task_f_relevance_judgment(
+                 model_key, queries, docs, think=think_mode,
+                 max_pairs=_cap(args.max_relevance_pairs, THINK_PAIR_CAP))),
+            ("task_g_domain", "Task G: Domain classification",
+             lambda: task_g_domain_classification(
+                 model_key, docs, think=think_mode,
+                 max_docs=_cap(args.max_classify_docs, THINK_DOC_CAP))),
+            ("task_h_org_modality", "Task H: Organism & modality extraction",
+             lambda: task_h_organism_modality(
+                 model_key, docs, think=think_mode,
+                 max_docs=_cap(args.max_orgmod_docs, THINK_DOC_CAP))),
+        ]
+
     prev_model_key = None
     for model_key, think_mode, run_label in runs:
-        # Skip if already benchmarked
-        if run_label in all_results and "error" not in str(all_results[run_label]):
-            logger.info(f"Skipping {run_label} (already in results)")
+        # Skip if ALL tasks already completed for this config
+        existing = all_results.get(run_label, {})
+        all_task_keys = {"task_a_parsing", "task_b_extraction", "task_c_ontology",
+                         "task_d_answer", "task_e_speed", "task_f_relevance",
+                         "task_g_domain", "task_h_org_modality"}
+        completed_tasks = {k for k in all_task_keys
+                           if k in existing and "error" not in str(existing.get(k, ""))}
+        if completed_tasks == all_task_keys:
+            logger.info(f"Skipping {run_label} (all 8 tasks already complete)")
             continue
 
         # Unload previous model from VRAM before loading new one
@@ -742,61 +776,39 @@ def main():
             prev_model_key = model_key
 
         logger.info(f"\n{'='*60}")
-        logger.info(f"Benchmarking: {run_label} (think={think_mode})")
+        if completed_tasks:
+            logger.info(f"Resuming: {run_label} (think={think_mode}) — "
+                         f"{len(completed_tasks)}/8 tasks already done")
+        else:
+            logger.info(f"Benchmarking: {run_label} (think={think_mode})")
         logger.info(f"{'='*60}")
 
         info = LLM_MODELS[model_key]
-        results = {
+        results = existing if existing else {}
+        results.update({
             "model": model_key,
             "think_enabled": think_mode,
             "family": info.get("family", "unknown"),
             "size_b": info.get("size_b"),
             "quant": info.get("quant"),
-        }
+        })
 
-        logger.info("  Task A: Query parsing ...")
-        results["task_a_parsing"] = task_a_query_parsing(
-            model_key, queries, think=think_mode,
-            max_queries=args.max_parse_queries)
+        for task_key, task_name, task_fn in _task_defs(model_key, think_mode):
+            if task_key in completed_tasks:
+                logger.info(f"  {task_name} ... already done, skipping")
+                continue
+            logger.info(f"  {task_name} ...")
+            try:
+                results[task_key] = task_fn()
+            except Exception as e:
+                logger.error(f"  {task_name} FAILED: {e}")
+                results[task_key] = {"error": str(e)}
 
-        logger.info("  Task B: Metadata extraction ...")
-        results["task_b_extraction"] = task_b_metadata_extraction(
-            model_key, docs, think=think_mode,
-            max_docs=args.max_extract_docs)
+            # Save after EACH task (crash-safe, per-task granularity)
+            all_results[run_label] = results
+            save_results(all_results, "llm_bench")
 
-        logger.info("  Task C: Ontology normalization ...")
-        results["task_c_ontology"] = task_c_ontology_normalization(
-            model_key, docs, think=think_mode,
-            max_docs=args.max_onto_docs)
-
-        logger.info("  Task D: Answer generation ...")
-        results["task_d_answer"] = task_d_answer_generation(
-            model_key, queries, docs, think=think_mode,
-            max_queries=args.max_answer_queries)
-
-        logger.info("  Task E: Speed ...")
-        results["task_e_speed"] = task_e_speed(model_key, think=think_mode)
-
-        logger.info("  Task F: Relevance judgment ...")
-        results["task_f_relevance"] = task_f_relevance_judgment(
-            model_key, queries, docs, think=think_mode,
-            max_pairs=args.max_relevance_pairs)
-
-        logger.info("  Task G: Domain classification ...")
-        results["task_g_domain"] = task_g_domain_classification(
-            model_key, docs, think=think_mode,
-            max_docs=args.max_classify_docs)
-
-        logger.info("  Task H: Organism & modality extraction ...")
-        results["task_h_org_modality"] = task_h_organism_modality(
-            model_key, docs, think=think_mode,
-            max_docs=args.max_orgmod_docs)
-
-        all_results[run_label] = results
         logger.info(f"  Done: {run_label}")
-
-        # Save intermediate results after each config (crash-safe)
-        save_results(all_results, "llm_bench")
 
     save_results(all_results, "llm_bench")
     unload_ollama_models()  # free VRAM after benchmark

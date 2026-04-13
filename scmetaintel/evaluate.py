@@ -499,11 +499,22 @@ _CELL_TYPE_PATTERNS = [
 ]
 
 
+# Non-tissue terms that leak from sample metadata (condition labels, etc.)
+NOT_TISSUE = {
+    "normal", "control", "controls", "healthy", "tumor", "tumour",
+    "case", "mild", "severe", "untreated", "treated", "baseline",
+    "in vitro", "fresh", "frozen", "wild type", "wildtype", "wt",
+}
+
+
 def clean_tissue_list(tissues: List[str], diseases: List[str]) -> Tuple[List[str], List[str]]:
-    """Clean tissue list: remove cell lines, move disease terms to disease list."""
+    """Clean tissue list: remove cell lines, non-tissue terms, move diseases."""
     clean_tissues = []
     for t in tissues:
         t_low = t.lower().strip()
+        # Remove non-tissue condition labels
+        if t_low in NOT_TISSUE:
+            continue
         if t_low in CELL_LINE_NAMES or any(
             cl in t_low for cl in CELL_LINE_NAMES if len(cl) > 3
         ):
@@ -570,7 +581,25 @@ def clean_extraction_gold(doc: Dict) -> Dict[str, List[str]]:
     gold = {}
     for field in ["tissues", "diseases", "cell_types"]:
         raw = doc.get(field, []) or []
-        gold[field] = [t for t in raw if t and len(t) >= 3 and t.lower() in text]
+        # Keep terms that are either (a) mentioned in title+summary (exact
+        # substring), or (b) whose significant words all appear in the text.
+        # The old exact-substring filter discarded ~79% of tissue annotations
+        # because sample-level metadata (e.g. "cadaveric pancreatic islet")
+        # rarely appears verbatim in the study abstract.
+        kept = []
+        for t in raw:
+            if not t or len(t) < 3:
+                continue
+            t_low = t.lower().strip()
+            # (a) Exact substring match (original fast path)
+            if t_low in text:
+                kept.append(t)
+                continue
+            # (b) Relaxed: all significant words (len>=3) appear in text
+            words = [w for w in t_low.split() if len(w) >= 3]
+            if words and all(w in text for w in words):
+                kept.append(t)
+        gold[field] = kept
 
     # Clean tissues: remove cell lines, migrate diseases
     gold["tissues"], gold["diseases"] = clean_tissue_list(

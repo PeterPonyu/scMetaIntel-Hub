@@ -37,3 +37,24 @@ local_accession_index.json
 .env
 .env.*
 !.env.example
+
+# LaTeX build artifacts
+article/*.log
+article/*.aux
+article/*.out
+article/*.synctex.gz
+article/*.fls
+article/*.fdb_latexmk
+article/*.bbl
+article/*.blg
+article/*.toc
+article/*.pdf
+
+# Archived benchmark results (large, regenerable)
+benchmarks/results/archive_*/
+
+# Execution logs
+logs/
+
+# OMC state
+.omc/

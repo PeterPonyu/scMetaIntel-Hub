@@ -25,8 +25,13 @@ from .config import (
     family_json_hint,
     family_supports_think_api,
     family_think_method,
+    get_family_config,
     resolve_model_family,
+    resolve_model_key,
+    think_token_budget,
     get_config,
+    BENCH_TEMPERATURE,
+    TIMEOUT_LLM_LONG,
 )
 from .models import AnswerResponse, ParsedQuery, SearchResult
 
@@ -153,30 +158,17 @@ def ollama_generate(
     temperature = cfg.llm.temperature if temperature is None else temperature
     max_tokens = cfg.llm.max_tokens if max_tokens is None else max_tokens
 
-    # Resolve thinking mode: explicit param > config lookup > False
+    # Resolve model key via O(1) index (was: O(n) scan per call)
+    model_key = (model if model in LLM_MODELS else None) or resolve_model_key(model_name)
+    model_info = LLM_MODELS.get(model_key, {}) if model_key else {}
+    model_family = model_info.get("family", "")
+
+    # Resolve thinking mode: explicit param > per-model config > False
     if think is None:
-        model_key = model if model in LLM_MODELS else None
-        if model_key is None:
-            for k, v in LLM_MODELS.items():
-                if v.get("ollama_name") == model_name:
-                    model_key = k
-                    break
-        think = LLM_MODELS.get(model_key, {}).get("think", False) if model_key else False
+        think = model_info.get("think", False)
 
-    # Resolve model family for think-mode dispatch.
-    # Family config in MODEL_FAMILY_CONFIG determines how thinking is triggered:
-    #   "api"      → Ollama "think" parameter (Qwen3+, Gemma3, Granite3.3)
-    #   "embedded" → CoT always in response as <think>...</think> (DeepSeek-R1)
-    #   None       → No native think mode (Llama, Mistral, Phi, Falcon, etc.)
-    model_family = None
-    for k, v in LLM_MODELS.items():
-        if v.get("ollama_name") == model_name:
-            model_family = v.get("family", "")
-            break
-
-    supports_think = family_supports_think_api(model_family or "")
-    always_thinks = family_always_thinks(model_family or "")
-    think_method = family_think_method(model_family or "")
+    # Get full family capabilities (think dispatch, output quirks, etc.)
+    fam = get_family_config(model_family)
 
     messages = []
     if system:
@@ -194,7 +186,7 @@ def ollama_generate(
         },
     }
     # Send Ollama "think" API parameter for families that support it
-    if supports_think:
+    if fam["think_api"]:
         payload["think"] = think
 
     resp = requests.post(
@@ -208,16 +200,23 @@ def ollama_generate(
     response_text = msg.get("content", "")
     thinking_text = msg.get("thinking", "") or ""
 
-    # DeepSeek-R1 embeds <think>...</think> directly in the response text.
-    # Extract it so downstream code can handle it uniformly.
-    # Use .search() (not .match()) — response may have leading whitespace.
-    if think_method == "embedded" and not thinking_text:
+    # Embedded think (DeepSeek-R1): extract <think>...</think> from response.
+    if fam["think_method"] == "embedded" and not thinking_text:
         think_match = _THINK_TAG_RE.search(response_text)
         if think_match:
             thinking_text = think_match.group(1).strip()
-            # Remove the entire <think>...</think> block from response
             response_text = (response_text[:think_match.start()]
                              + response_text[think_match.end():]).strip()
+
+    # Fallback: some models (Gemma3, Granite) in think mode put the answer
+    # in the thinking field, leaving content empty.
+    if think and not response_text.strip() and thinking_text.strip():
+        logger.warning(
+            f"Think-mode fallback: {model_name} returned empty content "
+            f"with non-empty thinking ({len(thinking_text)} chars). "
+            f"Extracting answer from thinking field."
+        )
+        response_text = thinking_text
 
     return {
         "response": response_text,
@@ -226,7 +225,7 @@ def ollama_generate(
         "eval_count": data.get("eval_count", 0),
         "prompt_eval_count": data.get("prompt_eval_count", 0),
         "model": model_name,
-        "think_enabled": think or always_thinks,
+        "think_enabled": think or fam["always_thinks"],
     }
 
 
@@ -282,13 +281,11 @@ def llm_call(prompt: str, model_key: str | None = None, system: str = "", **kwar
 
 
 def parse_query(query: str, model_key: str | None = None, think: bool | None = None) -> Dict:
-    # Thinking models need more tokens since reasoning chain consumes budget
-    max_tok = 4096 if think else 512
-    # Append family-specific JSON hint to reduce markdown-wrapping / preamble
     family = resolve_model_family(model_key or "")
+    max_tok = think_token_budget(512, think or False, family)
     system = PARSE_SYSTEM + "\n" + family_json_hint(family)
-    raw = llm_call(query, model_key=model_key, system=system, temperature=0.0,
-                   max_tokens=max_tok, think=think, timeout=300)
+    raw = llm_call(query, model_key=model_key, system=system, temperature=BENCH_TEMPERATURE,
+                   max_tokens=max_tok, think=think, timeout=TIMEOUT_LLM_LONG)
     data = extract_json(raw)
     if data:
         if not data.get("free_text"):
@@ -300,11 +297,11 @@ def parse_query(query: str, model_key: str | None = None, think: bool | None = N
 
 def extract_metadata(title: str, summary: str, model_key: str | None = None, think: bool | None = None) -> Dict:
     prompt = f"Title: {title}\n\nSummary: {summary}"
-    max_tok = 4096 if think else 768
     family = resolve_model_family(model_key or "")
+    max_tok = think_token_budget(768, think or False, family)
     system = EXTRACT_SYSTEM + "\n" + family_json_hint(family)
-    raw = llm_call(prompt, model_key=model_key, system=system, temperature=0.0,
-                   max_tokens=max_tok, think=think, timeout=300)
+    raw = llm_call(prompt, model_key=model_key, system=system, temperature=BENCH_TEMPERATURE,
+                   max_tokens=max_tok, think=think, timeout=TIMEOUT_LLM_LONG)
     data = extract_json(raw)
     if data:
         return data

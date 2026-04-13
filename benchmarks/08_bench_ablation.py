@@ -38,6 +38,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from scmetaintel.config import (
     LLM_MODELS, BENCHMARK_DIR, GROUND_TRUTH_DIR,
     family_always_thinks, family_json_hint, resolve_model_family,
+    think_token_budget,
+    OLLAMA_API_TAGS, OLLAMA_API_PS, OLLAMA_API_GENERATE,
+    OLLAMA_KEEP_ALIVE_UNLOAD, TIMEOUT_OLLAMA_CHECK, TIMEOUT_OLLAMA_MGMT,
+    BENCH_TEMPERATURE, TIMEOUT_LLM_LONG, GSE_PATTERN,
 )
 from scmetaintel.evaluate import load_eval_queries, save_results
 
@@ -75,7 +79,7 @@ def start_ollama(kv_cache_type: str = "f16") -> bool:
     # Wait for health
     for _ in range(30):
         try:
-            resp = requests.get("http://localhost:11434/api/tags", timeout=2)
+            resp = requests.get(OLLAMA_API_TAGS, timeout=TIMEOUT_OLLAMA_CHECK)
             if resp.status_code == 200:
                 logger.info(f"  Ollama started (kv_cache={kv_cache_type})")
                 return True
@@ -101,10 +105,11 @@ def get_vram_mb() -> float:
 def unload_models():
     """Unload all models from VRAM."""
     try:
-        resp = requests.get("http://localhost:11434/api/ps", timeout=5)
+        resp = requests.get(OLLAMA_API_PS, timeout=TIMEOUT_OLLAMA_CHECK)
         for m in resp.json().get("models", []):
-            requests.post("http://localhost:11434/api/generate",
-                          json={"model": m["name"], "keep_alive": 0}, timeout=10)
+            requests.post(OLLAMA_API_GENERATE,
+                          json={"model": m["name"], "keep_alive": OLLAMA_KEEP_ALIVE_UNLOAD},
+                          timeout=TIMEOUT_OLLAMA_MGMT)
         time.sleep(2)
     except Exception:
         pass
@@ -154,7 +159,8 @@ def run_task_d(model_key: str, queries: list, docs: list,
         )
         prompt = f"Retrieved studies:\n{context}\n\nQuery: {q['query']}\n\nCite relevant GSE accessions."
         try:
-            max_tok = 4096 if think else 1024
+            family = resolve_model_family(model_key)
+            max_tok = think_token_budget(1024, think, family)
             raw = llm_call(prompt, model_key=model_key, temperature=0.0,
                            max_tokens=max_tok, think=think, timeout=300)
             cited = list(dict.fromkeys(_re.findall(r"GSE\d+", raw)))

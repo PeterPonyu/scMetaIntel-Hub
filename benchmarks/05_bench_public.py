@@ -41,9 +41,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from scmetaintel.config import (
     LLM_MODELS, BENCHMARK_DIR, family_always_thinks, family_json_hint,
-    resolve_model_family,
+    resolve_model_family, think_token_budget,
+    BENCH_TEMPERATURE, TIMEOUT_LLM_DEFAULT,
 )
 from scmetaintel.answer import llm_call, extract_json
+from bench_utils import check_ollama, unload_ollama_models
 
 logger = logging.getLogger("05_bench_public")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s %(message)s")
@@ -189,7 +191,7 @@ def eval_dataset(dataset_path: str, data: list, model_key: str,
 
     family = resolve_model_family(model_key)
     correct, total, scores = 0, 0, []
-    max_tok = 4096 if think else 512
+    max_tok = think_token_budget(512, think, family)
 
     for item in sample:
         try:
@@ -386,30 +388,6 @@ def eval_dataset(dataset_path: str, data: list, model_key: str,
     if scores:
         result["avg_score"] = round(float(np.mean(scores)), 4)
     return result
-
-
-# ---------------------------------------------------------------------------
-# Ollama helpers (from 04_bench_llm.py)
-# ---------------------------------------------------------------------------
-
-def check_ollama():
-    import requests
-    try:
-        resp = requests.get("http://localhost:11434/api/tags", timeout=5)
-        return [m["name"] for m in resp.json().get("models", [])]
-    except Exception:
-        return []
-
-
-def unload_ollama_models():
-    import requests
-    try:
-        resp = requests.get("http://localhost:11434/api/ps", timeout=5)
-        for m in resp.json().get("models", []):
-            requests.post("http://localhost:11434/api/generate",
-                          json={"model": m["name"], "keep_alive": 0}, timeout=10)
-    except Exception:
-        pass
 
 
 # ---------------------------------------------------------------------------
