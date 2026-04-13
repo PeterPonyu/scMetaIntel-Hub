@@ -1,7 +1,7 @@
 # scMetaIntel-Hub: Project Status Report
 
-**Date**: 2026-03-30 (updated)
-**Scope**: Benchmarking analysis, blockers, bugs found & fixed, re-bench preparation
+**Date**: 2026-04-13 (updated)
+**Scope**: Benchmarking analysis, blockers, bugs found & fixed, current state
 
 ---
 
@@ -14,24 +14,26 @@
 | Ground truth corpus | **Done** | 2,189 enriched GSE JSONs, 42 organisms, 100% document text |
 | Evaluation queries | **Done** | 171 hand-curated queries, 7 categories, 540 expected GSEs |
 | Public datasets | **Done** | 27 datasets across 6 categories |
-| Benchmark scripts | **Done** | 9 scripts (01-09) covering 5 levels |
-| Figure generation | **Done** | 7 main + 2 supplementary figures, 8 tables |
+| Benchmark scripts | **Done** | 9 scripts (01-09) covering all benchmark levels |
+| Figure generation | **Done** | 7 main + 2 supplementary figures, 9 tables |
 | Model configs | **Done** | 51 base models, 16 families, 66 total configs |
-| Article plan | **Outdated** | `ARTICLE_PLAN.tex` v0.3.0 says 21 configs × 5 tasks; reality is 66 × 8 |
+| Article draft | **Done** | sn-nature format, 10 pages, compiles cleanly |
+| Article plan | **Updated** | `ARTICLE_PLAN.tex` v1.0.0 matches 66 configs × 8 tasks |
 
-### 1.2 Benchmark Runs (Pilot Scale — Needs Full Re-Bench)
+### 1.2 Benchmark Runs
 
 | Benchmark | Models | Sample Size | Full Scale | Completion |
 |-----------|--------|-------------|------------|------------|
-| **LLM domain (04)** | 66 configs | 30q / 24d | 171q / 2,189d | **~15%** |
-| **Public bench (05)** | 6 models | 50/dataset | 66 × 500+ | **~2%** |
+| **LLM domain (04)** | 51 base configs | Full (163-2106/task) | 171q / 2,189d | **Done (base)** |
+| **LLM think-mode (04)** | 15 think configs | Not started | 171q / 2,189d | **Pending** |
+| **Public bench (05)** | 6 models | 50/dataset | 15 models × 200 | **Partial (~40%)** |
 | **Embedding (02)** | 14 models | Full | Full | **Done** |
 | **Retrieval (03)** | 6 strategies | Full | Full | **Done** |
-| **Ablation (08)** | 5 models | 20-30/task | Full | **~15%** |
+| **Ablation (08)** | 5 models | 20-30/task | Full | **Partial (~15%)** |
 | **Context (06/07)** | Done | Done | Done | **Done** |
-| **E2E (09)** | Done | Done | Done | **Done** |
+| **E2E (09)** | 4 pipelines | Full (90q) | Full | **Done** |
 
-### 1.3 Pre-Fix Top-5 (Small-Sample, Unreliable)
+### 1.3 Current Top-5 (Full-Scale, 51 Base Models)
 
 | Rank | Model | Composite | Parse EM | Extract F1 | Cite Recall |
 |------|-------|-----------|----------|------------|-------------|
@@ -41,7 +43,16 @@
 | 4 | qwen3.5-4b | 0.756 | 0.633 | 0.312 | 1.000 |
 | 5 | qwen3-1.7b+think | 0.755 | 0.700 | 0.311 | 0.917 |
 
-**Warning**: These rankings are unreliable — top-5 span is only 0.021, within noise for n=30.
+### 1.4 Remaining Work Before Submission
+
+| Task | Priority | Estimated Time |
+|------|----------|----------------|
+| Regenerate fig4 heatmap + table3 from current data | Critical | ~1 hour |
+| Bootstrap CIs for all 51 models | Critical | ~2 hours |
+| 15 think-mode configs re-bench | High | ~8 hours GPU |
+| Expand public benchmarks (15 models, n=200) | High | ~12 hours GPU |
+| Full-scale ablation re-run | Medium | ~4 hours GPU |
+| Fill real affiliation in article/main.tex | Medium | Manual |
 
 ---
 
