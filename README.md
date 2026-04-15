@@ -159,8 +159,3 @@ python -m unittest discover -s tests -p 'test_repository_health.py' -v
 
 For contribution expectations, see `CONTRIBUTING.md`.
 
-## Next steps
-
-1. Add a lightweight web UI on top of the chat and search APIs
-2. Add end-to-end smoke tests for acquisition → enrichment → retrieval → answer
-3. Add release/version automation for packaged installs
