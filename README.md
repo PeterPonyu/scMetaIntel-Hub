@@ -1,3 +1,9 @@
+<div align="center">
+  <a href="https://peterponyu.github.io/">
+    <img src="https://peterponyu.github.io/assets/badges/scMetaIntel-Hub.svg" width="64" alt="ZF Lab · scMetaIntel-Hub">
+  </a>
+</div>
+
 # scMetaIntel-Hub
 
 [![Repo health](https://github.com/PeterPonyu/scMetaIntel-Hub/actions/workflows/repo-health.yml/badge.svg)](https://github.com/PeterPonyu/scMetaIntel-Hub/actions/workflows/repo-health.yml)
