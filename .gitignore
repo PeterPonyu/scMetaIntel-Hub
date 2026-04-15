@@ -58,3 +58,29 @@ logs/
 
 # OMC state
 .omc/
+
+# LaTeX / manuscript sources
+*.tex
+*.bib
+*.sty
+*.cls
+*.bst
+*.aux
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.synctex(busy)
+*.out
+*.toc
+*.lof
+*.lot
+*.nav
+*.snm
+*.vrb
+article/
+paper/
+manuscript/
+latex/
+docs/ARTICLE_PLAN.tex
