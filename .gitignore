@@ -77,6 +77,8 @@ scripts/generate_article_figures.py
 scripts/analysis_claim_support.py
 scripts/analysis_scaling_and_ci.py
 scripts/prep_rebench.py
+scripts/surgical_rerun_a_d.py
+scripts/run_audit_pipeline.sh
 scmetaintel/eval.py
 scmetaintel/evaluate.py
 tests/test_all_models.py
