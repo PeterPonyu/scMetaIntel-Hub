@@ -20,6 +20,8 @@ ontologies/*.owl
 qdrant_data/
 benchmarks/ground_truth/*.json
 benchmarks/results/*.json
+benchmarks/results/**
+benchmarks/eval_queries.json
 
 # Local-only indexes
 local_accession_index.json
@@ -39,6 +41,11 @@ local_accession_index.json
 !.env.example
 
 # LaTeX build artifacts
+article/
+article_figures/
+docs/ARTICLE_PLAN.tex
+docs/EXPERIMENT_PLAN.md
+docs/STATUS_REPORT.md
 article/*.log
 article/*.aux
 article/*.out
@@ -49,6 +56,32 @@ article/*.bbl
 article/*.blg
 article/*.toc
 article/*.pdf
+main.aux
+main.fdb_latexmk
+main.fls
+main.log
+
+# Private benchmark/manuscript tooling
+benchmarks/01_build_ground_truth.py
+benchmarks/02_bench_embeddings.py
+benchmarks/03_bench_retrieval.py
+benchmarks/04_bench_llm.py
+benchmarks/06_bench_context.py
+benchmarks/07_bench_context_mgmt.py
+benchmarks/08_bench_ablation.py
+benchmarks/09_bench_e2e.py
+benchmarks/BENCHMARK_DESIGN.md
+scripts/augment_ground_truth.py
+scripts/clean_ground_truth.py
+scripts/generate_article_figures.py
+scripts/analysis_claim_support.py
+scripts/analysis_scaling_and_ci.py
+scripts/prep_rebench.py
+scmetaintel/eval.py
+scmetaintel/evaluate.py
+tests/test_all_models.py
+tests/test_claim_audit_contract.py
+tests/test_figure_gating.py
 
 # Archived benchmark results (large, regenerable)
 benchmarks/results/archive_*/
@@ -58,6 +91,7 @@ logs/
 
 # OMC state
 .omc/
+.omx/
 
 # LaTeX / manuscript sources
 *.tex

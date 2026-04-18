@@ -8,6 +8,7 @@ This module merges:
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 import re
@@ -16,22 +17,17 @@ from typing import Dict, Iterable, List
 
 import requests
 
-# Regex to extract embedded <think>...</think> blocks from DeepSeek-R1 responses.
-_THINK_TAG_RE = re.compile(r"<think>(.*?)</think>\s*", re.DOTALL)
-
 from .config import (
     LLM_MODELS,
-    family_always_thinks,
     family_json_hint,
-    family_supports_think_api,
-    family_think_method,
-    get_family_config,
     resolve_model_family,
-    resolve_model_key,
-    think_token_budget,
+    response_token_budget,
     get_config,
     BENCH_TEMPERATURE,
     TIMEOUT_LLM_LONG,
+    TRUNCATE_DESIGN,
+    TRUNCATE_SUMMARY,
+    truncate_text,
 )
 from .models import AnswerResponse, ParsedQuery, SearchResult
 
@@ -144,6 +140,46 @@ def _resolve_model(model_key_or_name: str | None) -> str:
     return model_key_or_name
 
 
+def _classify_failure(exc: Exception) -> str:
+    text = str(exc).lower()
+    if isinstance(exc, requests.Timeout) or "timeout" in text:
+        return "timeout"
+    if "out of memory" in text or "oom" in text:
+        return "oom"
+    if isinstance(exc, requests.HTTPError):
+        return "http_error"
+    if isinstance(exc, requests.RequestException):
+        return "request_error"
+    return "error"
+
+
+def _make_generation_envelope(
+    result: Dict | None,
+    *,
+    failure_class: str = "none",
+    parse_status: str = "not_attempted",
+    error_message: str = "",
+) -> Dict:
+    result = result or {}
+    response_text = result.get("response", "")
+    total_duration_ns = result.get("total_duration_ns", 0)
+    return {
+        "response_text": response_text,
+        "raw_output_sha1": hashlib.sha1(response_text.encode("utf-8")).hexdigest()
+        if response_text else "",
+        "fallback_used": bool(result.get("fallback_used", False)),
+        "empty_content": not bool(response_text.strip()),
+        "parse_status": parse_status,
+        "failure_class": failure_class,
+        "error_message": error_message,
+        "model": result.get("model", ""),
+        "eval_tokens": result.get("eval_count", 0),
+        "prompt_tokens": result.get("prompt_eval_count", 0),
+        "total_duration_ns": total_duration_ns,
+        "duration_ms": round(total_duration_ns / 1_000_000, 1) if total_duration_ns else 0.0,
+    }
+
+
 def ollama_generate(
     prompt: str,
     model: str | None = None,
@@ -151,24 +187,11 @@ def ollama_generate(
     temperature: float | None = None,
     max_tokens: int | None = None,
     timeout: int = 120,
-    think: bool | None = None,
 ) -> Dict:
     cfg = get_config()
     model_name = _resolve_model(model)
     temperature = cfg.llm.temperature if temperature is None else temperature
     max_tokens = cfg.llm.max_tokens if max_tokens is None else max_tokens
-
-    # Resolve model key via O(1) index (was: O(n) scan per call)
-    model_key = (model if model in LLM_MODELS else None) or resolve_model_key(model_name)
-    model_info = LLM_MODELS.get(model_key, {}) if model_key else {}
-    model_family = model_info.get("family", "")
-
-    # Resolve thinking mode: explicit param > per-model config > False
-    if think is None:
-        think = model_info.get("think", False)
-
-    # Get full family capabilities (think dispatch, output quirks, etc.)
-    fam = get_family_config(model_family)
 
     messages = []
     if system:
@@ -185,10 +208,6 @@ def ollama_generate(
             "num_ctx": DEFAULT_NUM_CTX,
         },
     }
-    # Send Ollama "think" API parameter for families that support it
-    if fam["think_api"]:
-        payload["think"] = think
-
     resp = requests.post(
         f"{cfg.llm.base_url}/api/chat",
         json=payload,
@@ -198,35 +217,62 @@ def ollama_generate(
     data = resp.json()
     msg = data.get("message", {})
     response_text = msg.get("content", "")
-    thinking_text = msg.get("thinking", "") or ""
-
-    # Embedded think (DeepSeek-R1): extract <think>...</think> from response.
-    if fam["think_method"] == "embedded" and not thinking_text:
-        think_match = _THINK_TAG_RE.search(response_text)
-        if think_match:
-            thinking_text = think_match.group(1).strip()
-            response_text = (response_text[:think_match.start()]
-                             + response_text[think_match.end():]).strip()
-
-    # Fallback: some models (Gemma3, Granite) in think mode put the answer
-    # in the thinking field, leaving content empty.
-    if think and not response_text.strip() and thinking_text.strip():
-        logger.warning(
-            f"Think-mode fallback: {model_name} returned empty content "
-            f"with non-empty thinking ({len(thinking_text)} chars). "
-            f"Extracting answer from thinking field."
-        )
-        response_text = thinking_text
 
     return {
         "response": response_text,
-        "thinking": thinking_text,
+        "fallback_used": False,
         "total_duration_ns": data.get("total_duration", 0),
         "eval_count": data.get("eval_count", 0),
         "prompt_eval_count": data.get("prompt_eval_count", 0),
         "model": model_name,
-        "think_enabled": think or fam["always_thinks"],
     }
+
+
+def ollama_generate_envelope(
+    prompt: str,
+    model: str | None = None,
+    system: str = "",
+    temperature: float | None = None,
+    max_tokens: int | None = None,
+    timeout: int = 120,
+) -> Dict:
+    try:
+        result = ollama_generate(
+            prompt,
+            model=model,
+            system=system,
+            temperature=temperature,
+            max_tokens=max_tokens,
+            timeout=timeout,
+        )
+        return _make_generation_envelope(result)
+    except Exception as exc:
+        return _make_generation_envelope(
+            None,
+            failure_class=_classify_failure(exc),
+            error_message=str(exc),
+        )
+
+
+def generate_json_response(
+    prompt: str,
+    model_key: str | None = None,
+    system: str = "",
+    temperature: float | None = None,
+    max_tokens: int | None = None,
+    timeout: int = 120,
+) -> tuple[dict | None, Dict]:
+    envelope = ollama_generate_envelope(
+        prompt,
+        model=model_key,
+        system=system,
+        temperature=temperature,
+        max_tokens=max_tokens,
+        timeout=timeout,
+    )
+    data = extract_json(envelope["response_text"])
+    envelope["parse_status"] = "parsed" if data is not None else "no_json"
+    return data, envelope
 
 
 def ollama_generate_stream(
@@ -280,12 +326,12 @@ def llm_call(prompt: str, model_key: str | None = None, system: str = "", **kwar
     return result["response"]
 
 
-def parse_query(query: str, model_key: str | None = None, think: bool | None = None) -> Dict:
+def parse_query(query: str, model_key: str | None = None) -> Dict:
     family = resolve_model_family(model_key or "")
-    max_tok = think_token_budget(512, think or False, family)
+    max_tok = response_token_budget(512, family)
     system = PARSE_SYSTEM + "\n" + family_json_hint(family)
     raw = llm_call(query, model_key=model_key, system=system, temperature=BENCH_TEMPERATURE,
-                   max_tokens=max_tok, think=think, timeout=TIMEOUT_LLM_LONG)
+                   max_tokens=max_tok, timeout=TIMEOUT_LLM_LONG)
     data = extract_json(raw)
     if data:
         if not data.get("free_text"):
@@ -295,13 +341,13 @@ def parse_query(query: str, model_key: str | None = None, think: bool | None = N
     return {"raw_query": query, "free_text": query}
 
 
-def extract_metadata(title: str, summary: str, model_key: str | None = None, think: bool | None = None) -> Dict:
-    prompt = f"Title: {title}\n\nSummary: {summary}"
+def extract_metadata(title: str, summary: str, model_key: str | None = None) -> Dict:
+    prompt = f"Title: {title}\n\nSummary: {truncate_text(summary, TRUNCATE_SUMMARY)}"
     family = resolve_model_family(model_key or "")
-    max_tok = think_token_budget(768, think or False, family)
+    max_tok = response_token_budget(768, family)
     system = EXTRACT_SYSTEM + "\n" + family_json_hint(family)
     raw = llm_call(prompt, model_key=model_key, system=system, temperature=BENCH_TEMPERATURE,
-                   max_tokens=max_tok, think=think, timeout=TIMEOUT_LLM_LONG)
+                   max_tokens=max_tok, timeout=TIMEOUT_LLM_LONG)
     data = extract_json(raw)
     if data:
         return data
@@ -324,11 +370,9 @@ def format_study_context(result: SearchResult) -> str:
         f"- Submission: {s.submission_date}",
     ]
     if s.summary:
-        summary = s.summary[:500] + "..." if len(s.summary) > 500 else s.summary
-        lines.append(f"- Summary: {summary}")
+        lines.append(f"- Summary: {truncate_text(s.summary, TRUNCATE_SUMMARY, suffix='...')}")
     if s.overall_design:
-        design = s.overall_design[:300] + "..." if len(s.overall_design) > 300 else s.overall_design
-        lines.append(f"- Design: {design}")
+        lines.append(f"- Design: {truncate_text(s.overall_design, TRUNCATE_DESIGN, suffix='...')}")
     if s.pubmed:
         lines.append(f"- PubMed: {s.pubmed.pmid}")
         if s.pubmed.mesh_terms:
@@ -380,7 +424,7 @@ def format_context(studies: List[Dict | SearchResult], fmt: str = "structured") 
 
 
 # ---------------------------------------------------------------------------
-# Context Management Utilities (for 05b_bench_context_management.py)
+# Context Management Utilities
 # ---------------------------------------------------------------------------
 
 

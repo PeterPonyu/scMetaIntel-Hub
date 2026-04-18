@@ -2,7 +2,7 @@
 Embedding generation and Qdrant indexing for scMetaIntel-Hub.
 
 Provides both:
-- generic benchmark-friendly helpers (`Embedder`, `build_index_from_ground_truth`)
+- reusable low-level helpers (`Embedder`)
 - class-based project API (`StudyEmbedder`)
 """
 
@@ -59,7 +59,7 @@ def get_safe_device(requested: str) -> str:
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, FieldCondition, Filter, MatchValue, PayloadSchemaType, PointStruct, ScoredPoint, VectorParams
 
-from .config import get_config
+from .config import TRUNCATE_DOCUMENT, TRUNCATE_SEARCH_TEXT, get_config, truncate_text
 from .models import CharacteristicsSummary, EnrichedStudy, SampleMeta, PubMedInfo
 
 logger = logging.getLogger(__name__)
@@ -240,11 +240,12 @@ def _study_text(study: EnrichedStudy | Dict) -> str:
 
 def _study_payload(study: EnrichedStudy | Dict) -> Dict:
     if isinstance(study, EnrichedStudy):
+        search_text = study.to_search_text()
         return {
             "gse_id": study.gse_id,
             "title": study.title,
-            "summary": study.summary[:2000],
-            "document_text": study.to_search_text()[:4000],
+            "summary": truncate_text(study.summary, TRUNCATE_DOCUMENT),
+            "document_text": truncate_text(search_text, TRUNCATE_SEARCH_TEXT),
             "organism": study.organism,
             "platform": study.platform,
             "series_type": study.series_type,
@@ -256,16 +257,17 @@ def _study_payload(study: EnrichedStudy | Dict) -> Dict:
             "diseases": study.characteristics_summary.diseases,
             "cell_types": study.characteristics_summary.cell_types,
             "treatments": study.characteristics_summary.treatments,
-            "search_text": study.to_search_text()[:4000],
+            "search_text": truncate_text(search_text, TRUNCATE_SEARCH_TEXT),
         }
     tissues = study.get("tissues") or study.get("characteristics_summary", {}).get("tissues", [])
     diseases = study.get("diseases") or study.get("characteristics_summary", {}).get("diseases", [])
     cell_types = study.get("cell_types") or study.get("characteristics_summary", {}).get("cell_types", [])
+    search_text = _study_text(study)
     return {
         "gse_id": study.get("gse_id", ""),
         "title": study.get("title", ""),
-        "summary": study.get("summary", "")[:2000],
-        "document_text": _study_text(study)[:4000],
+        "summary": truncate_text(study.get("summary", ""), TRUNCATE_DOCUMENT),
+        "document_text": truncate_text(search_text, TRUNCATE_SEARCH_TEXT),
         "organism": study.get("organism", ""),
         "platform": study.get("platform", ""),
         "series_type": study.get("series_type", ""),
@@ -277,7 +279,7 @@ def _study_payload(study: EnrichedStudy | Dict) -> Dict:
         "diseases": diseases,
         "cell_types": cell_types,
         "treatments": study.get("treatments", []),
-        "search_text": _study_text(study)[:4000],
+        "search_text": truncate_text(search_text, TRUNCATE_SEARCH_TEXT),
     }
 
 
@@ -376,26 +378,6 @@ def load_enriched_studies(enriched_dir: Path) -> List[EnrichedStudy]:
         except Exception as e:
             logger.warning(f"Failed to load {p}: {e}")
     return studies
-
-
-def build_index_from_ground_truth(
-    model_key: Optional[str] = None,
-    ground_truth_dir: Optional[Path] = None,
-    qdrant_path: Optional[Path] = None,
-    collection_name: Optional[str] = None,
-) -> Tuple[QdrantClient, Embedder]:
-    cfg = get_config()
-    gt_dir = ground_truth_dir or cfg.paths.ground_truth_dir
-    docs = []
-    for p in sorted(gt_dir.glob("GSE*.json")):
-        with open(p) as f:
-            docs.append(json.load(f))
-    embedder = Embedder(model_key=model_key or cfg.embedding.dense_model_key, device=cfg.embedding.device)
-    client = get_qdrant_client(qdrant_path)
-    cname = collection_name or cfg.retrieval.collection_name
-    create_collection(client, cname, embedder.dim, recreate=True)
-    index_studies(client, cname, docs, embedder)
-    return client, embedder
 
 
 def main():

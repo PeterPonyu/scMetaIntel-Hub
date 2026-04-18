@@ -420,7 +420,7 @@ def enrich_batch(gse_ids: list[str], output_dir: Path, geo_datahub: Path | None 
 
 def enrich_all(output_dir: Optional[Path] = None, index_path: Optional[Path] = None, skip_existing: bool = True) -> List[Dict]:
     cfg = get_config()
-    out = output_dir or cfg.paths.ground_truth_dir
+    out = output_dir or cfg.paths.enriched_dir
     out.mkdir(parents=True, exist_ok=True)
     docs = []
     for gse_id in load_gse_ids(index_path):
@@ -447,34 +447,19 @@ def main():
     parser.add_argument("--gse-list", nargs="+", help="Specific GSE IDs to enrich")
     parser.add_argument("--output-dir", type=Path, default=None)
     parser.add_argument("--no-skip", action="store_true")
-    parser.add_argument("--ground-truth", action="store_true", help="Write benchmark-style documents instead of rich study JSON")
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
     cfg = get_config()
-    output_dir = args.output_dir or (cfg.paths.ground_truth_dir if args.ground_truth else cfg.paths.enriched_dir)
+    output_dir = args.output_dir or cfg.paths.enriched_dir
 
     if args.gse_list:
-        if args.ground_truth:
-            docs = []
-            output_dir.mkdir(parents=True, exist_ok=True)
-            for gse in args.gse_list:
-                doc = build_enriched_document(gse)
-                with open(output_dir / f"{gse}.json", "w") as f:
-                    json.dump(doc, f, indent=2, ensure_ascii=False, default=str)
-                docs.append(doc)
-            print(f"Saved {len(docs)} ground-truth documents to {output_dir}")
-        else:
-            studies = enrich_batch(args.gse_list, output_dir, geo_datahub=args.geo_datahub, skip_existing=not args.no_skip)
-            print(f"Saved {len(studies)} enriched studies to {output_dir}")
+        studies = enrich_batch(args.gse_list, output_dir, geo_datahub=args.geo_datahub, skip_existing=not args.no_skip)
+        print(f"Saved {len(studies)} enriched studies to {output_dir}")
         return
 
-    if args.ground_truth:
-        docs = enrich_all(output_dir=output_dir, skip_existing=not args.no_skip)
-        print(f"Saved {len(docs)} benchmark-style documents to {output_dir}")
-    else:
-        studies = enrich_batch(load_gse_ids(), output_dir, geo_datahub=args.geo_datahub, skip_existing=not args.no_skip)
-        print(f"Saved {len(studies)} enriched studies to {output_dir}")
+    studies = enrich_batch(load_gse_ids(), output_dir, geo_datahub=args.geo_datahub, skip_existing=not args.no_skip)
+    print(f"Saved {len(studies)} enriched studies to {output_dir}")
 
 
 if __name__ == "__main__":

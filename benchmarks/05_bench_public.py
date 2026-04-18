@@ -40,8 +40,8 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from scmetaintel.config import (
-    LLM_MODELS, BENCHMARK_DIR, family_always_thinks, family_json_hint,
-    resolve_model_family, think_token_budget,
+    LLM_MODELS, BENCHMARK_DIR, family_json_hint,
+    resolve_model_family, response_token_budget,
     BENCH_TEMPERATURE, TIMEOUT_LLM_DEFAULT,
 )
 from scmetaintel.answer import llm_call, extract_json
@@ -52,6 +52,20 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname
 
 DATASETS_DIR = BENCHMARK_DIR / "public_datasets"
 RESULTS_DIR = BENCHMARK_DIR / "results"
+
+FROZEN_PUBLIC_PANEL = [
+    "qwen2.5-0.5b",
+    "qwen3-8b",
+    "qwen3.5-9b-q8",
+    "llama3.1-8b",
+    "llama3.2-3b",
+    "gemma3-12b-q8",
+    "mistral-7b",
+    "phi4-14b-q8",
+    "falcon3-7b",
+    "aya-expanse-8b",
+    "granite3.3-8b",
+]
 
 # ---------------------------------------------------------------------------
 # Dataset registry — maps filename to (category, evaluator, config)
@@ -92,6 +106,10 @@ DATASET_REGISTRY = {
     "commonsense/openbookqa.json": ("commonsense", "mcq_letter", {"answer_field": "answerKey"}),
     "commonsense/boolq.json":     ("commonsense", "boolean", {"answer_field": "answer"}),
 }
+
+
+def build_public_runs(active: list[str]) -> list[tuple[str, str]]:
+    return [(mk, mk) for mk in active if mk in LLM_MODELS]
 
 
 # ---------------------------------------------------------------------------
@@ -181,7 +199,7 @@ def build_mcq_prompt(item: dict, choices_field: str = "choices",
 # ---------------------------------------------------------------------------
 
 def eval_dataset(dataset_path: str, data: list, model_key: str,
-                 evaluator: str, config: dict, think: bool,
+                 evaluator: str, config: dict,
                  max_samples: int) -> dict:
     """Evaluate one dataset on one model."""
     sample = data[:max_samples] if max_samples > 0 else data
@@ -191,7 +209,7 @@ def eval_dataset(dataset_path: str, data: list, model_key: str,
 
     family = resolve_model_family(model_key)
     correct, total, scores = 0, 0, []
-    max_tok = think_token_budget(512, think, family)
+    max_tok = response_token_budget(512, family)
 
     for item in sample:
         try:
@@ -202,7 +220,7 @@ def eval_dataset(dataset_path: str, data: list, model_key: str,
                     context_field=config.get("context_field"),
                 )
                 raw = llm_call(prompt, model_key=model_key, temperature=0.0,
-                               max_tokens=max_tok, think=think, timeout=60)
+                               max_tokens=max_tok, timeout=60)
                 pred_letter = extract_mcq_letter(raw)
 
                 gold = item.get(config["answer_field"])
@@ -224,7 +242,7 @@ def eval_dataset(dataset_path: str, data: list, model_key: str,
                 o2 = item.get("option2", "")
                 prompt = f"{s}\n\n1. {o1}\n2. {o2}\n\nAnswer with ONLY 1 or 2."
                 raw = llm_call(prompt, model_key=model_key, temperature=0.0,
-                               max_tokens=max_tok, think=think, timeout=60)
+                               max_tokens=max_tok, timeout=60)
                 m = re.search(r"[12]", raw.strip())
                 pred = m.group() if m else ""
                 total += 1
@@ -236,7 +254,7 @@ def eval_dataset(dataset_path: str, data: list, model_key: str,
                 passage = item.get("passage", "")
                 prompt = f"Passage: {passage[:500]}\n\nQuestion: {q}\n\nAnswer with ONLY yes or no."
                 raw = llm_call(prompt, model_key=model_key, temperature=0.0,
-                               max_tokens=max_tok, think=think, timeout=60)
+                               max_tokens=max_tok, timeout=60)
                 pred_bool = "yes" in raw.lower().split()[:3]
                 gold_bool = item.get(config["answer_field"])
                 total += 1
@@ -246,7 +264,7 @@ def eval_dataset(dataset_path: str, data: list, model_key: str,
             elif evaluator == "gsm8k":
                 prompt = f"Solve step by step, then give the final answer after ####.\n\n{item['question']}"
                 raw = llm_call(prompt, model_key=model_key, temperature=0.0,
-                               max_tokens=max_tok, think=think, timeout=120)
+                               max_tokens=max_tok, timeout=120)
                 pred_num = extract_number(raw)
                 gold_num = extract_number(item.get("answer", ""))
                 total += 1
@@ -262,7 +280,7 @@ def eval_dataset(dataset_path: str, data: list, model_key: str,
                 prompt = build_mcq_prompt(
                     {"question": item["question"], "choices": choices[:4]})
                 raw = llm_call(prompt, model_key=model_key, temperature=0.0,
-                               max_tokens=max_tok, think=think, timeout=60)
+                               max_tokens=max_tok, timeout=60)
                 pred_letter = extract_mcq_letter(raw)
                 idx = "ABCD".index(pred_letter) if pred_letter in "ABCD" else -1
                 total += 1
@@ -276,7 +294,7 @@ def eval_dataset(dataset_path: str, data: list, model_key: str,
                 q = item.get("question", "")
                 prompt = f"Context: {context_text}\n\nQuestion: {q}\n\nAnswer with ONLY yes, no, or maybe."
                 raw = llm_call(prompt, model_key=model_key, temperature=0.0,
-                               max_tokens=max_tok, think=think, timeout=60)
+                               max_tokens=max_tok, timeout=60)
                 pred = "yes" if "yes" in raw.lower()[:20] else ("no" if "no" in raw.lower()[:20] else "maybe")
                 gold = item.get("final_decision", "")
                 total += 1
@@ -290,7 +308,7 @@ def eval_dataset(dataset_path: str, data: list, model_key: str,
                 correct_idx = choices.index(item.get("correct_answer", ""))
                 prompt = build_mcq_prompt({"question": item["question"], "choices": choices})
                 raw = llm_call(prompt, model_key=model_key, temperature=0.0,
-                               max_tokens=max_tok, think=think, timeout=60)
+                               max_tokens=max_tok, timeout=60)
                 pred_letter = extract_mcq_letter(raw)
                 total += 1
                 if pred_letter and "ABCD".index(pred_letter) == correct_idx:
@@ -303,7 +321,7 @@ def eval_dataset(dataset_path: str, data: list, model_key: str,
                     ctx = ctx[:500]
                 prompt = f"Context: {ctx}\n\nQuestion: {q}\n\nAnswer concisely."
                 raw = llm_call(prompt, model_key=model_key, temperature=0.0,
-                               max_tokens=max_tok, think=think, timeout=60)
+                               max_tokens=max_tok, timeout=60)
                 gold = item.get(config.get("answer_field", "answer"))
                 if isinstance(gold, dict):
                     gold = gold.get("text", [""])[0] if gold.get("text") else ""
@@ -316,8 +334,7 @@ def eval_dataset(dataset_path: str, data: list, model_key: str,
             elif evaluator == "ifeval":
                 prompt = item.get("prompt", "")
                 raw = llm_call(prompt, model_key=model_key, temperature=0.0,
-                               max_tokens=1024 if not think else 4096,
-                               think=think, timeout=120)
+                               max_tokens=1024, timeout=120)
                 # Simple constraint checks
                 instructions = item.get("instruction_id_list", [])
                 passed = 0
@@ -341,7 +358,7 @@ def eval_dataset(dataset_path: str, data: list, model_key: str,
                 else:
                     prompt = str(prompt_msgs)
                 raw = llm_call(prompt, model_key=model_key, temperature=0.0,
-                               max_tokens=max_tok, think=think, timeout=60)
+                               max_tokens=max_tok, timeout=60)
                 parsed = extract_json(raw)
                 total += 1
                 if parsed is not None:
@@ -365,7 +382,7 @@ def eval_dataset(dataset_path: str, data: list, model_key: str,
 
                 system = item.get("system", "")
                 raw = llm_call(prompt, model_key=model_key, system=system[:1000],
-                               temperature=0.0, max_tokens=max_tok, think=think,
+                               temperature=0.0, max_tokens=max_tok,
                                timeout=60)
                 # Check if any function-call-like pattern exists
                 has_call = bool(re.search(
@@ -397,11 +414,10 @@ def eval_dataset(dataset_path: str, data: list, model_key: str,
 def main():
     parser = argparse.ArgumentParser(description="Public dataset benchmark")
     parser.add_argument("--models", nargs="+", default=None)
-    parser.add_argument("--max-samples", type=int, default=50,
-                        help="Max samples per dataset (default: 50)")
+    parser.add_argument("--max-samples", type=int, default=200,
+                        help="Max samples per dataset (default: 200)")
     parser.add_argument("--categories", nargs="+", default=None,
                         help="Filter categories (general, reasoning, biomedical, structured, tool_use, commonsense)")
-    parser.add_argument("--no-think-ablation", action="store_true")
     args = parser.parse_args()
 
     available = check_ollama()
@@ -410,7 +426,7 @@ def main():
         return
 
     # Resolve models
-    model_keys = args.models or list(LLM_MODELS.keys())
+    model_keys = args.models or FROZEN_PUBLIC_PANEL
     available_base = [n.removesuffix(":latest") for n in available]
     active = []
     for mk in model_keys:
@@ -421,6 +437,15 @@ def main():
             continue
         if cfg["ollama_name"] in available or cfg["ollama_name"] in available_base:
             active.append(mk)
+
+    if args.models is None:
+        missing = [mk for mk in FROZEN_PUBLIC_PANEL if mk not in active]
+        if missing:
+            logger.error(
+                "Frozen public panel is incomplete on this machine. Missing models: %s",
+                missing,
+            )
+            return
 
     if not active:
         logger.error("No matching models found.")
@@ -439,21 +464,11 @@ def main():
             data = json.load(f)
         datasets[rel_path] = (category, evaluator, config, data)
 
-    logger.info(f"Models: {len(active)}, Datasets: {len(datasets)}, Max samples: {args.max_samples}")
+    logger.info(
+        f"Models: {len(active)}, Datasets: {len(datasets)}, Max samples: {args.max_samples}, "    )
 
-    # Build configs (model, think_mode, label)
-    runs = []
-    for mk in active:
-        can_think = LLM_MODELS[mk].get("think", False)
-        model_family = LLM_MODELS[mk].get("family", "")
-        always_thinks = family_always_thinks(model_family)
-
-        if always_thinks:
-            runs.append((mk, True, f"{mk}+think"))
-        else:
-            runs.append((mk, False, mk))
-            if can_think and not args.no_think_ablation:
-                runs.append((mk, True, f"{mk}+think"))
+    # Build configs (model, label)
+    runs = build_public_runs(active)
 
     # Load existing results for incremental runs
     results_path = RESULTS_DIR / "public_bench.json"
@@ -463,7 +478,7 @@ def main():
             all_results = json.load(f)
 
     prev_model = None
-    for model_key, think_mode, run_label in runs:
+    for model_key, run_label in runs:
         if run_label in all_results:
             logger.info(f"Skipping {run_label} (already in results)")
             continue
@@ -473,13 +488,12 @@ def main():
             prev_model = model_key
 
         logger.info(f"\n{'='*60}")
-        logger.info(f"Benchmarking: {run_label} (think={think_mode})")
+        logger.info(f"Benchmarking: {run_label}")
         logger.info(f"{'='*60}")
 
         info = LLM_MODELS[model_key]
         run_results = {
             "model": model_key,
-            "think_enabled": think_mode,
             "family": info.get("family", "unknown"),
             "size_b": info.get("size_b"),
         }
@@ -488,8 +502,7 @@ def main():
             ds_name = Path(rel_path).stem
             logger.info(f"  {ds_name} ({len(data)} samples, eval={evaluator})...")
             t0 = time.time()
-            result = eval_dataset(rel_path, data, model_key, evaluator, config,
-                                  think_mode, args.max_samples)
+            result = eval_dataset(rel_path, data, model_key, evaluator, config, args.max_samples)
             elapsed = time.time() - t0
             result["time_sec"] = round(elapsed, 1)
             run_results[ds_name] = result

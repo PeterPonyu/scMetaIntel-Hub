@@ -185,7 +185,7 @@ class RetrievalPipeline:
 
 
 # ---------------------------------------------------------------------------
-# Context Management Utilities (for 05b_bench_context_management.py)
+# Context Management Utilities
 # ---------------------------------------------------------------------------
 
 
@@ -456,10 +456,7 @@ class HybridRetriever:
         return parsed, out
 
     def load_full_study(self, gse_id: str) -> EnrichedStudy | None:
-        candidates = [
-            self.cfg.paths.enriched_dir / f"{gse_id}.json",
-            self.cfg.paths.ground_truth_dir / f"{gse_id}.json",
-        ]
+        candidates = [self.cfg.paths.enriched_dir / f"{gse_id}.json"]
         for path in candidates:
             if path.exists():
                 with open(path) as f:

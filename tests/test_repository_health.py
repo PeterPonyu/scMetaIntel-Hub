@@ -1,4 +1,5 @@
 from pathlib import Path
+import subprocess
 import unittest
 
 
@@ -43,12 +44,44 @@ class RepositoryHealthTests(unittest.TestCase):
         expected_rules = [
             "benchmarks/ground_truth/*.json",
             "benchmarks/results/*.json",
+            "benchmarks/results/**",
+            "article/",
+            "article_figures/",
             "qdrant_data/",
             "!.env.example",
         ]
         for rule in expected_rules:
             with self.subTest(rule=rule):
                 self.assertIn(rule, gitignore)
+
+    def test_private_paths_are_not_tracked(self):
+        result = subprocess.run(
+            ["git", "ls-files"],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        tracked = set(result.stdout.splitlines())
+        forbidden = {
+            "article/main.tex",
+            "article_figures/article_summary.json",
+            "docs/ARTICLE_PLAN.tex",
+            "docs/EXPERIMENT_PLAN.md",
+            "docs/STATUS_REPORT.md",
+            "benchmarks/eval_queries.json",
+            "benchmarks/BENCHMARK_DESIGN.md",
+            "benchmarks/01_build_ground_truth.py",
+            "benchmarks/04_bench_llm.py",
+            "benchmarks/08_bench_ablation.py",
+            "scripts/prep_rebench.py",
+            "scripts/generate_article_figures.py",
+            "scmetaintel/eval.py",
+            "scmetaintel/evaluate.py",
+            "tests/test_all_models.py",
+        }
+        leaked = sorted(forbidden & tracked)
+        self.assertEqual(leaked, [], f"Private paths must not be tracked: {leaked}")
 
     def test_pyproject_exposes_console_scripts(self):
         pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
@@ -58,7 +91,7 @@ class RepositoryHealthTests(unittest.TestCase):
 
     def test_readme_documents_repo_health(self):
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
-        self.assertIn("Repository standards", readme)
+        self.assertIn("Contributing and local validation", readme)
         self.assertIn(".github/workflows/repo-health.yml", readme)
         self.assertIn("python -m unittest discover -s tests -p 'test_repository_health.py' -v", readme)
 

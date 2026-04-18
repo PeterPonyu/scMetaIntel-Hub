@@ -11,7 +11,6 @@ Core intelligence commands:
     retrieve    Search datasets
     answer      Generate grounded answer from retrieved studies
     chat        Interactive chat interface
-    eval        Run evaluation suite
 
 Acquisition bridge commands:
     geo         Delegate to the integrated GEO-DataHub bridge CLI
@@ -42,8 +41,6 @@ def main():
         from .answer import main as cmd
     elif command == "chat":
         from .chat import main as cmd
-    elif command == "eval":
-        from .eval import main as cmd
     elif command == "geo":
         from geodh.cli import main as cmd
     else:

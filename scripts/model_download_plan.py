@@ -100,7 +100,6 @@ def build_plan(pulled: set[str]) -> list[dict]:
             "quant": info.get("quant", "?"),
             "vram_gb": info.get("vram_gb", 0),
             "ctx": info.get("ctx", 0),
-            "think": info.get("think", False),
             "wave": info.get("wave", 0),  # 0 = existing/already pulled
             "note": info.get("note", ""),
             "pulled": is_pulled,
@@ -135,7 +134,6 @@ def print_plan(plan: list[dict], missing_only: bool = False,
         0: "EXISTING (already in registry, most already pulled)",
         1: "WAVE 1 — Fill scaling gaps in existing families",
         2: "WAVE 2 — Add size variants for Phi, Mistral, Gemma2",
-        3: "WAVE 3 — DeepSeek-R1 (always-reasoning distilled models)",
         4: "WAVE 4 — IBM Granite (structured output specialists)",
         5: "WAVE 5 — Cross-architecture diversity (Falcon, Aya, GLM)",
     }
@@ -145,14 +143,7 @@ def print_plan(plan: list[dict], missing_only: bool = False,
     total_missing = total_models - total_pulled
     total_download = sum(p["download_gb"] for p in filtered if not p["pulled"])
 
-    # Count think-ablation configs
-    total_configs = 0
-    for p in filtered:
-        if not p["enabled"] or p["cpu_spill"]:
-            continue
-        total_configs += 1  # base config (think=False)
-        if p["think"]:
-            total_configs += 1  # think=True ablation
+    total_configs = sum(1 for p in filtered if p["enabled"] and not p["cpu_spill"])
 
     print("=" * 78)
     print("  scMetaIntel-Hub — LLM Model Download Plan")
@@ -164,7 +155,7 @@ def print_plan(plan: list[dict], missing_only: bool = False,
     print(f"  Already pulled:          {total_pulled}")
     print(f"  Need to download:        {total_missing}")
     print(f"  Estimated download:      {format_size(total_download)}")
-    print(f"  Benchmark configs:       ~{total_configs} (models × think ablations)")
+    print(f"  Benchmark configs:       ~{total_configs} (single public config per model)")
     print()
 
     # Family summary
@@ -191,14 +182,9 @@ def print_plan(plan: list[dict], missing_only: bool = False,
         for family in sorted(by_family.keys()):
             fam_entries = by_family[family]
             fam_config = MODEL_FAMILY_CONFIG.get(family, {})
-            think_method = fam_config.get("think_method", "none")
             multimodal = fam_config.get("multimodal", False)
 
             fam_tags = []
-            if think_method == "api":
-                fam_tags.append("think:api")
-            elif think_method == "embedded":
-                fam_tags.append("think:always")
             if multimodal:
                 overhead = fam_config.get("multimodal_overhead_pct", 0)
                 fam_tags.append(f"multimodal(+{overhead}% VRAM overhead)")
@@ -216,13 +202,12 @@ def print_plan(plan: list[dict], missing_only: bool = False,
                 elif e["cpu_spill"]:
                     status = "✗ CPU_SPILL"
 
-                think_label = "+think" if e["think"] else ""
-                configs = "2 configs" if e["think"] and e["enabled"] else "1 config"
+                configs = "1 config" if e["enabled"] else "0 config"
 
                 print(f"    {status:14s} {e['key']:25s} "
                       f"{e['size_b']:5.1f}B  {e['quant']:8s}  "
                       f"~{format_size(e['vram_gb']):>7s}  "
-                      f"{think_label:6s}  ({configs})")
+                      f"{'':6s}  ({configs})")
                 print(f"{'':19s} ollama pull {e['ollama_name']}")
                 print()
 
@@ -325,51 +310,6 @@ def print_vram_analysis(plan: list[dict]):
 
 
 # ---------------------------------------------------------------------------
-# Think-mode analysis
-# ---------------------------------------------------------------------------
-
-def print_think_analysis(plan: list[dict]):
-    """Print think-mode capability analysis."""
-    print(f"\n{'=' * 78}")
-    print("  THINK-MODE ANALYSIS")
-    print(f"{'=' * 78}\n")
-
-    enabled = [p for p in plan if p["enabled"] and not p["cpu_spill"]]
-
-    # Group by think method
-    by_method: dict[str, list[dict]] = defaultdict(list)
-    for e in enabled:
-        family = e["family"]
-        method = MODEL_FAMILY_CONFIG.get(family, {}).get("think_method") or "none"
-        by_method[method].append(e)
-
-    method_labels = {
-        "api": "API-triggered (Ollama 'think' parameter)",
-        "embedded": "Always-on (CoT embedded in response as <think>...</think>)",
-        "none": "No think mode (direct answering only)",
-    }
-
-    for method, label in method_labels.items():
-        models = by_method.get(method, [])
-        if not models:
-            continue
-        print(f"  {label}:")
-        for e in sorted(models, key=lambda x: (x["family"], -x["size_b"])):
-            configs = 2 if e["think"] and method != "embedded" else 1
-            print(f"    {e['key']:25s} {e['family']:10s} "
-                  f"{e['size_b']:5.1f}B  → {configs} benchmark config(s)")
-        print()
-
-    total_configs = sum(
-        (2 if e["think"] and
-         MODEL_FAMILY_CONFIG.get(e["family"], {}).get("think_method") != "embedded"
-         else 1)
-        for e in enabled
-    )
-    print(f"  Total benchmark configurations: {total_configs}")
-
-
-# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
@@ -386,8 +326,6 @@ def main():
                         help="Filter to specific family (e.g. deepseek, granite)")
     parser.add_argument("--vram", action="store_true",
                         help="Show VRAM fit analysis")
-    parser.add_argument("--think", action="store_true",
-                        help="Show think-mode analysis")
     parser.add_argument("--json", action="store_true",
                         help="Output plan as JSON")
     args = parser.parse_args()
@@ -405,13 +343,9 @@ def main():
     if args.vram:
         print_vram_analysis(plan)
 
-    if args.think:
-        print_think_analysis(plan)
-
-    if not args.execute and not args.vram and not args.think:
+    if not args.execute and not args.vram:
         # Always show these in default dry-run
         print_vram_analysis(plan)
-        print_think_analysis(plan)
 
     if args.execute:
         execute_downloads(plan, wave_filter=args.wave,

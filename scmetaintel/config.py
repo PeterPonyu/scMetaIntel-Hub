@@ -37,7 +37,6 @@ DOWNLOADS_DIR = DATA_DIR / "downloads"
 H5AD_DIR = DATA_DIR / "h5ad_output"
 ONTOLOGY_DIR = PROJECT_ROOT / "ontologies"
 BENCHMARK_DIR = PROJECT_ROOT / "benchmarks"
-GROUND_TRUTH_DIR = BENCHMARK_DIR / "ground_truth"
 RESULTS_DIR = BENCHMARK_DIR / "results"
 QDRANT_DIR = PROJECT_ROOT / "qdrant_data"
 ACCESSION_INDEX = PROJECT_ROOT / "local_accession_index.json"
@@ -73,6 +72,10 @@ TRUNCATE_SUMMARY_SHORT = 300       # Summary in compact contexts (relevance, ans
 TRUNCATE_DESIGN = 300              # Overall design text
 TRUNCATE_TITLE = 200               # Title text
 TRUNCATE_DOCUMENT = 2000           # Full document text for embedding
+TRUNCATE_SEARCH_TEXT = 4000        # Combined search / payload text
+TRUNCATE_DETAIL_SUMMARY = 1000     # Interactive detail-view summary preview
+TRUNCATE_DETAIL_DESIGN = 500       # Interactive detail-view design preview
+TRUNCATE_ABSTRACT = 800            # Interactive abstract preview
 
 # --- Benchmark temperatures ---
 BENCH_TEMPERATURE = 0.0            # Structured/JSON tasks always use 0.0
@@ -110,6 +113,14 @@ GSE_PATTERN = r"GSE\d+"
 
 # --- Ollama keep_alive for benchmark VRAM management ---
 OLLAMA_KEEP_ALIVE_UNLOAD = 0       # Immediately unload after use
+
+
+def truncate_text(text: str | None, limit: int, suffix: str = "") -> str:
+    """Return text truncated to *limit* characters, optionally adding a suffix."""
+    text = text or ""
+    if limit < 0 or len(text) <= limit:
+        return text
+    return text[:limit] + suffix
 
 
 # ---------------------------------------------------------------------------
@@ -349,22 +360,18 @@ RERANKER_MODELS: Dict[str, dict] = {
 # Model family configuration
 # ---------------------------------------------------------------------------
 # Family-level settings shared by all models of the same architecture.
-# Used by answer.py and benchmarks for think-mode, multimodal awareness, etc.
+# Used by answer.py and benchmarks for JSON formatting, multimodal notes, etc.
 
 MODEL_FAMILY_CONFIG: Dict[str, dict] = {
     "qwen": {
-        "think_api": True,           # Ollama /api/chat accepts "think" param
-        "think_method": "api",       # Think triggered via API parameter
         "multimodal": False,         # Text-only in Ollama (no vision projector)
         "generations": ["2.5", "3", "3.5"],
         # Inference: Qwen3+ default is temp=0.7 but 0.0 best for structured tasks.
         # Qwen2.5 instruction-tuned models are stable at 0.0.
         "json_hint": "Return ONLY the JSON object. No explanation, no markdown.",
-        "note": "Alibaba Qwen. Qwen3+ supports think API; Qwen2.5 does not.",
+        "note": "Alibaba Qwen. Stable text-first family for local structured tasks.",
     },
     "gemma": {
-        "think_api": True,           # Ollama ≥0.9 supports think for Gemma3
-        "think_method": "api",
         "multimodal": True,          # Gemma3 bundles vision projector
         "multimodal_overhead_pct": 8,  # ~8% VRAM overhead for unused vision
         "generations": ["2", "3"],
@@ -375,16 +382,12 @@ MODEL_FAMILY_CONFIG: Dict[str, dict] = {
                 "but unused for text-only tasks (~8% VRAM overhead).",
     },
     "llama": {
-        "think_api": False,
-        "think_method": None,
         "multimodal": False,         # llama3.2 base is text-only
         "generations": ["3.1", "3.2", "3.3"],
         "json_hint": "Return ONLY the JSON object. No explanation, no markdown.",
-        "note": "Meta Llama. No native think mode. De facto standard baseline.",
+        "note": "Meta Llama. De facto local baseline.",
     },
     "mistral": {
-        "think_api": False,
-        "think_method": None,
         "multimodal": False,
         "generations": ["0.3", "nemo", "small"],
         "output_quirks": {"markdown_wrap"},
@@ -394,33 +397,13 @@ MODEL_FAMILY_CONFIG: Dict[str, dict] = {
         "note": "Mistral AI. Strong structured output and function calling.",
     },
     "phi": {
-        "think_api": False,
-        "think_method": None,
         "multimodal": False,         # phi4 text-only variant
         "generations": ["3.5", "4", "4-mini"],
         # Inference: Phi excels at structured JSON output.
         "json_hint": "Output JSON only. No markdown. No explanation.",
         "note": "Microsoft Phi. Compact but strong on structured/JSON tasks.",
     },
-    "deepseek": {
-        "think_api": False,
-        "think_method": "embedded",  # <think>...</think> always in response
-        "always_thinks": True,       # Cannot disable thinking
-        "multimodal": False,
-        "generations": ["r1"],
-        "output_quirks": {"verbose_think"},
-        "think_token_overhead": 6144,  # R1 chains are longer than API-think
-        # Inference: R1 models always produce <think>...</think> before answer.
-        # Token budget must be large enough for both reasoning + final answer.
-        # answer.py extracts think text automatically.
-        "json_hint": "After reasoning, return ONLY the JSON object as your final answer.",
-        "note": "DeepSeek-R1 distilled. CoT reasoning always embedded in "
-                "response as <think>...</think> tags. Distilled into Qwen2.5 "
-                "or Llama3 base architectures.",
-    },
     "granite": {
-        "think_api": True,           # Granite3.3 supports think in Ollama
-        "think_method": "api",
         "multimodal": False,
         "generations": ["3.3"],
         # Inference: Granite3.3 trained with tool-use / structured output focus.
@@ -428,8 +411,6 @@ MODEL_FAMILY_CONFIG: Dict[str, dict] = {
         "note": "IBM Granite. Strong at structured output and tool use.",
     },
     "falcon": {
-        "think_api": False,
-        "think_method": None,
         "multimodal": False,
         "generations": ["3"],
         "output_quirks": {"preamble", "markdown_wrap"},
@@ -438,16 +419,12 @@ MODEL_FAMILY_CONFIG: Dict[str, dict] = {
         "note": "TII Falcon3. Trained on curated web+code data.",
     },
     "command-r": {
-        "think_api": False,
-        "think_method": None,
         "multimodal": False,
         "generations": ["r"],
         "json_hint": "Return ONLY the JSON object.",
         "note": "Cohere Command-R. RAG-specialized with grounded generation.",
     },
     "aya": {
-        "think_api": False,
-        "think_method": None,
         "multimodal": False,
         "generations": ["expanse"],
         # Inference: Aya is multilingual but prompts are English for consistency.
@@ -455,8 +432,6 @@ MODEL_FAMILY_CONFIG: Dict[str, dict] = {
         "note": "Cohere Aya. Massively multilingual (23 languages).",
     },
     "glm": {
-        "think_api": False,
-        "think_method": None,
         "multimodal": False,
         "generations": ["4"],
         "output_quirks": {"language_mix", "markdown_wrap"},
@@ -464,32 +439,24 @@ MODEL_FAMILY_CONFIG: Dict[str, dict] = {
         "note": "Zhipu GLM4. Chinese-English bilingual, strong reasoning.",
     },
     "internlm": {
-        "think_api": False,
-        "think_method": None,
         "multimodal": False,
         "generations": ["2"],
         "json_hint": "Return ONLY the JSON object. No explanation, no markdown.",
         "note": "Shanghai AI Lab InternLM2. Strong bilingual Chinese+English.",
     },
     "yi": {
-        "think_api": False,
-        "think_method": None,
         "multimodal": False,
         "generations": ["1.5"],
         "json_hint": "Return ONLY the JSON object. No explanation.",
         "note": "01.AI Yi. Strong reasoning and bilingual.",
     },
     "solar": {
-        "think_api": False,
-        "think_method": None,
         "multimodal": False,
         "generations": ["10.7"],
         "json_hint": "Return ONLY the JSON object. No explanation, no markdown.",
         "note": "Upstage Solar. Depth-upscaled Llama architecture.",
     },
     "exaone": {
-        "think_api": False,
-        "think_method": None,
         "multimodal": False,
         "generations": ["3.5"],
         "output_quirks": {"language_mix"},
@@ -497,8 +464,6 @@ MODEL_FAMILY_CONFIG: Dict[str, dict] = {
         "note": "LG AI Research EXAONE. Korean+English bilingual.",
     },
     "starcoder": {
-        "think_api": False,
-        "think_method": None,
         "multimodal": False,
         "generations": ["2"],
         "json_hint": "Return ONLY the JSON object.",
@@ -512,17 +477,12 @@ MODEL_FAMILY_CONFIG: Dict[str, dict] = {
 # When adding a new family, you only need to set the fields that differ.
 # ---------------------------------------------------------------------------
 _FAMILY_DEFAULTS: dict = {
-    "think_api": False,
-    "think_method": None,       # "api" | "embedded" | None
-    "always_thinks": False,
     "multimodal": False,
     "json_hint": "Return ONLY the JSON object.",
-    "think_token_overhead": 4096,  # Extra token budget for reasoning chain
     "output_quirks": set(),     # Known output quirks this family exhibits
     #   "markdown_wrap"  — tends to wrap JSON in ```json``` blocks
     #   "preamble"       — adds explanatory text before JSON
     #   "language_mix"   — may mix non-English in output
-    #   "verbose_think"  — think chain is very long, may exhaust budget
 }
 
 
@@ -540,21 +500,6 @@ def get_family_config(family: str) -> dict:
     return merged
 
 
-def family_supports_think_api(family: str) -> bool:
-    """Check if a model family supports the Ollama 'think' API parameter."""
-    return get_family_config(family)["think_api"]
-
-
-def family_always_thinks(family: str) -> bool:
-    """Check if a model family always produces CoT (e.g. DeepSeek-R1)."""
-    return get_family_config(family)["always_thinks"]
-
-
-def family_think_method(family: str) -> str | None:
-    """Return how thinking is triggered: 'api', 'embedded', or None."""
-    return get_family_config(family)["think_method"]
-
-
 def family_json_hint(family: str) -> str:
     """Return family-specific JSON formatting instruction to append to prompts."""
     return get_family_config(family)["json_hint"]
@@ -565,22 +510,13 @@ def resolve_model_family(model_key: str) -> str:
     return LLM_MODELS.get(model_key, {}).get("family", "")
 
 
-def think_token_budget(base_tokens: int, think: bool, family: str = "") -> int:
-    """Compute max_tokens accounting for think-mode overhead.
+def response_token_budget(base_tokens: int, family: str = "") -> int:
+    """Return the response token budget for the current family.
 
-    When think mode is on, the model needs extra token budget for its
-    reasoning chain before producing the final answer.  The overhead
-    is set per-family (default 4096).
-
-    Usage in benchmark tasks and answer.py::
-
-        max_tok = think_token_budget(256, think, family)
-        # → 256 when think=False, 4096 when think=True (default overhead)
+    The public benchmark surface is single-lane text generation only, so the
+    base task budget is used directly.
     """
-    if not think:
-        return base_tokens
-    overhead = get_family_config(family).get("think_token_overhead", 4096)
-    return max(base_tokens, overhead)
+    return base_tokens
 
 
 LLM_MODELS: Dict[str, dict] = {
@@ -592,7 +528,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 11,
         "ctx": 256000,
         "family": "qwen",
-        "think": True,
         "note": "Recommended fast reasoning model. Q8_0 replaces Q4_K_M.",
     },
     "qwen3-14b-q8": {
@@ -602,7 +537,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 16,
         "ctx": 256000,
         "family": "qwen",
-        "think": True,
         "note": "Higher precision 14B.",
     },
     "qwen3-8b": {
@@ -612,7 +546,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 5.2,
         "ctx": 256000,
         "family": "qwen",
-        "think": True,
         "note": "Lightweight modern baseline.",
     },
     "qwen2.5-7b": {
@@ -622,7 +555,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 8,
         "ctx": 32768,
         "family": "qwen",
-        "think": False,
         "note": "Legacy benchmark baseline.",
     },
     "qwen2.5-1.5b": {
@@ -632,7 +564,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 1.0,
         "ctx": 32768,
         "family": "qwen",
-        "think": False,
         "note": "Locally runnable smoke-test LLM on this machine right now.",
     },
     "qwen2.5-0.5b": {
@@ -642,7 +573,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 0.4,
         "ctx": 32768,
         "family": "qwen",
-        "think": False,
         "note": "Tiny fallback for wiring tests only.",
     },
     # --- WAVE 1: Fill gaps in Qwen scaling curve ---
@@ -653,7 +583,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 2.8,
         "ctx": 256000,
         "family": "qwen",
-        "think": True,
         "wave": 1,
         "note": "Smallest Qwen3.5 available (no 3B exists). Intra-family scaling.",
     },
@@ -664,7 +593,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 2.7,
         "ctx": 256000,
         "family": "qwen",
-        "think": True,
         "wave": 1,
         "note": "Mid-small Qwen3 fills gap between 1.7B and 8B.",
     },
@@ -675,9 +603,8 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 1.2,
         "ctx": 256000,
         "family": "qwen",
-        "think": True,
         "wave": 1,
-        "note": "Tiny Qwen3 with think — tests whether CoT helps sub-2B models.",
+        "note": "Tiny Qwen3 scaling point for sub-2B comparisons.",
     },
     "qwen2.5-14b": {
         "ollama_name": "qwen2.5:14b-instruct-q8_0",
@@ -686,7 +613,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 15,
         "ctx": 32768,
         "family": "qwen",
-        "think": False,
         "wave": 1,
         "note": "Large Qwen2.5 baseline for generation-over-generation comparison.",
     },
@@ -697,7 +623,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 2.0,
         "ctx": 32768,
         "family": "qwen",
-        "think": False,
         "wave": 1,
         "note": "Mid-small Qwen2.5 for scaling curve.",
     },
@@ -712,7 +637,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 18,
         "ctx": 128000,
         "family": "gemma",
-        "think": True,
         "note": "Quantization-aware trained Gemma 3. Top non-Qwen dense model.",
     },
     "gemma3-12b-q8": {
@@ -722,7 +646,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 13,
         "ctx": 128000,
         "family": "gemma",
-        "think": True,
         "note": "Mid-tier Gemma for scaling comparison.",
     },
     # --- WAVE 1: Fill gaps in Gemma scaling curve ---
@@ -733,7 +656,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 4.3,
         "ctx": 128000,
         "family": "gemma",
-        "think": True,
         "wave": 1,
         "note": "Small Gemma3 Q8 for scaling curve. Multimodal overhead ~8%.",
     },
@@ -744,7 +666,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 1.0,
         "ctx": 128000,
         "family": "gemma",
-        "think": True,
         "wave": 1,
         "note": "Tiny Gemma3 for floor-performance analysis.",
     },
@@ -755,7 +676,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 10,
         "ctx": 8192,
         "family": "gemma",
-        "think": False,
         "wave": 2,
         "note": "Previous-gen Gemma for generation-over-generation comparison.",
     },
@@ -768,7 +688,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 14,
         "ctx": 32000,
         "family": "mistral",
-        "think": False,
         "note": "Strong structured output and function calling.",
     },
     "mistral-nemo-12b": {
@@ -778,7 +697,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 13,
         "ctx": 1000000,
         "family": "mistral",
-        "think": False,
         "note": "1M context window. Mistral + NVIDIA collaboration.",
     },
     # --- WAVE 2: Classic Mistral for 7B-class comparison ---
@@ -789,7 +707,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 7.7,
         "ctx": 32768,
         "family": "mistral",
-        "think": False,
         "wave": 2,
         "note": "Classic Mistral 7B v0.3 for 7B-class cross-family comparison.",
     },
@@ -802,7 +719,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 16,
         "ctx": 16000,
         "family": "phi",
-        "think": False,
         "note": "Best structured output / JSON parsing among small models.",
     },
     # --- WAVE 2: Smaller Phi for scaling ---
@@ -813,7 +729,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 2.5,
         "ctx": 16000,
         "family": "phi",
-        "think": False,
         "wave": 2,
         "note": "Phi4-mini 3.8B. Compact Microsoft model for small-model tier.",
     },
@@ -826,7 +741,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 8.5,
         "ctx": 128000,
         "family": "llama",
-        "think": False,
         "note": "De facto standard. Best LoRA/PEFT ecosystem support.",
     },
     # --- WAVE 1: Llama 3.2 scaling points ---
@@ -837,7 +751,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 2.0,
         "ctx": 128000,
         "family": "llama",
-        "think": False,
         "wave": 1,
         "note": "Llama 3.2 small — lightweight text-only variant.",
     },
@@ -848,7 +761,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 1.3,
         "ctx": 128000,
         "family": "llama",
-        "think": False,
         "wave": 1,
         "note": "Llama 3.2 tiny for floor-performance analysis.",
     },
@@ -864,65 +776,11 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 19,
         "ctx": 256000,
         "family": "qwen",
-        "think": True,
         "note": "Official qwen3:32b Q4_K_M. Replaces custom Q3_K_M for reproducibility.",
     },
     # Q3_K_M tested but not kept:
     # - qwen3.5-27b: quality preserved (0.800 composite) but no speed gain over Q4_K_M@4k ctx
     # - command-r-35b: ontology destroyed (65%→0%), -0.150 composite. REJECTED.
-
-    # ===================================================================
-    # WAVE 3: DeepSeek-R1 — always-reasoning distilled models
-    # ===================================================================
-    # NOTE: DeepSeek-R1 distillations embed <think>...</think> in every
-    # response. The "think" flag below means the *base architecture*
-    # supports think — but R1 models ALWAYS produce CoT regardless.
-    # Family config `always_thinks=True` handles this in answer.py.
-
-    "deepseek-r1-1.5b": {
-        "ollama_name": "deepseek-r1:1.5b",
-        "size_b": 1.5,
-        "quant": "Q4_K_M",
-        "vram_gb": 1.1,
-        "ctx": 65536,
-        "family": "deepseek",
-        "think": True,
-        "wave": 3,
-        "note": "DeepSeek-R1 distilled into Qwen2.5-1.5B. Tiny reasoning model.",
-    },
-    "deepseek-r1-7b": {
-        "ollama_name": "deepseek-r1:7b",
-        "size_b": 7,
-        "quant": "Q4_K_M",
-        "vram_gb": 4.7,
-        "ctx": 65536,
-        "family": "deepseek",
-        "think": True,
-        "wave": 3,
-        "note": "DeepSeek-R1 distilled into Qwen2.5-7B. Mid-tier reasoning.",
-    },
-    "deepseek-r1-8b": {
-        "ollama_name": "deepseek-r1:8b",
-        "size_b": 8,
-        "quant": "Q4_K_M",
-        "vram_gb": 4.9,
-        "ctx": 65536,
-        "family": "deepseek",
-        "think": True,
-        "wave": 3,
-        "note": "DeepSeek-R1 distilled into Llama3.1-8B base. Cross-arch reasoning.",
-    },
-    "deepseek-r1-14b": {
-        "ollama_name": "deepseek-r1:14b",
-        "size_b": 14,
-        "quant": "Q4_K_M",
-        "vram_gb": 9.0,
-        "ctx": 65536,
-        "family": "deepseek",
-        "think": True,
-        "wave": 3,
-        "note": "DeepSeek-R1 distilled into Qwen2.5-14B. Largest R1 that fits GPU.",
-    },
 
     # ===================================================================
     # WAVE 4: IBM Granite — structured output specialists
@@ -935,7 +793,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 5.0,
         "ctx": 128000,
         "family": "granite",
-        "think": True,
         "wave": 4,
         "note": "IBM Granite 3.3. Strong tool-use and structured output.",
     },
@@ -946,7 +803,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 1.5,
         "ctx": 128000,
         "family": "granite",
-        "think": True,
         "wave": 4,
         "note": "IBM Granite 3.3 small. Tests structured output at small scale.",
     },
@@ -963,7 +819,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 6.0,
         "ctx": 32768,
         "family": "falcon",
-        "think": False,
         "wave": 5,
         "note": "TII Falcon3 10B. Trained on curated web+code data.",
     },
@@ -974,7 +829,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 4.3,
         "ctx": 32768,
         "family": "falcon",
-        "think": False,
         "wave": 5,
         "note": "TII Falcon3 7B for 7B-class cross-family comparison.",
     },
@@ -985,7 +839,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 1.9,
         "ctx": 32768,
         "family": "falcon",
-        "think": False,
         "wave": 5,
         "note": "TII Falcon3 3B for small-model tier comparison.",
     },
@@ -998,7 +851,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 4.8,
         "ctx": 8192,
         "family": "aya",
-        "think": False,
         "wave": 5,
         "note": "Cohere Aya Expanse 8B. 23-language multilingual baseline.",
     },
@@ -1011,7 +863,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 5.5,
         "ctx": 131072,
         "family": "glm",
-        "think": False,
         "wave": 5,
         "note": "Zhipu GLM4 9B. Chinese-English bilingual, strong reasoning.",
     },
@@ -1029,7 +880,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 9.0,
         "ctx": 256000,
         "family": "qwen",
-        "think": True,
         "wave": 6,
         "quant_pair": "qwen3-8b",  # Q4_K_M counterpart
         "note": "Q8_0 quant ablation pair for qwen3-8b (Q4_K_M, 5.2GB).",
@@ -1041,7 +891,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 8.0,
         "ctx": 128000,
         "family": "gemma",
-        "think": True,
         "wave": 6,
         "quant_pair": "gemma3-12b-q8",  # Q8_0 counterpart
         "note": "Q4_K_M quant ablation pair for gemma3-12b-q8 (Q8_0, 13GB).",
@@ -1053,7 +902,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 5.0,
         "ctx": 128000,
         "family": "llama",
-        "think": False,
         "wave": 6,
         "quant_pair": "llama3.1-8b",  # Q8_0 counterpart
         "note": "Q4_K_M quant ablation pair for llama3.1-8b (Q8_0, 8.5GB).",
@@ -1065,7 +913,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 4.0,
         "ctx": 32768,
         "family": "mistral",
-        "think": False,
         "wave": 6,
         "quant_pair": "mistral-7b",  # Q8_0 counterpart
         "note": "Q4_K_M quant ablation pair for mistral-7b (Q8_0, 7.7GB).",
@@ -1083,7 +930,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 4.5,
         "ctx": 32768,
         "family": "internlm",
-        "think": False,
         "wave": 7,
         "note": "Shanghai AI Lab InternLM2. Strong bilingual Chinese+English.",
     },
@@ -1096,7 +942,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 5.0,
         "ctx": 4096,
         "family": "yi",
-        "think": False,
         "wave": 7,
         "note": "01.AI Yi 9B. Strong reasoning, bilingual.",
     },
@@ -1109,7 +954,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 6.0,
         "ctx": 4096,
         "family": "solar",
-        "think": False,
         "wave": 7,
         "note": "Upstage Solar 10.7B. Instruction-tuned, depth-upscaled Llama.",
     },
@@ -1122,7 +966,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 4.5,
         "ctx": 32768,
         "family": "exaone",
-        "think": False,
         "wave": 7,
         "note": "LG AI EXAONE 3.5 7.8B. Korean+English bilingual.",
     },
@@ -1135,7 +978,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 4.0,
         "ctx": 16384,
         "family": "starcoder",
-        "think": False,
         "wave": 7,
         "note": "BigCode StarCoder2. Code-specialized — negative control for bio tasks.",
     },
@@ -1154,7 +996,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 19.0,
         "ctx": 8192,
         "family": "aya",
-        "think": False,
         "wave": 8,
         "note": "Aya Expanse 32B. Large multilingual for scaling vs 8B.",
     },
@@ -1167,7 +1008,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 1.7,
         "ctx": 32768,
         "family": "exaone",
-        "think": False,
         "wave": 8,
         "note": "EXAONE 3.5 2.4B. Small scaling point vs 7.8B.",
     },
@@ -1180,7 +1020,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 1.1,
         "ctx": 32768,
         "family": "internlm",
-        "think": False,
         "wave": 8,
         "note": "InternLM2 1.8B. Small scaling point vs 7B.",
     },
@@ -1193,7 +1032,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 3.5,
         "ctx": 4096,
         "family": "yi",
-        "think": False,
         "wave": 8,
         "note": "Yi 6B. Scaling point vs 9B.",
     },
@@ -1206,7 +1044,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 1.7,
         "ctx": 16384,
         "family": "starcoder",
-        "think": False,
         "wave": 8,
         "note": "StarCoder2 3B. Small code-model negative control.",
     },
@@ -1220,7 +1057,6 @@ LLM_MODELS: Dict[str, dict] = {
         "vram_gb": 13.0,
         "ctx": 4096,
         "family": "solar",
-        "think": False,
         "wave": 8,
         "note": "Upstage Solar Pro 22B. Large scaling point vs 10.7B.",
     },
@@ -1375,7 +1211,6 @@ class PathConfig:
     enriched_dir: Path = field(default_factory=lambda: PROJECT_ROOT / "enriched_metadata")
     qdrant_dir: Path = field(default_factory=lambda: PROJECT_ROOT / "qdrant_data")
     benchmark_dir: Path = field(default_factory=lambda: PROJECT_ROOT / "benchmarks")
-    ground_truth_dir: Path = field(default_factory=lambda: PROJECT_ROOT / "benchmarks" / "ground_truth")
     results_dir: Path = field(default_factory=lambda: PROJECT_ROOT / "benchmarks" / "results")
     config_dir: Path = field(default_factory=lambda: PROJECT_ROOT / "configs")
     docs_dir: Path = field(default_factory=lambda: PROJECT_ROOT / "docs")
@@ -1403,7 +1238,6 @@ class PathConfig:
             self.enriched_dir,
             self.qdrant_dir,
             self.benchmark_dir,
-            self.ground_truth_dir,
             self.results_dir,
             self.config_dir,
             self.docs_dir,

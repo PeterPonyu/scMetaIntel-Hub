@@ -9,76 +9,36 @@
 [![Repo health](https://github.com/PeterPonyu/scMetaIntel-Hub/actions/workflows/repo-health.yml/badge.svg)](https://github.com/PeterPonyu/scMetaIntel-Hub/actions/workflows/repo-health.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-A unified project that merges:
+`scMetaIntel-Hub` is a local-first software toolkit for GEO acquisition, metadata enrichment, ontology normalization, vector indexing, retrieval, and grounded answering.
 
-- **GEO-DataHub** — acquisition backbone for GEO search, download, verification, conversion, and organization
-- **scMetaIntel** — metadata intelligence layer for enrichment, ontology normalization, embedding, hybrid retrieval, reranking, evaluation, and chat
+## What is public in this repository
 
-## Integrated architecture
+- `geodh/`: GEO search, download, verification, conversion, and manifest tooling
+- `scmetaintel/`: enrichment, ontology, embedding, retrieval, answer generation, and chat
+- `benchmarks/05_bench_public.py`: optional public-dataset evaluation harness
+- `benchmarks/public_datasets/`: public benchmark dataset adapters
+- `configs/`, `docs/`, `tests/`: public software configuration, architecture notes, and repo health checks
 
-```text
-User Query
-   │
-   ├─ GEO acquisition bridge (`python -m scmetaintel geo ...`)
-   │    └─ delegates to the proven GEO-DataHub CLI
-   │
-   └─ Intelligence layer (`python -m scmetaintel ...`)
-        ├─ enrich      → GEO + PubMed metadata enrichment
-        ├─ ontology    → CL / UBERON / MONDO normalization
-        ├─ embed       → build vector index
-        ├─ retrieve    → hybrid dense+sparse retrieval + reranking
-        ├─ answer      → grounded answer generation with citations
-        ├─ chat        → interactive dataset search REPL
-        └─ eval        → retrieval / ontology evaluation
-```
+Only public runtime assets are kept in this repository.
 
 ## Project layout
 
 ```text
 scMetaIntel-Hub/
-├── scmetaintel/          # unified intelligence package
-├── geodh/                # GEO acquisition bridge package
-├── benchmarks/           # benchmark scripts, ground truth, eval queries, results
-│   ├── ground_truth/     # 2189 enriched GSE JSON files
-│   ├── public_datasets/  # 27 public benchmark dataset configs
-│   └── results/          # benchmark output JSONs (gitignored)
-├── article_figures/      # generated figures and tables for publication
-├── scripts/              # figure generation, model download, data augmentation
+├── scmetaintel/          # metadata intelligence package
+├── geodh/                # GEO acquisition package
+├── benchmarks/           # public evaluation harnesses and public datasets
+├── scripts/              # public utility scripts
 ├── configs/              # shared YAML configuration
-├── docs/                 # architecture notes
-├── tests/                # repository health tests
-├── data/                 # conventional home for downloads + h5ad outputs
-├── enriched_metadata/    # rich study JSONs (written on demand)
-├── ontologies/           # CL / UBERON / MONDO
+├── docs/                 # public architecture notes
+├── tests/                # repository and public-surface tests
+├── data/                 # local downloads and outputs (created on demand)
+├── enriched_metadata/    # generated study JSONs (created on demand)
+├── ontologies/           # local ontology cache
 ├── qdrant_data/          # local vector store (created on demand)
 ├── reports/              # generated reports (created on demand)
 └── logs/                 # runtime logs (created on demand)
 ```
-
-## Benchmark suite
-
-The project includes a comprehensive benchmark evaluating the full RAG pipeline:
-
-| Level | Script(s) | Scope |
-| ----- | --------- | ----- |
-| Data foundation | `01_build_ground_truth.py` | 2189 enriched GSE documents |
-| Representation | `02_bench_embeddings.py` | 14 embedding models × 4 sub-tasks |
-| Retrieval | `03_bench_retrieval.py` | 6 strategies (dense/sparse/hybrid/rerank) |
-| Intelligence | `04_bench_llm.py` | 51 LLMs × 8 domain tasks (66 configs with think ablation) |
-| Intelligence | `05_bench_public.py` | 6 models × 27 public datasets across 6 categories |
-| Context | `06_bench_context.py`, `07_bench_context_mgmt.py` | Context window curves + 15 management strategies |
-| Ablation | `08_bench_ablation.py` | KV cache quantization + context length effects |
-| End-to-end | `09_bench_e2e.py` | Full pipeline latency and quality |
-
-All evaluation runs locally via Ollama on RTX 5090 Laptop (24.5 GB VRAM).
-
-See `benchmarks/BENCHMARK_DESIGN.md` for full task definitions and dataset details.
-
-## Repository standards
-
-- **governance**: `LICENSE`, `CONTRIBUTING.md`, `CODEOWNERS`, issue forms, and a pull request template
-- **automation**: GitHub Actions workflow at `.github/workflows/repo-health.yml`
-- **developer consistency**: `.editorconfig`, `.gitattributes`, `.env.example`, and `pyproject.toml`
 
 ## Quick start
 
@@ -95,13 +55,10 @@ python -m pip install -e . --no-deps
 cp .env.example .env
 ```
 
-### 3. Pull models via Ollama
+### 3. Pull the models you need
 
 ```bash
-# Pull all 51 LLM models (parallel, batched)
 bash scripts/ollama_parallel_pull.sh
-
-# Or see the download plan for selective pulling
 python scripts/model_download_plan.py
 ```
 
@@ -130,33 +87,27 @@ python -m scmetaintel retrieve --query "human lung fibrosis scRNA-seq"
 python -m scmetaintel chat
 ```
 
-### 8. Use GEO acquisition from the merged project
+### 8. Use GEO acquisition from the unified CLI
 
 ```bash
 python -m scmetaintel geo search --query "lung cancer scRNA-seq" --organism human --max-results 10
 ```
 
-## Model strategy
+## Public benchmark harness
 
-### Benchmark-validated recommendations
+This repo keeps one public evaluation lane for generally available datasets:
 
-| Role | Model | Evidence |
-| ---- | ----- | -------- |
-| Best LLM (composite) | `llama3.1-8b` | Top domain composite score (0.776) across 8 tasks |
-| Best embedding (retrieval) | `mxbai-embed-large` | Best R@50 and nDCG@10 |
-| Best embedding (ontology) | `sapbert` | Highest ontology recall@1 |
-| Reranker | `bge-reranker-v2-m3` | Used in all hybrid+rerank strategies |
+```bash
+python benchmarks/05_bench_public.py --max-samples 50
+```
 
-### Practical defaults
-
-- **LLM**: Any model from the 51-model Ollama registry (see `scmetaintel/config.py`)
-- **Embedding**: `BAAI/bge-m3`
-- **Ontology embedding**: `FremyCompany/BioLORD-2023`
-- **Reranker**: `BAAI/bge-reranker-v2-m3`
+The public harness is optional and is not required to use the runtime packages.
 
 ## Contributing and local validation
 
 Before opening a pull request, run the lightweight repository checks:
+
+The repository health workflow lives at `.github/workflows/repo-health.yml`.
 
 ```bash
 python -m compileall scmetaintel geodh benchmarks scripts tests
@@ -164,4 +115,3 @@ python -m unittest discover -s tests -p 'test_repository_health.py' -v
 ```
 
 For contribution expectations, see `CONTRIBUTING.md`.
-

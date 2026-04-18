@@ -13,6 +13,12 @@ from rich.panel import Panel
 from rich.table import Table
 
 from .answer import AnswerGenerator
+from .config import (
+    TRUNCATE_ABSTRACT,
+    TRUNCATE_DETAIL_DESIGN,
+    TRUNCATE_DETAIL_SUMMARY,
+    truncate_text,
+)
 from .retrieve import HybridRetriever
 
 logger = logging.getLogger(__name__)
@@ -87,13 +93,17 @@ class ChatSession:
         console.print(table)
 
         if study.summary:
-            console.print(f"\n[bold]Summary:[/]\n{study.summary[:1000]}\n")
+            console.print(
+                f"\n[bold]Summary:[/]\n{truncate_text(study.summary, TRUNCATE_DETAIL_SUMMARY)}\n"
+            )
         if study.overall_design:
-            console.print(f"[bold]Design:[/]\n{study.overall_design[:500]}\n")
+            console.print(
+                f"[bold]Design:[/]\n{truncate_text(study.overall_design, TRUNCATE_DETAIL_DESIGN)}\n"
+            )
         if study.pubmed:
             console.print(f"[bold]PubMed:[/] {study.pubmed.pmid}")
             if study.pubmed.abstract:
-                console.print(f"\n{study.pubmed.abstract[:800]}\n")
+                console.print(f"\n{truncate_text(study.pubmed.abstract, TRUNCATE_ABSTRACT)}\n")
 
     def _handle_query(self, query: str):
         with console.status("[bold cyan]Searching...[/]"):
