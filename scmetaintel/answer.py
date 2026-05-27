@@ -18,6 +18,7 @@ from typing import Dict, Iterable, List
 import requests
 
 from .config import (
+    DEFAULT_NUM_CTX,
     LLM_MODELS,
     family_json_hint,
     resolve_model_family,
@@ -28,14 +29,12 @@ from .config import (
     TRUNCATE_DESIGN,
     TRUNCATE_SUMMARY,
     truncate_text,
+    PROMPTS,
 )
 from .models import AnswerResponse, ParsedQuery, SearchResult
 
 logger = logging.getLogger(__name__)
 
-
-# Import centralized prompts from config — single source of truth
-from .config import PROMPTS, DEFAULT_NUM_CTX
 
 SYSTEM_PROMPT = PROMPTS["chat"]
 ANSWER_SYSTEM = PROMPTS["answer"]
