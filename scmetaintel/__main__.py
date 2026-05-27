@@ -21,12 +21,20 @@ from __future__ import annotations
 import sys
 
 
+def _print_help() -> None:
+    print(__doc__)
+
+
 def main():
     if len(sys.argv) < 2:
-        print(__doc__)
+        _print_help()
         sys.exit(1)
 
     command = sys.argv[1]
+    if command in {"-h", "--help"}:
+        _print_help()
+        sys.exit(0)
+
     sys.argv = [sys.argv[0], *sys.argv[2:]]
 
     if command == "enrich":

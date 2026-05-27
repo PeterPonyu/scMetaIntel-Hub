@@ -111,7 +111,7 @@ The repository health workflow lives at `.github/workflows/repo-health.yml`.
 
 ```bash
 python -m compileall scmetaintel geodh benchmarks scripts tests
-python -m unittest discover -s tests -p 'test_repository_health.py' -v
+python -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
 For contribution expectations, see `CONTRIBUTING.md`.
