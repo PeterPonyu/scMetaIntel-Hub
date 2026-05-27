@@ -549,6 +549,16 @@ def allocate_token_budget(
         kept.append(study)
         total_chars += len(text)
     return kept
+
+
+class AnswerGenerator:
+    """Grounded answer generator used by the interactive chat REPL.
+
+    Wraps the module-level Ollama helpers and provides both blocking
+    (`generate`) and streaming (`generate_streaming`) APIs over the
+    retrieval results produced by `HybridRetriever`.
+    """
+
     def __init__(self):
         self.cfg = get_config()
 
