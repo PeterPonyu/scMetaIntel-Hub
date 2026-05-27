@@ -93,7 +93,7 @@ class RepositoryHealthTests(unittest.TestCase):
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         self.assertIn("Contributing and local validation", readme)
         self.assertIn(".github/workflows/repo-health.yml", readme)
-        self.assertIn("python -m unittest discover -s tests -p 'test_repository_health.py' -v", readme)
+        self.assertIn("python -m unittest discover -s tests -p 'test_*.py' -v", readme)
 
 
 if __name__ == "__main__":

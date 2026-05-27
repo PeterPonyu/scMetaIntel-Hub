@@ -29,5 +29,5 @@ jobs:
       - name: Syntax sweep
         run: python -m compileall scmetaintel geodh benchmarks scripts tests
 
-      - name: Repository health tests
-        run: python -m unittest discover -s tests -p 'test_repository_health.py' -v
+      - name: Public contract tests
+        run: python -m unittest discover -s tests -p 'test_*.py' -v

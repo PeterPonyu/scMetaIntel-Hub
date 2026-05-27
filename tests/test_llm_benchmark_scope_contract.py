@@ -1,6 +1,7 @@
 from pathlib import Path
 import importlib.util
 import sys
+import types
 import unittest
 
 
@@ -15,12 +16,18 @@ sys.path.insert(0, str(ROOT / "benchmarks"))
 _BENCH04_PATH = ROOT / "benchmarks" / "04_bench_llm.py"
 _BENCH04_PRESENT = _BENCH04_PATH.is_file()
 
-bench04 = None
-if _BENCH04_PRESENT:
+def _load_bench04() -> types.ModuleType | None:
+    if not _BENCH04_PRESENT:
+        return None
     spec = importlib.util.spec_from_file_location("bench04_llm", _BENCH04_PATH)
-    bench04 = importlib.util.module_from_spec(spec)
-    assert spec.loader is not None
-    spec.loader.exec_module(bench04)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Could not load benchmark module spec from {_BENCH04_PATH}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+bench04 = _load_bench04()
 
 
 @unittest.skipUnless(
@@ -30,6 +37,7 @@ if _BENCH04_PRESENT:
 )
 class LlmBenchmarkScopeContractTests(unittest.TestCase):
     def test_benchmark_runs_are_non_think_only(self):
+        assert bench04 is not None
         runs = bench04.build_benchmark_runs(["qwen3-8b", "llama3.1-8b"])
         self.assertEqual(
             runs,
@@ -37,4 +45,5 @@ class LlmBenchmarkScopeContractTests(unittest.TestCase):
         )
 
     def test_benchmark_runs_exclude_always_think_models(self):
+        assert bench04 is not None
         self.assertEqual(bench04.build_benchmark_runs(["deepseek-r1-7b"]), [])

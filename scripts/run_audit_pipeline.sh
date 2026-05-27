@@ -19,6 +19,16 @@ log() { echo "[$(ts)] $*"; }
 
 log "Pipeline start"
 
+log_matching_bench_processes() {
+    pids="$(pgrep -f "05_bench_public" || true)"
+    if [ -z "$pids" ]; then
+        return 0
+    fi
+    for pid in $pids; do
+        ps -p "$pid" -o pid=,etime=,comm= 2>/dev/null | sed 's/^/  /' >&2 || true
+    done
+}
+
 # 1. Wait for any running 05_bench_public to finish (bounded)
 #
 # Bound the wait so unrelated/stale processes whose command line happens to
@@ -29,11 +39,28 @@ log "Pipeline start"
 BENCH_WAIT_TIMEOUT_SEC="${BENCH_WAIT_TIMEOUT_SEC:-600}"
 BENCH_WAIT_POLL_SEC="${BENCH_WAIT_POLL_SEC:-30}"
 
+case "$BENCH_WAIT_TIMEOUT_SEC" in
+    ''|*[!0-9]*)
+        log "ERROR: BENCH_WAIT_TIMEOUT_SEC must be a non-negative integer (got: $BENCH_WAIT_TIMEOUT_SEC)."
+        exit 2
+        ;;
+esac
+case "$BENCH_WAIT_POLL_SEC" in
+    ''|*[!0-9]*)
+        log "ERROR: BENCH_WAIT_POLL_SEC must be a positive integer (got: $BENCH_WAIT_POLL_SEC)."
+        exit 2
+        ;;
+esac
+if [ "$BENCH_WAIT_POLL_SEC" -le 0 ]; then
+    log "ERROR: BENCH_WAIT_POLL_SEC must be greater than 0 to avoid a tight polling loop."
+    exit 2
+fi
+
 if [ "$BENCH_WAIT_TIMEOUT_SEC" -le 0 ]; then
     log "BENCH_WAIT_TIMEOUT_SEC=0; skipping wait for 05_bench_public."
     if pgrep -f "05_bench_public" > /dev/null; then
         log "WARNING: 05_bench_public processes still match (continuing anyway):"
-        pgrep -af "05_bench_public" | sed 's/^/  /' >&2 || true
+        log_matching_bench_processes
     fi
 else
     log "Waiting for 05_bench_public processes to drain (timeout=${BENCH_WAIT_TIMEOUT_SEC}s)..."
@@ -41,15 +68,43 @@ else
     while pgrep -f "05_bench_public" > /dev/null; do
         if [ "$waited" -ge "$BENCH_WAIT_TIMEOUT_SEC" ]; then
             log "ERROR: timed out after ${waited}s waiting for 05_bench_public to drain."
-            log "Matching processes (pgrep -af):"
-            pgrep -af "05_bench_public" | sed 's/^/  /' >&2 || true
+            log "Matching process summaries (pid elapsed command):"
+            log_matching_bench_processes
             log "If these are stale/unrelated, kill them or rerun with BENCH_WAIT_TIMEOUT_SEC=0 to skip the wait."
             exit 2
         fi
-        sleep "$BENCH_WAIT_POLL_SEC"
-        waited=$((waited + BENCH_WAIT_POLL_SEC))
+        remaining=$((BENCH_WAIT_TIMEOUT_SEC - waited))
+        if [ "$BENCH_WAIT_POLL_SEC" -lt "$remaining" ]; then
+            sleep_for="$BENCH_WAIT_POLL_SEC"
+        else
+            sleep_for="$remaining"
+        fi
+        sleep "$sleep_for"
+        waited=$((waited + sleep_for))
     done
     log "Public bench is no longer running (waited ${waited}s)"
+fi
+
+# This wrapper is intentionally public so maintainers can version the pipeline
+# entrypoint, but several downstream scripts remain private/local tooling. Fail
+# before starting services if a clean checkout does not contain those scripts.
+required_private_scripts=(
+    scripts/surgical_rerun_a_d.py
+    scripts/analysis_claim_support.py
+    scripts/analysis_scaling_and_ci.py
+    scripts/generate_article_figures.py
+)
+missing_private_scripts=()
+for script in "${required_private_scripts[@]}"; do
+    if [ ! -f "$script" ]; then
+        missing_private_scripts+=("$script")
+    fi
+done
+if [ "${#missing_private_scripts[@]}" -gt 0 ]; then
+    log "ERROR: audit pipeline requires private/local scripts that are not present in this checkout:"
+    printf '  %s\n' "${missing_private_scripts[@]}" >&2
+    log "Restore the private audit tooling or keep this wrapper disabled in public clones."
+    exit 2
 fi
 
 # 2. Verify Ollama is up; restart if needed
