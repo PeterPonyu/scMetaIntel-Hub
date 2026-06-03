@@ -17,6 +17,15 @@ from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Dict
 
+# Load a local `.env` file if present so the documented `cp .env.example .env`
+# setup step takes effect. Guarded so the package works without python-dotenv.
+try:
+    from dotenv import load_dotenv as _load_dotenv
+
+    _load_dotenv()
+except ImportError:  # pragma: no cover - optional dependency
+    pass
+
 os.environ.setdefault("HF_HUB_DISABLE_TELEMETRY", "1")
 
 
