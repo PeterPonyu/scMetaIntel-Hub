@@ -1098,13 +1098,15 @@ RECOMMENDED_LLM_FAST = "qwen3.5-9b-q8"
 RECOMMENDED_EMBEDDING = "qwen3-embed-8b"
 RECOMMENDED_RERANKER = "qwen3-reranker-4b"
 
-# Practical locally-runnable defaults (execution intent)
+# Practical locally-runnable defaults (execution intent).
+# These mirror the runtime defaults in `configs/config.yaml` so there is a
+# single source of truth for the models a fresh install will pull and use.
 DEFAULT_LLM = os.getenv("SCMETA_LLM_MODEL", "qwen2.5-1.5b")
-DEFAULT_LLM_FAST = os.getenv("SCMETA_LLM_FAST_MODEL", "qwen2.5-1.5b")
-DEFAULT_EMBEDDING = os.getenv("SCMETA_EMBED_MODEL", "mxbai-embed-large")
+DEFAULT_LLM_FAST = os.getenv("SCMETA_LLM_FAST_MODEL", "qwen2.5-0.5b")
+DEFAULT_EMBEDDING = os.getenv("SCMETA_EMBED_MODEL", "bge-m3")
 DEFAULT_EMBED_HYBRID = "bge-m3"
 DEFAULT_EMBED_BIO = os.getenv("SCMETA_BIO_EMBED_MODEL", "biolord-2023")
-DEFAULT_RERANKER = os.getenv("SCMETA_RERANK_MODEL", "ms-marco-minilm-l6")
+DEFAULT_RERANKER = os.getenv("SCMETA_RERANK_MODEL", "bge-reranker-v2-m3")
 
 
 # ---------------------------------------------------------------------------
