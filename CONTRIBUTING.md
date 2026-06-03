@@ -7,7 +7,7 @@ Thanks for contributing to `scMetaIntel-Hub`.
 1. Create a feature branch from `main`.
 2. Keep changes focused and document user-visible behavior in `README.md` when relevant.
 3. Preserve generated-data boundaries: source code and docs belong in git; large runtime artifacts stay out.
-4. Keep placeholder directories intact so local pipelines have predictable paths.
+4. Runtime directories (`data/`, `enriched_metadata/`, `ontologies/`, `qdrant_data/`, `reports/`, `logs/`) are created on demand and are intentionally not tracked in git; do not commit them or their generated contents.
 
 ## Local validation
 
