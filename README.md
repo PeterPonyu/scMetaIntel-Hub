@@ -34,11 +34,23 @@ scMetaIntel-Hub/
 ├── tests/                # repository and public-surface tests
 ├── data/                 # local downloads and outputs (created on demand)
 ├── enriched_metadata/    # generated study JSONs (created on demand)
-├── ontologies/           # local ontology cache
+├── ontologies/           # local ontology cache (created on demand)
 ├── qdrant_data/          # local vector store (created on demand)
 ├── reports/              # generated reports (created on demand)
 └── logs/                 # runtime logs (created on demand)
 ```
+
+## Prerequisites
+
+- **Python 3.10+**.
+- **Ollama server.** The `enrich`, `embed`, `retrieve`, and `chat` steps call a
+  local LLM through Ollama, which defaults to `http://localhost:11434`. Install
+  Ollama and keep it running (`ollama serve`) before invoking those commands,
+  then pull the models you intend to use (see step 3). Without a running Ollama
+  server the first command fails with a bare connection error.
+- **Compute device.** The default device is CUDA (`SCMETA_DEVICE=cuda`). If you
+  do not have a CUDA-capable GPU, override it to CPU, for example
+  `export SCMETA_DEVICE=cpu` or set `SCMETA_DEVICE=cpu` in your `.env` file.
 
 ## Quick start
 
@@ -79,6 +91,11 @@ python -m scmetaintel ontology --build-index
 ```bash
 python -m scmetaintel embed --input enriched_metadata
 ```
+
+> **Upgrading an existing index?** The default embedding model is `bge-m3`. If you
+> have a `qdrant_data/` collection built with a different embedding model, re-index it
+> (delete the stale collection or re-run `embed` against a fresh store) — embeddings
+> from different models are not comparable even when their vector dimensions match.
 
 ### 7. Search or chat
 
