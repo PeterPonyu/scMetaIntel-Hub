@@ -92,6 +92,11 @@ python -m scmetaintel ontology --build-index
 python -m scmetaintel embed --input enriched_metadata
 ```
 
+> **Upgrading an existing index?** The default embedding model is `bge-m3`. If you
+> have a `qdrant_data/` collection built with a different embedding model, re-index it
+> (delete the stale collection or re-run `embed` against a fresh store) — embeddings
+> from different models are not comparable even when their vector dimensions match.
+
 ### 7. Search or chat
 
 ```bash
