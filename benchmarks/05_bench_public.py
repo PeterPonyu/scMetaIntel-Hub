@@ -195,6 +195,140 @@ def build_mcq_prompt(item: dict, choices_field: str = "choices",
 
 
 # ---------------------------------------------------------------------------
+# Constraint verifiers (IFEval / JSON-schema / function-call)
+#
+# These replace the previous "default pass" behaviour, which credited a model
+# for constraints that were never actually checked and thus inflated scores.
+# The rule here is: only score what we can verify. A constraint we cannot check
+# is *excluded* (it does not count as a pass), so the reported number reflects
+# verified compliance, not optimistic defaults.
+# ---------------------------------------------------------------------------
+
+def _ifeval_check(inst: str, kw: dict, text: str):
+    """Verify a single IFEval instruction. Returns True/False when the
+    constraint is checkable, or None when it is not implemented / missing the
+    kwargs needed to verify it (so the caller can exclude it)."""
+    if "punctuation:no_comma" in inst:
+        return "," not in text
+    if "change_case:english_capital" in inst:
+        letters = [c for c in text if c.isalpha()]
+        return bool(letters) and all(c.isupper() for c in letters)
+    if "change_case:english_lowercase" in inst:
+        letters = [c for c in text if c.isalpha()]
+        return bool(letters) and all(c.islower() for c in letters)
+    if "length_constraints:number_words" in inst:
+        rel, n = kw.get("relation"), kw.get("num_words")
+        if rel is None or n is None:
+            return None
+        wc = len(text.split())  # whitespace tokenization (approximate, deterministic)
+        if rel == "at least":
+            return wc >= n
+        if rel == "less than":
+            return wc < n
+        return None
+    if "keywords:existence" in inst:
+        kws = kw.get("keywords")
+        if not kws:
+            return None
+        low = text.lower()
+        return all(k.lower() in low for k in kws)
+    if "keywords:forbidden_words" in inst:
+        fw = kw.get("forbidden_words")
+        if not fw:
+            return None
+        low = text.lower()
+        return all(w.lower() not in low for w in fw)
+    if "keywords:frequency" in inst:
+        kwd, rel, freq = kw.get("keyword"), kw.get("relation"), kw.get("frequency")
+        if kwd is None or rel is None or freq is None:
+            return None
+        cnt = len(re.findall(re.escape(kwd.lower()), text.lower()))
+        if rel == "at least":
+            return cnt >= freq
+        if rel == "less than":
+            return cnt < freq
+        return None
+    if "startend:end_checker" in inst:
+        ph = kw.get("end_phrase")
+        if not ph:
+            return None
+        return text.strip().endswith(ph.strip())
+    if "detectable_format:number_bullet_lists" in inst:
+        n = kw.get("num_bullets")
+        if n is None:
+            return None
+        return len(re.findall(r"(?m)^\s*[\*\-]\s+", text)) == n
+    if "detectable_content:postscript" in inst:
+        marker = kw.get("postscript_marker")
+        if not marker:
+            return None
+        return marker.lower() in text.lower()
+    if "detectable_format:json_format" in inst:
+        return extract_json(text) is not None
+    # Not implemented / not verifiable -> exclude (do NOT default to pass).
+    return None
+
+
+def ifeval_verdicts(instruction_ids: list, kwargs_list: list, response: str) -> list:
+    """Pass/fail booleans for only the IFEval constraints we can actually
+    verify. Constraints we cannot check are omitted entirely."""
+    verdicts = []
+    for i, inst in enumerate(instruction_ids):
+        kw = kwargs_list[i] if i < len(kwargs_list) and isinstance(kwargs_list[i], dict) else {}
+        v = _ifeval_check(inst, kw, response)
+        if v is not None:
+            verdicts.append(bool(v))
+    return verdicts
+
+
+def json_schema_pass(parsed, schema) -> bool:
+    """Valid JSON that also conforms to the provided JSON schema. Falls back to
+    'valid JSON produced' only when no usable schema is available."""
+    if parsed is None:
+        return False
+    if not schema:
+        return True
+    if isinstance(schema, str):
+        try:
+            schema = json.loads(schema)
+        except (json.JSONDecodeError, ValueError):
+            return True
+    if not isinstance(schema, dict):
+        return True
+    try:
+        import jsonschema
+    except ImportError:
+        return True  # jsonschema not installed: fall back to 'valid JSON produced'
+    try:
+        jsonschema.validate(instance=parsed, schema=schema)
+        return True
+    except jsonschema.ValidationError:
+        return False
+    except jsonschema.SchemaError:
+        return True  # malformed schema in the dataset: do not penalize the model
+    except Exception:
+        return True
+
+
+def _extract_call_names(text: str) -> set:
+    names = set()
+    for m in re.finditer(r"[\"']name[\"']\s*:\s*[\"']([A-Za-z_][\w.]*)[\"']", text):
+        names.add(m.group(1).lower())
+    for m in re.finditer(r"\b([A-Za-z_][\w.]*)\(", text):  # identifier immediately followed by '('
+        names.add(m.group(1).lower())
+    return names
+
+
+def function_call_correct(raw: str, gold_func: str):
+    """True/False when a ground-truth function name is known; None when the
+    dataset carries no gold call to compare against (unverifiable -> excluded,
+    rather than crediting any 'word(...)' substring as a correct call)."""
+    if not gold_func:
+        return None
+    return gold_func.strip().lower() in _extract_call_names(raw)
+
+
+# ---------------------------------------------------------------------------
 # Per-dataset evaluation
 # ---------------------------------------------------------------------------
 
@@ -335,21 +469,17 @@ def eval_dataset(dataset_path: str, data: list, model_key: str,
                 prompt = item.get("prompt", "")
                 raw = llm_call(prompt, model_key=model_key, temperature=0.0,
                                max_tokens=1024, timeout=120)
-                # Simple constraint checks
+                # Verify only the constraints we can actually check; unverifiable
+                # ones are excluded rather than counted as automatic passes.
                 instructions = item.get("instruction_id_list", [])
-                passed = 0
-                for inst in instructions:
-                    if "number_words" in inst:
-                        passed += 1  # hard to verify exactly, count as pass
-                    elif "no_comma" in inst:
-                        passed += (1 if "," not in raw else 0)
-                    else:
-                        passed += 1  # default pass for unimplemented checks
-                total += 1
-                if instructions:
-                    scores.append(passed / len(instructions))
-                if passed == len(instructions):
-                    correct += 1
+                kwargs_list = item.get("kwargs", [])
+                verdicts = ifeval_verdicts(instructions, kwargs_list, raw)
+                if verdicts:
+                    total += 1
+                    scores.append(sum(verdicts) / len(verdicts))
+                    if all(verdicts):
+                        correct += 1
+                # else: no verifiable constraint in this item -> skip it
 
             elif evaluator == "json_schema":
                 prompt_msgs = item.get("prompt", [])
@@ -361,8 +491,8 @@ def eval_dataset(dataset_path: str, data: list, model_key: str,
                                max_tokens=max_tok, timeout=60)
                 parsed = extract_json(raw)
                 total += 1
-                if parsed is not None:
-                    correct += 1  # valid JSON produced
+                if json_schema_pass(parsed, item.get("schema")):
+                    correct += 1  # valid JSON that also conforms to the schema
 
             elif evaluator in ("nexus_fc", "glaive_fc", "toolace"):
                 # Function calling: check if model produces parseable function call
@@ -384,16 +514,17 @@ def eval_dataset(dataset_path: str, data: list, model_key: str,
                 raw = llm_call(prompt, model_key=model_key, system=system[:1000],
                                temperature=0.0, max_tokens=max_tok,
                                timeout=60)
-                # Check if any function-call-like pattern exists
-                has_call = bool(re.search(
-                    r"<functioncall>|<tool_call>|\w+\(.*?\)|\{[\"']name[\"']", raw))
+                # Score correctness only against a known gold function name.
+                # Datasets without a gold call (glaive/toolace here) are
+                # unverifiable for correctness and are skipped rather than
+                # credited for producing any 'word(...)' pattern.
+                verdict = function_call_correct(raw, gold_func)
+                if verdict is None:
+                    continue
                 total += 1
-                if has_call:
+                if verdict:
                     correct += 1
-                if gold_func and gold_func.lower() in raw.lower():
-                    scores.append(1.0)
-                else:
-                    scores.append(0.0 if gold_func else (1.0 if has_call else 0.0))
+                scores.append(1.0 if verdict else 0.0)
 
         except Exception as e:
             logger.warning(f"  Failed on {dataset_path}: {e}")
