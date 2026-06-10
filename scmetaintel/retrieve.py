@@ -13,7 +13,6 @@ import logging
 import os
 import re
 import time
-from collections import Counter
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
@@ -34,6 +33,29 @@ def reciprocal_rank_fusion(ranked_lists: List[List[str]], k: int = 60) -> List[T
         for rank, doc_id in enumerate(ranking, start=1):
             scores[doc_id] = scores.get(doc_id, 0.0) + 1.0 / (k + rank)
     return sorted(scores.items(), key=lambda x: x[1], reverse=True)
+
+
+def _bm25_tokenize(text: str) -> List[str]:
+    """Lowercase alphanumeric tokenization shared by indexing and querying."""
+    return re.findall(r"[a-z0-9]+", text.lower())
+
+
+def _doc_text(doc: Dict) -> str:
+    """The text field used for sparse scoring, with the project's fallbacks."""
+    return doc.get("document_text", doc.get("search_text", doc.get("title", "")))
+
+
+def build_bm25(doc_texts: List[str]):
+    """Build a real BM25Okapi index (IDF + document-length normalization).
+
+    This replaces the previous unweighted token-frequency overlap, which had no
+    IDF or length normalization and is ~10x weaker on a real qrels benchmark
+    (studies/bm25_retrieval.py). ``rank_bm25`` is imported lazily so the module
+    still imports when the optional dependency is absent.
+    """
+    from rank_bm25 import BM25Okapi
+
+    return BM25Okapi([_bm25_tokenize(t) for t in doc_texts])
 
 
 class Reranker:
@@ -101,6 +123,16 @@ class RetrievalPipeline:
         self.top_k = top_k
         self.rerank_k = rerank_k
         self._all_docs: Optional[List[Dict]] = None
+        self._bm25 = None
+        self._bm25_docs: Optional[List[Dict]] = None
+
+    def _get_bm25(self):
+        """Lazily build and cache a BM25Okapi index over the corpus."""
+        if self._bm25 is None:
+            docs = self._get_all_docs()
+            self._bm25 = build_bm25([_doc_text(d) for d in docs])
+            self._bm25_docs = docs
+        return self._bm25, self._bm25_docs
 
     def _get_all_docs(self) -> List[Dict]:
         if self._all_docs is not None:
@@ -141,17 +173,15 @@ class RetrievalPipeline:
                 results_by_id[gse] = {**h.payload, "dense_score": h.score}
 
         if use_sparse:
-            query_tokens = set(query.lower().split())
-            all_docs = self._get_all_docs()
-            scored = []
-            for doc in all_docs:
-                text = doc.get("document_text", doc.get("search_text", doc.get("title", ""))).lower()
-                doc_tokens = Counter(text.split())
-                overlap = sum(doc_tokens[t] for t in query_tokens if t in doc_tokens)
-                if overlap > 0:
-                    scored.append((doc["gse_id"], overlap, doc))
-            scored.sort(key=lambda x: x[1], reverse=True)
-            for gse, sc, doc in scored[: self.top_k]:
+            bm25, all_docs = self._get_bm25()
+            scores = bm25.get_scores(_bm25_tokenize(query))
+            order = np.argsort(scores)[::-1]
+            for idx in order[: self.top_k]:
+                sc = float(scores[idx])
+                if sc <= 0.0:
+                    break
+                doc = all_docs[idx]
+                gse = doc["gse_id"]
                 sparse_ranking.append(gse)
                 if gse not in results_by_id:
                     results_by_id[gse] = doc

@@ -29,3 +29,6 @@ rich>=13.0
 tqdm>=4.65
 pydantic>=2.0
 python-dotenv>=1.0
+
+# Sparse retrieval (real BM25)
+rank_bm25>=0.2.2
