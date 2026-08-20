@@ -11,6 +11,8 @@
 
 `scMetaIntel-Hub` is a local-first software toolkit for GEO acquisition, metadata enrichment, ontology normalization, vector indexing, retrieval, and grounded answering.
 
+Public repository index: https://peterponyu.github.io/scMetaIntel-Hub/
+
 ## What is public in this repository
 
 - `geodh/`: GEO search, download, verification, conversion, and manifest tooling
