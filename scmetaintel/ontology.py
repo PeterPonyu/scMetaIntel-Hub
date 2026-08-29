@@ -19,11 +19,28 @@ from pathlib import Path
 
 import numpy as np
 
-from .config import get_config, FIELD_TO_ONTOLOGY, ONTOLOGY_FILES
+from .config import (
+    get_config,
+    FIELD_TO_ONTOLOGY,
+    ONTOLOGY_FILES,
+    ONTOLOGY_ABSTAIN_MARGIN,
+    ONTOLOGY_SIMILARITY_THRESHOLD_LLM,
+)
 from .embed import resolve_load_name
 from .models import EnrichedStudy, OntologyMapping
 
 logger = logging.getLogger(__name__)
+
+
+def _accept_embedding_match(top1: float, top2: float, threshold: float, margin: float) -> bool:
+    """Decide whether an embedding match is confident enough to accept.
+
+    Requires both an absolute-similarity floor (``top1 >= threshold``) and a
+    top1-top2 separation (``top1 - top2 >= margin``). The margin is what makes
+    out-of-ontology terms abstain: they tie across many equally-poor matches, so
+    their top1-top2 gap is tiny even when the absolute score clears the floor.
+    """
+    return top1 >= threshold and (top1 - top2) >= margin - 1e-9
 
 
 class OntologyIndex:
@@ -260,8 +277,17 @@ class OntologyNormalizer:
             for onto_name in ontology_names:
                 if onto_name not in self.indices:
                     continue
-                matches = self.indices[onto_name].embedding_match(text_emb, top_k=1, threshold=0.65)
-                if matches:
+                # Fetch the top 2 candidates (no threshold filter) so we can apply
+                # both an absolute-similarity floor and a top1-top2 abstention
+                # margin. A near-tie means the term is not confidently any single
+                # ontology concept (typically out-of-ontology junk), so we abstain
+                # instead of returning a confident wrong ID. See issue #18.
+                matches = self.indices[onto_name].embedding_match(text_emb, top_k=2, threshold=0.0)
+                if not matches:
+                    continue
+                top1 = matches[0].confidence
+                top2 = matches[1].confidence if len(matches) > 1 else 0.0
+                if _accept_embedding_match(top1, top2, ONTOLOGY_SIMILARITY_THRESHOLD_LLM, ONTOLOGY_ABSTAIN_MARGIN):
                     result = matches[0]
                     result.raw_term = text
                     self._cache[cache_key] = result
@@ -269,6 +295,15 @@ class OntologyNormalizer:
         result = OntologyMapping(raw_term=text, confidence=0.0, method="none")
         self._cache[cache_key] = result
         return result
+
+    def is_valid_id(self, ontology_id: str) -> bool:
+        """True iff ``ontology_id`` exists in any loaded ontology.
+
+        Cheap, assumption-free guard against fabricated/stale identifiers (e.g.
+        an LLM-emitted ``CL:9999999`` or a UBERON id passed where a CL id is
+        expected): the id either resolves to a real term or it does not.
+        """
+        return any(ontology_id in idx.terms for idx in self.indices.values())
 
     def normalize_study(self, study: EnrichedStudy) -> dict[str, list[OntologyMapping]]:
         mappings: dict[str, list[OntologyMapping]] = defaultdict(list)

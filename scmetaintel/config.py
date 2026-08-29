@@ -106,6 +106,13 @@ FIELD_TO_ONTOLOGY = {
 # Ontology similarity thresholds
 ONTOLOGY_SIMILARITY_THRESHOLD = 0.7     # Embedding-based matching
 ONTOLOGY_SIMILARITY_THRESHOLD_LLM = 0.65  # LLM fallback (lower bar)
+# Minimum top1-top2 cosine gap required to accept an embedding match. Out-of-
+# ontology terms (e.g. "doublets", "low quality cells", "cluster 7") sit at a
+# near-tie among many equally-poor matches; requiring a margin makes the
+# normalizer abstain instead of returning a confident wrong ID. Calibrated on
+# cl.obo: margin >= 0.03 drops the out-of-ontology false-mapping rate from
+# 100% -> 0% while retaining ~80% accuracy on real terms (studies/ontology_abstention.py).
+ONTOLOGY_ABSTAIN_MARGIN = 0.03
 
 # --- Domain classification labels ---
 VALID_DOMAINS = frozenset({
