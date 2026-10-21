@@ -13,6 +13,7 @@ from __future__ import annotations
 import importlib.util
 import sys
 import unittest
+from unittest import mock
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -75,17 +76,42 @@ class JsonSchemaVerifierTests(unittest.TestCase):
 
     def test_conforms(self):
         schema = {"type": "object", "required": ["name"], "properties": {"name": {"type": "string"}}}
-        self.assertTrue(self.m.json_schema_pass({"name": "x"}, schema))
+        expected = True if importlib.util.find_spec("jsonschema") else None
+        self.assertIs(self.m.json_schema_pass({"name": "x"}, schema), expected)
 
     def test_violation_is_rejected(self):
         schema = {"type": "object", "required": ["name"]}
-        self.assertFalse(self.m.json_schema_pass({"other": 1}, schema))
+        expected = False if importlib.util.find_spec("jsonschema") else None
+        self.assertIs(self.m.json_schema_pass({"other": 1}, schema), expected)
 
     def test_string_schema_is_parsed(self):
-        self.assertFalse(self.m.json_schema_pass({"other": 1}, '{"type": "object", "required": ["name"]}'))
+        expected = False if importlib.util.find_spec("jsonschema") else None
+        self.assertIs(self.m.json_schema_pass({"other": 1}, '{"type": "object", "required": ["name"]}'), expected)
 
     def test_no_schema_falls_back_to_valid_json(self):
         self.assertTrue(self.m.json_schema_pass({"anything": 1}, None))
+
+    def test_missing_validator_does_not_credit_schema_compliance(self):
+        with mock.patch.dict(sys.modules, {"jsonschema": None}):
+            self.assertIsNone(self.m.json_schema_pass({"other": 1}, {"required": ["name"]}))
+            self.assertIsNone(self.m.json_schema_pass({"name": "x"}, {"required": ["name"]}))
+
+    def test_invalid_schema_is_unverifiable(self):
+        self.assertIsNone(self.m.json_schema_pass({}, "not JSON"))
+        self.assertIsNone(self.m.json_schema_pass({}, ["object"]))
+        self.assertIsNone(self.m.json_schema_pass({}, {"type": "not-a-json-type"}))
+
+    def test_boolean_schema_is_honored(self):
+        expected = False if importlib.util.find_spec("jsonschema") else None
+        self.assertIs(self.m.json_schema_pass({}, False), expected)
+
+    def test_unverifiable_schema_is_excluded_from_sample_count(self):
+        data = [{"prompt": [{"content": "Return a name"}], "schema": {"required": ["name"]}}]
+        with mock.patch.dict(sys.modules, {"jsonschema": None}), mock.patch.object(
+            self.m, "llm_call", return_value='{"other": 1}'
+        ):
+            result = self.m.eval_dataset("fixture", data, "qwen3:8b", "json_schema", {}, 0)
+        self.assertEqual(result, {"n_samples": 0})
 
 
 class FunctionCallVerifierTests(unittest.TestCase):

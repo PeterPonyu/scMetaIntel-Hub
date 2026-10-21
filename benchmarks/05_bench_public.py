@@ -281,33 +281,30 @@ def ifeval_verdicts(instruction_ids: list, kwargs_list: list, response: str) -> 
     return verdicts
 
 
-def json_schema_pass(parsed, schema) -> bool:
-    """Valid JSON that also conforms to the provided JSON schema. Falls back to
-    'valid JSON produced' only when no usable schema is available."""
+def json_schema_pass(parsed, schema) -> bool | None:
+    """Verify JSON and its schema, or return None when schema checking is unavailable."""
     if parsed is None:
         return False
-    if not schema:
+    if schema is None:
         return True
     if isinstance(schema, str):
         try:
             schema = json.loads(schema)
         except (json.JSONDecodeError, ValueError):
-            return True
-    if not isinstance(schema, dict):
-        return True
+            return None
+    if not isinstance(schema, (dict, bool)):
+        return None
     try:
         import jsonschema
     except ImportError:
-        return True  # jsonschema not installed: fall back to 'valid JSON produced'
+        return None
     try:
         jsonschema.validate(instance=parsed, schema=schema)
         return True
     except jsonschema.ValidationError:
         return False
     except jsonschema.SchemaError:
-        return True  # malformed schema in the dataset: do not penalize the model
-    except Exception:
-        return True
+        return None  # malformed dataset schemas cannot establish correctness
 
 
 def _extract_call_names(text: str) -> set:
@@ -490,8 +487,11 @@ def eval_dataset(dataset_path: str, data: list, model_key: str,
                 raw = llm_call(prompt, model_key=model_key, temperature=0.0,
                                max_tokens=max_tok, timeout=60)
                 parsed = extract_json(raw)
+                verdict = json_schema_pass(parsed, item.get("schema"))
+                if verdict is None:
+                    continue
                 total += 1
-                if json_schema_pass(parsed, item.get("schema")):
+                if verdict:
                     correct += 1  # valid JSON that also conforms to the schema
 
             elif evaluator in ("nexus_fc", "glaive_fc", "toolace"):
